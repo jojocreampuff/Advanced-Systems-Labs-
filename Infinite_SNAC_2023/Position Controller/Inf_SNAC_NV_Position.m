@@ -8,12 +8,7 @@ addpath('..\functions')
 grav = 9.81;
 Position_f = @(x) [x(4); x(5); x(6); 0; 0; grav];
 Position_g = @(x) [0 0 0; 0 0 0; 0 0 0; -1 0 0; 0 -1 0; 0 0 -1];
-   [0, 0, 0
-    0, 0, 0
-    0, 0, 0
-    1, 0, 0
-    0, 1, 0
-    0, 0, 1]
+
 
 % Define training Parameters
 N_states = 6;
