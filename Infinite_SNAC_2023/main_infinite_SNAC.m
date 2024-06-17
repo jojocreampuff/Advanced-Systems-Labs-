@@ -12,7 +12,7 @@ load('infinite_Attitude_SNAC_workspace2.mat','Attitude_W','Attitude_R','Attitude
 % Load necessary variables for the position and attitude
 Position.Position_W = Position_W;   % NN weights
 Position.Position_G = Position_G;   % Position control dynamics
-Position.Position_R = Position_R;   % Control penalizing matrix
+Position.Position_R = Position_R;   % Control penalizing matrixPosistion
 
 Attitude.Attitude_W = Attitude_W;   % NN weights
 Attitude.Attitude_G = Attitude_G;   % Attitude control dynamics

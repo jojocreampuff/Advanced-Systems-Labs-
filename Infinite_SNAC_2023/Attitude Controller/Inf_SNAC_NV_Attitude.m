@@ -19,8 +19,8 @@ Attitude_g = [0 0 0; 0 0 0; 0 0 0; 1/Ix 0 0; 0 1/Iy 0; 0 0 1/Iz];
 % Define training Parameters
 N_states = 6;
 N_patterns = 100;
-max_training_loop = 40000;
-threshold = 1e-5;
+max_training_loop = 5000;
+threshold = 1e-7;
 dt = 0.001;
 Attitude_Q = dt*diag([1e6,1e6,1e6,1e5,1e5,1e5]);
 Attitude_R = dt*diag([0.5e4,0.5e4,0.5e4]);
