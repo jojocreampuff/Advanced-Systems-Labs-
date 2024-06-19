@@ -1,6 +1,9 @@
 clear; clc; close;
 
-load('infinite_Position_SNAC_workspace2.mat','Position_W')
-load('infinite_Attitude_SNAC_workspace2.mat','Attitude_W')
+data_thing = load('trained_weights.mat','Position_W', "Attitude_W")
 
-save("trained_weights","Attitude_W","Position_W","-v7.3")
+% Extract and convert the matrices to double
+Position_W = double(data_thing.Position_W);
+Attitude_W = double(data_thing.Attitude_W);
+
+% save("trained_weights","Attitude_W","Position_W","-v7.3")

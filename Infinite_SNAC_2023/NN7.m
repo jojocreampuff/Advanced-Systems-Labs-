@@ -51,27 +51,20 @@ y1_step1.xoffset = [0.000132461484070312;-0.499993843068977;-0.499986755561615];
 % ===== SIMULATION ========
 
 % Format Input Arguments
-isCellX = iscell(X);
-if ~isCellX
-  X = {X};
-end
 
-% Dimensions
-TS = size(X,2); % timesteps
-if ~isempty(X)
-  Q = size(X{1},2); % samples/series
-else
-  Q = 0;
-end
+TS = 3;
+
 
 % Allocate Outputs
 Y = cell(1,TS);
+Q = size(X(1),2); % samples/series
+
 
 % Time loop
 for ts=1:TS
 
     % Input 1
-    Xp1 = mapminmax_apply(X{1,ts},x1_step1);
+    Xp1 = mapminmax_apply(X(1,ts),x1_step1);
     
     % Layer 1
     a1 = tansig_apply(repmat(b1,1,Q) + IW1_1*Xp1);
