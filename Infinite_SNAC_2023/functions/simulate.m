@@ -65,6 +65,8 @@ for i = 1:N-1
     angles(:,i) = [r_phi(i); r_the(i); r_psi(i)];
     
     angles_ref(:,i) = [angles(:,i); deriv(angles,i,dt)];
+    % angles_ref_test(;,i) = [angles(:,i); T_matrix(angles)];
+
 
     % SNAC controller used to track angles - error regulation and optimal control equation
     Attitude_error(:,i) = x(7:12,i) - angles_ref(:,i);
