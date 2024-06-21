@@ -31,7 +31,9 @@ Attitude_error  = zeros(6,N);   % error
 r_initial       = zeros(3,N-1); % original trajectory
 r_phi           = zeros(1,N);   % phi trajectory
 r_the           = zeros(1,N);   % theta trajectory
-r_psi           = zeros(1,N);   % psi trajectory
+% r_psi           = zeros(1,N);   % psi trajectory
+r_psi           = linspace(-pi, pi, N);
+display(size(r_psi));
 
 Full_F = @(x,grav,Ix,Iy,Iz) x + dt * Full_f_225(x,grav,Ix,Iy,Iz); % discretized drift dynamics
 Full_G = @(x,m,Ix,Iy,Iz) dt * Full_g_225(x,m,Ix,Iy,Iz);           % discretized control dynamics
@@ -61,12 +63,12 @@ for i = 1:N-1
 %     angles(:,i) = [ft_angles(2,i);ft_angles(3,i); 0];
 
 %     Numerically solving for ft and angles from ux, uy, and uz
-    [ft(i), r_phi(i), r_the(i)] = system_solver(uxyz(:,i),r_psi(i),m);
-    angles(:,i) = [r_phi(i); r_the(i); r_psi(i)];
-    
-    angles_ref(:,i) = [angles(:,i); deriv(angles,i,dt)];
-    % angles_ref_test(;,i) = [angles(:,i); T_matrix(angles)];
+    % [ft(i), r_phi(i), r_the(i)] = system_solver(uxyz(:,i),r_psi(i),m);
 
+    [ft(i), r_phi(i), r_the(i)] = borna_sys_solve(-uxyz(1,i), -uxyz(2,i), -uxyz(3,i), r_psi(i), m);
+
+    angles(:,i) = [r_phi(i); r_the(i); r_psi(i)];
+    angles_ref(:,i) = [angles(:,i); deriv(angles,i,dt)];
 
     % SNAC controller used to track angles - error regulation and optimal control equation
     Attitude_error(:,i) = x(7:12,i) - angles_ref(:,i);
@@ -110,7 +112,7 @@ function uvw = discrete_deriv(x,dt)
     uvw(:, end) = (x(:, end) - x(:, end - 1))/dt;
 end
 
-function [ft, r_phi, r_theta] = system_solver(uxyz,r_psi,m)
+function [ft, r_phi, r_theta] = system_solver(uxyz, r_psi, m)
 eqns = @(vars) [uxyz(1) - vars(1)/m.*(sin(vars(2)).*sin(r_psi) + cos(vars(2)).*cos(r_psi).*sin(vars(3)));...
                 uxyz(2) - vars(1)/m.*(cos(vars(2)).*sin(r_psi).*sin(vars(3)) - cos(r_psi).*sin(vars(2)));...
                 uxyz(3) - vars(1)/m.*(cos(vars(2)).*cos(vars(3)))];
@@ -126,5 +128,22 @@ ft = sol(1);
 r_phi = sol(2);
 r_theta = sol(3);
 end
+end
+
+function [ft, pitch, roll] = borna_sys_solve(u1, u2, u3, psi, m) % u1 = ux , u2 = uy , u3 = uz - g 
+    
+    a = sin(psi);
+    b = cos(psi);
+
+    A = u1 / (u3);
+    B = u2 / (u3);
+    C = (a*A - b*B) / ( (a^2) + (b^2)) ;
+
+    roll = atan( (B + b*C) / a );
+    pitch = atan( C * cos(roll) );
+    ft = ( m / (cos(pitch)*cos(roll)) ) * (-u3);
+
+
+
 end
 

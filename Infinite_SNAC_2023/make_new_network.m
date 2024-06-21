@@ -2,7 +2,7 @@
 clear; clc; close;
 
 % DRONE MASS
-m = 3.1;
+m = 3.2;
 % my desired inputs are [ux, uy, uz, r_psi]
 % ux,uy,uz need to ranger from -100 to 100
 % r_psi ranges from -pi to pi
@@ -12,11 +12,11 @@ m = 3.1;
 
 
 % Define the ranges for inputs
-num_samples = 5;
-ux_range = [-15, 15]; % Range for ux
-uy_range = [-15, 15]; % Range for uy
-uz_range = [-15, 15]; % Range for uz
-r_psi_range = [pi, pi]; % Range for r_psi
+num_samples = 40;
+ux_range = [-5, 5]; % Range for ux
+uy_range = [-5, 5]; % Range for uy
+uz_range = [-5, 5]; % Range for uz
+r_psi_range = [-pi, pi]; % Range for r_psi
 % m_range = [0.5, 5]; % Range for mass
 
 % Generate random samples within the specified ranges
@@ -45,12 +45,21 @@ num_samples = length(ux);
 output = zeros(3, num_samples);
 
 % Use parallel for loop to compute the outputs
-for i = 1:num_samples
+parfor i = 1:num_samples
     output(:,i) = system_solver([ux(i), uy(i), uz(i)], r_psi(i), m);
+
+    if mod(i, 100) == 0
+        fprintf('At: %g iterations\n', i)
+    end
 end
 
 
-
+% for i = 1:num_samples
+%     if output(1,i) < 0
+%         output(1,i) = -1*output(1,i);
+%     end
+% end
+% save("output_1.mat","inputs","output","-v7.3")
 function out = system_solver(uxyz,r_psi, m)
 eqns = @(vars) [uxyz(1) - vars(1)/m.*(sin(vars(2)).*sin(r_psi) + cos(vars(2)).*cos(r_psi).*sin(vars(3)));...
                 uxyz(2) - vars(1)/m.*(cos(vars(2)).*sin(r_psi).*sin(vars(3)) - cos(r_psi).*sin(vars(2)));...
