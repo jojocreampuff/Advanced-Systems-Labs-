@@ -16,6 +16,4 @@ function out = borna_sys_solve(ux, uy, uz, psi, m)
     out(1) = ft;
     out(2) = pitch;
     out(3) = roll;
-
-
 end
