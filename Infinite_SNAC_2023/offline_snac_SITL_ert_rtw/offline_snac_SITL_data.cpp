@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'offline_snac_SITL'.
 //
-// Model version                  : 3.14
+// Model version                  : 3.18
 // Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
-// C/C++ source code generated on : Fri Jun 21 17:48:17 2024
+// C/C++ source code generated on : Tue Jul  2 15:06:00 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -20,38 +20,38 @@
 
 // Block parameters (default storage)
 P_offline_snac_SITL_T offline_snac_SITL_P = {
-  // Mask Parameter: DiscreteDerivative2_ICPrevScale
-  //  Referenced by: '<S31>/UD'
-
-  0.0,
-
   // Mask Parameter: DiscreteDerivative_ICPrevScaled
-  //  Referenced by: '<S29>/UD'
-
-  0.0,
-
-  // Mask Parameter: DiscreteDerivative1_ICPrevScale
-  //  Referenced by: '<S30>/UD'
-
-  0.0,
-
-  // Mask Parameter: DiscreteDerivative_ICPrevScal_f
-  //  Referenced by: '<S12>/UD'
-
-  0.0,
-
-  // Mask Parameter: DiscreteDerivative1_ICPrevSca_g
   //  Referenced by: '<S13>/UD'
 
   0.0,
 
-  // Mask Parameter: DiscreteDerivative2_ICPrevSca_i
+  // Mask Parameter: DiscreteDerivative1_ICPrevScale
   //  Referenced by: '<S14>/UD'
 
   0.0,
 
+  // Mask Parameter: DiscreteDerivative2_ICPrevScale
+  //  Referenced by: '<S15>/UD'
+
+  0.0,
+
+  // Mask Parameter: DiscreteDerivative_ICPrevScal_o
+  //  Referenced by: '<S30>/UD'
+
+  0.0,
+
+  // Mask Parameter: DiscreteDerivative1_ICPrevSca_p
+  //  Referenced by: '<S31>/UD'
+
+  0.0,
+
+  // Mask Parameter: DiscreteDerivative2_ICPrevSca_g
+  //  Referenced by: '<S32>/UD'
+
+  0.0,
+
   // Computed Parameter: Out1_Y0
-  //  Referenced by: '<S17>/Out1'
+  //  Referenced by: '<S18>/Out1'
 
   {
     (0ULL),                            // timestamp
@@ -67,7 +67,7 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
       0.0F, 0.0F }
     ,                                  // delta_xy
     0.0F,                              // delta_z
-    0.0,                               // vx
+    0.0F,                              // vx
     0.0F,                              // vy
     0.0F,                              // vz
     0.0F,                              // z_deriv
@@ -110,7 +110,7 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   },
 
   // Computed Parameter: Constant_Value
-  //  Referenced by: '<S4>/Constant'
+  //  Referenced by: '<S6>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -126,7 +126,7 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
       0.0F, 0.0F }
     ,                                  // delta_xy
     0.0F,                              // delta_z
-    0.0,                               // vx
+    0.0F,                              // vx
     0.0F,                              // vy
     0.0F,                              // vz
     0.0F,                              // z_deriv
@@ -169,7 +169,7 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   },
 
   // Computed Parameter: Out1_Y0_g
-  //  Referenced by: '<S18>/Out1'
+  //  Referenced by: '<S19>/Out1'
 
   {
     (0ULL),                            // timestamp
@@ -190,7 +190,7 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   },
 
   // Computed Parameter: Constant_Value_l
-  //  Referenced by: '<S5>/Constant'
+  //  Referenced by: '<S7>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -211,7 +211,7 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   },
 
   // Computed Parameter: Out1_Y0_e
-  //  Referenced by: '<S16>/Out1'
+  //  Referenced by: '<S17>/Out1'
 
   {
     (0ULL),                            // timestamp
@@ -234,7 +234,7 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   },
 
   // Computed Parameter: Constant_Value_m
-  //  Referenced by: '<S3>/Constant'
+  //  Referenced by: '<S5>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -257,29 +257,14 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   },
 
   // Expression: 1
-  //  Referenced by: '<S24>/Constant'
-
-  1.0,
-
-  // Expression: 1
   //  Referenced by: '<S25>/Constant'
 
   1.0,
 
-  // Computed Parameter: TSamp_WtEt
-  //  Referenced by: '<S31>/TSamp'
+  // Expression: 1
+  //  Referenced by: '<S26>/Constant'
 
-  1000.0,
-
-  // Computed Parameter: TSamp_WtEt_g
-  //  Referenced by: '<S29>/TSamp'
-
-  1000.0,
-
-  // Computed Parameter: TSamp_WtEt_p
-  //  Referenced by: '<S30>/TSamp'
-
-  1000.0,
+  1.0,
 
   // Computed Parameter: DiscreteTimeIntegrator_gainval
   //  Referenced by: '<Root>/Discrete-Time Integrator'
@@ -292,93 +277,153 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   0.0,
 
   // Expression: [1 -1 1 1;1 1 -1 1;1 -1 -1 -1;1 1 1 -1]
-  //  Referenced by: '<S10>/Mixer matrix'
+  //  Referenced by: '<S12>/Mixer matrix'
 
   { 1.0, 1.0, 1.0, 1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0,
     -1.0, -1.0 },
 
   // Expression: 15
-  //  Referenced by: '<S11>/Saturation2'
+  //  Referenced by: '<S8>/Saturation'
 
   15.0,
 
   // Expression: -15
-  //  Referenced by: '<S11>/Saturation2'
+  //  Referenced by: '<S8>/Saturation'
 
   -15.0,
 
   // Expression: 15
-  //  Referenced by: '<S6>/Saturation'
+  //  Referenced by: '<S8>/Saturation1'
 
   15.0,
 
   // Expression: -15
-  //  Referenced by: '<S6>/Saturation'
+  //  Referenced by: '<S8>/Saturation1'
 
   -15.0,
 
   // Expression: 15
-  //  Referenced by: '<S11>/Saturation1'
+  //  Referenced by: '<S8>/Saturation2'
 
   15.0,
 
   // Expression: -15
-  //  Referenced by: '<S11>/Saturation1'
-
-  -15.0,
-
-  // Expression: 15
-  //  Referenced by: '<S6>/Saturation1'
-
-  15.0,
-
-  // Expression: -15
-  //  Referenced by: '<S6>/Saturation1'
-
-  -15.0,
-
-  // Expression: 15
-  //  Referenced by: '<S11>/Saturation'
-
-  15.0,
-
-  // Expression: -15
-  //  Referenced by: '<S11>/Saturation'
-
-  -15.0,
-
-  // Expression: 15
-  //  Referenced by: '<S6>/Saturation2'
-
-  15.0,
-
-  // Expression: -15
-  //  Referenced by: '<S6>/Saturation2'
+  //  Referenced by: '<S8>/Saturation2'
 
   -15.0,
 
   // Expression: 1
-  //  Referenced by: '<S6>/Constant'
+  //  Referenced by: '<S8>/Constant'
 
   1.0,
 
-  // Computed Parameter: TSamp_WtEt_a
-  //  Referenced by: '<S12>/TSamp'
+  // Expression: 72
+  //  Referenced by: '<S8>/Saturation3'
 
-  1000.0,
+  72.0,
 
-  // Computed Parameter: TSamp_WtEt_c
+  // Expression: 0
+  //  Referenced by: '<S8>/Saturation3'
+
+  0.0,
+
+  // Expression: .79
+  //  Referenced by: '<S8>/Saturation4'
+
+  0.79,
+
+  // Expression: -.79
+  //  Referenced by: '<S8>/Saturation4'
+
+  -0.79,
+
+  // Expression: .79
+  //  Referenced by: '<S8>/Saturation5'
+
+  0.79,
+
+  // Expression: -.79
+  //  Referenced by: '<S8>/Saturation5'
+
+  -0.79,
+
+  // Expression: .79
+  //  Referenced by: '<Root>/Constant1'
+
+  0.79,
+
+  // Computed Parameter: TSamp_WtEt
   //  Referenced by: '<S13>/TSamp'
 
   1000.0,
 
-  // Computed Parameter: TSamp_WtEt_n
+  // Computed Parameter: TSamp_WtEt_c
   //  Referenced by: '<S14>/TSamp'
 
   1000.0,
 
+  // Computed Parameter: TSamp_WtEt_n
+  //  Referenced by: '<S15>/TSamp'
+
+  1000.0,
+
+  // Expression: 1
+  //  Referenced by: '<S1>/Saturation3'
+
+  1.0,
+
+  // Expression: -1
+  //  Referenced by: '<S1>/Saturation3'
+
+  -1.0,
+
+  // Computed Parameter: TSamp_WtEt_g
+  //  Referenced by: '<S30>/TSamp'
+
+  1000.0,
+
+  // Computed Parameter: TSamp_WtEt_p
+  //  Referenced by: '<S31>/TSamp'
+
+  1000.0,
+
+  // Computed Parameter: TSamp_WtEt_a
+  //  Referenced by: '<S32>/TSamp'
+
+  1000.0,
+
+  // Expression: 8.26
+  //  Referenced by: '<S1>/Saturation2'
+
+  8.26,
+
+  // Expression: -8.26
+  //  Referenced by: '<S1>/Saturation2'
+
+  -8.26,
+
+  // Expression: 8.26
+  //  Referenced by: '<S1>/Saturation'
+
+  8.26,
+
+  // Expression: -8.26
+  //  Referenced by: '<S1>/Saturation'
+
+  -8.26,
+
+  // Expression: 3
+  //  Referenced by: '<S1>/Saturation1'
+
+  3.0,
+
+  // Expression: -3
+  //  Referenced by: '<S1>/Saturation1'
+
+  -3.0,
+
   // Expression: 1000
-  //  Referenced by: '<S10>/Gain1'
+  //  Referenced by: '<S12>/Gain1'
 
   1000.0,
 

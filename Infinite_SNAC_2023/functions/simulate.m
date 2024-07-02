@@ -33,7 +33,7 @@ r_phi           = zeros(1,N);   % phi trajectory
 r_the           = zeros(1,N);   % theta trajectory
 % r_psi           = zeros(1,N);   % psi trajectory
 r_psi           = linspace(-pi, pi, N);
-display(size(r_psi));
+% display(size(r_psi));
 
 Full_F = @(x,grav,Ix,Iy,Iz) x + dt * Full_f_225(x,grav,Ix,Iy,Iz); % discretized drift dynamics
 Full_G = @(x,m,Ix,Iy,Iz) dt * Full_g_225(x,m,Ix,Iy,Iz);           % discretized control dynamics

@@ -312,3 +312,4 @@ xlim([0 1])
 
 % saveFigures
 % save('SNAC_simulations_workspace')
+% save("z_reference","r_smooth","r_initial","-v7.3")
