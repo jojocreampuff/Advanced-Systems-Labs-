@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'offline_snac_SITL'.
 //
-// Model version                  : 3.18
+// Model version                  : 3.20
 // Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
-// C/C++ source code generated on : Tue Jul  2 15:06:00 2024
+// C/C++ source code generated on : Fri Jul  5 14:53:51 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -29,9 +29,9 @@
 #define rtmSetTFinal(rtm, val)         ((rtm)->Timing.tFinal = (val))
 #endif
 
-extern real_T rt_atan2d_snf(real_T u0, real_T u1);
-extern real_T rt_roundd_snf(real_T u);
-extern real_T rt_powd_snf(real_T u0, real_T u1);
+extern real32_T rt_atan2f_snf(real32_T u0, real32_T u1);
+extern real32_T rt_roundf_snf(real32_T u);
+extern real32_T rt_powf_snf(real32_T u0, real32_T u1);
 
 #endif                                 // offline_snac_SITL_private_h_
 

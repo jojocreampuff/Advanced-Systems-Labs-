@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'offline_snac_SITL'.
 //
-// Model version                  : 3.18
+// Model version                  : 3.20
 // Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
-// C/C++ source code generated on : Tue Jul  2 15:06:00 2024
+// C/C++ source code generated on : Fri Jul  5 14:53:51 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -23,32 +23,32 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   // Mask Parameter: DiscreteDerivative_ICPrevScaled
   //  Referenced by: '<S13>/UD'
 
-  0.0,
+  0.0F,
 
   // Mask Parameter: DiscreteDerivative1_ICPrevScale
   //  Referenced by: '<S14>/UD'
 
-  0.0,
+  0.0F,
 
   // Mask Parameter: DiscreteDerivative2_ICPrevScale
   //  Referenced by: '<S15>/UD'
 
-  0.0,
+  0.0F,
 
   // Mask Parameter: DiscreteDerivative_ICPrevScal_o
   //  Referenced by: '<S30>/UD'
 
-  0.0,
+  0.0F,
 
   // Mask Parameter: DiscreteDerivative1_ICPrevSca_p
   //  Referenced by: '<S31>/UD'
 
-  0.0,
+  0.0F,
 
   // Mask Parameter: DiscreteDerivative2_ICPrevSca_g
   //  Referenced by: '<S32>/UD'
 
-  0.0,
+  0.0F,
 
   // Computed Parameter: Out1_Y0
   //  Referenced by: '<S18>/Out1'
@@ -256,181 +256,181 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
     // _padding0
   },
 
-  // Expression: 1
+  // Computed Parameter: Constant_Value_mk
   //  Referenced by: '<S25>/Constant'
 
-  1.0,
+  1.0F,
 
-  // Expression: 1
+  // Computed Parameter: Constant_Value_h
   //  Referenced by: '<S26>/Constant'
 
-  1.0,
+  1.0F,
 
   // Computed Parameter: DiscreteTimeIntegrator_gainval
   //  Referenced by: '<Root>/Discrete-Time Integrator'
 
-  0.001,
+  0.001F,
 
-  // Expression: 0
+  // Computed Parameter: DiscreteTimeIntegrator_IC
   //  Referenced by: '<Root>/Discrete-Time Integrator'
 
-  0.0,
+  0.0F,
 
-  // Expression: [1 -1 1 1;1 1 -1 1;1 -1 -1 -1;1 1 1 -1]
+  // Computed Parameter: Mixermatrix_Value
   //  Referenced by: '<S12>/Mixer matrix'
 
-  { 1.0, 1.0, 1.0, 1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0,
-    -1.0, -1.0 },
+  { 1.0F, 1.0F, 1.0F, 1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F, -1.0F, -1.0F, 1.0F,
+    1.0F, 1.0F, -1.0F, -1.0F },
 
-  // Expression: 15
+  // Computed Parameter: Saturation_UpperSat
   //  Referenced by: '<S8>/Saturation'
 
-  15.0,
+  15.0F,
 
-  // Expression: -15
+  // Computed Parameter: Saturation_LowerSat
   //  Referenced by: '<S8>/Saturation'
 
-  -15.0,
+  -15.0F,
 
-  // Expression: 15
+  // Computed Parameter: Saturation1_UpperSat
   //  Referenced by: '<S8>/Saturation1'
 
-  15.0,
+  15.0F,
 
-  // Expression: -15
+  // Computed Parameter: Saturation1_LowerSat
   //  Referenced by: '<S8>/Saturation1'
 
-  -15.0,
+  -15.0F,
 
-  // Expression: 15
+  // Computed Parameter: Saturation2_UpperSat
   //  Referenced by: '<S8>/Saturation2'
 
-  15.0,
+  15.0F,
 
-  // Expression: -15
+  // Computed Parameter: Saturation2_LowerSat
   //  Referenced by: '<S8>/Saturation2'
 
-  -15.0,
+  -15.0F,
 
-  // Expression: 1
+  // Computed Parameter: Constant_Value_e
   //  Referenced by: '<S8>/Constant'
 
-  1.0,
+  1.0F,
 
-  // Expression: 72
+  // Computed Parameter: Saturation3_UpperSat
   //  Referenced by: '<S8>/Saturation3'
 
-  72.0,
+  72.0F,
 
-  // Expression: 0
+  // Computed Parameter: Saturation3_LowerSat
   //  Referenced by: '<S8>/Saturation3'
 
-  0.0,
+  0.0F,
 
-  // Expression: .79
+  // Computed Parameter: Saturation4_UpperSat
   //  Referenced by: '<S8>/Saturation4'
 
-  0.79,
+  0.79F,
 
-  // Expression: -.79
+  // Computed Parameter: Saturation4_LowerSat
   //  Referenced by: '<S8>/Saturation4'
 
-  -0.79,
+  -0.79F,
 
-  // Expression: .79
+  // Computed Parameter: Saturation5_UpperSat
   //  Referenced by: '<S8>/Saturation5'
 
-  0.79,
+  0.79F,
 
-  // Expression: -.79
+  // Computed Parameter: Saturation5_LowerSat
   //  Referenced by: '<S8>/Saturation5'
 
-  -0.79,
+  -0.79F,
 
-  // Expression: .79
+  // Computed Parameter: Constant1_Value
   //  Referenced by: '<Root>/Constant1'
 
-  0.79,
+  0.79F,
 
   // Computed Parameter: TSamp_WtEt
   //  Referenced by: '<S13>/TSamp'
 
-  1000.0,
+  1000.0F,
 
   // Computed Parameter: TSamp_WtEt_c
   //  Referenced by: '<S14>/TSamp'
 
-  1000.0,
+  1000.0F,
 
   // Computed Parameter: TSamp_WtEt_n
   //  Referenced by: '<S15>/TSamp'
 
-  1000.0,
+  1000.0F,
 
-  // Expression: 1
+  // Computed Parameter: Saturation3_UpperSat_l
   //  Referenced by: '<S1>/Saturation3'
 
-  1.0,
+  1.0F,
 
-  // Expression: -1
+  // Computed Parameter: Saturation3_LowerSat_k
   //  Referenced by: '<S1>/Saturation3'
 
-  -1.0,
+  -1.0F,
 
   // Computed Parameter: TSamp_WtEt_g
   //  Referenced by: '<S30>/TSamp'
 
-  1000.0,
+  1000.0F,
 
   // Computed Parameter: TSamp_WtEt_p
   //  Referenced by: '<S31>/TSamp'
 
-  1000.0,
+  1000.0F,
 
   // Computed Parameter: TSamp_WtEt_a
   //  Referenced by: '<S32>/TSamp'
 
-  1000.0,
+  1000.0F,
 
-  // Expression: 8.26
+  // Computed Parameter: Saturation2_UpperSat_a
   //  Referenced by: '<S1>/Saturation2'
 
-  8.26,
+  8.0F,
 
-  // Expression: -8.26
+  // Computed Parameter: Saturation2_LowerSat_n
   //  Referenced by: '<S1>/Saturation2'
 
-  -8.26,
+  -8.0F,
 
-  // Expression: 8.26
+  // Computed Parameter: Saturation_UpperSat_m
   //  Referenced by: '<S1>/Saturation'
 
-  8.26,
+  8.0F,
 
-  // Expression: -8.26
+  // Computed Parameter: Saturation_LowerSat_h
   //  Referenced by: '<S1>/Saturation'
 
-  -8.26,
+  -8.0F,
 
-  // Expression: 3
+  // Computed Parameter: Saturation1_UpperSat_o
   //  Referenced by: '<S1>/Saturation1'
 
-  3.0,
+  3.0F,
 
-  // Expression: -3
+  // Computed Parameter: Saturation1_LowerSat_n
   //  Referenced by: '<S1>/Saturation1'
 
-  -3.0,
+  -3.0F,
 
-  // Expression: 1000
+  // Computed Parameter: Gain1_Gain
   //  Referenced by: '<S12>/Gain1'
 
-  1000.0,
+  1000.0F,
 
-  // Expression: 1
+  // Computed Parameter: Constant_Value_lo
   //  Referenced by: '<Root>/Constant'
 
-  1.0,
+  1.0F,
 
   // Computed Parameter: Reset_Value
   //  Referenced by: '<Root>/Reset'
