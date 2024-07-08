@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'offline_snac_SITL'.
 //
-// Model version                  : 3.20
+// Model version                  : 3.21
 // Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
-// C/C++ source code generated on : Fri Jul  5 14:53:51 2024
+// C/C++ source code generated on : Mon Jul  8 14:27:43 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -121,17 +121,17 @@ struct B_offline_snac_SITL_T {
   real32_T r_zdot;                     // '<S8>/Saturation2'
   real32_T pos_error[6];               // '<S8>/Subtract'
   real32_T Saturation3;                // '<S8>/Saturation3'
+  real32_T SignalConversion1;          // '<Root>/Signal Conversion1'
+  real32_T SignalConversion2;          // '<Root>/Signal Conversion2'
+  real32_T Diff;                       // '<S30>/Diff'
+  real32_T Diff_c;                     // '<S31>/Diff'
+  real32_T Diff_p;                     // '<S32>/Diff'
   real32_T Saturation4;                // '<S8>/Saturation4'
   real32_T Saturation5;                // '<S8>/Saturation5'
   real32_T Constant1;                  // '<Root>/Constant1'
-  real32_T Diff;                       // '<S13>/Diff'
+  real32_T Diff_o;                     // '<S13>/Diff'
   real32_T Diff_f;                     // '<S14>/Diff'
   real32_T des_yaw_rate;               // '<S1>/Saturation3'
-  real32_T SignalConversion1;          // '<Root>/Signal Conversion1'
-  real32_T SignalConversion2;          // '<Root>/Signal Conversion2'
-  real32_T DataTypeConversion2;        // '<Root>/Data Type Conversion2'
-  real32_T DataTypeConversion3;        // '<Root>/Data Type Conversion3'
-  real32_T DataTypeConversion4;        // '<Root>/Data Type Conversion4'
   real32_T att_error[6];               // '<S1>/Subtract'
   real32_T Saturation2;                // '<S1>/Saturation2'
   real32_T Saturation;                 // '<S1>/Saturation'
@@ -149,21 +149,18 @@ struct B_offline_snac_SITL_T {
   real32_T Product3;                   // '<S23>/Product3'
   real32_T Product2;                   // '<S23>/Product2'
   real32_T Product1;                   // '<S23>/Product1'
-  real32_T Diff_p;                     // '<S32>/Diff'
-  real32_T Diff_m;                     // '<S31>/Diff'
+  real32_T fcn5;                       // '<S9>/fcn5'
   real32_T fcn3;                       // '<S9>/fcn3'
+  real32_T TSamp_k;                    // '<S14>/TSamp'
   real32_T TSamp_m;                    // '<S15>/TSamp'
   real32_T b_tmp;
-  real32_T w_tmp;
-  real32_T y;
   real32_T u0;
   real32_T f;
   real32_T f1;
   real32_T f2;
-  real32_T f3;
   int32_T i;
   int32_T i1;
-  int32_T i_c;
+  int32_T i_m;
   boolean_T NOT;                       // '<S5>/NOT'
   boolean_T NOT_n;                     // '<S6>/NOT'
   boolean_T NOT_g;                     // '<S7>/NOT'
@@ -188,12 +185,12 @@ struct DW_offline_snac_SITL_T {
   } yaw_rate1_PWORK;                   // '<S10>/yaw_rate??1'
 
   real32_T DiscreteTimeIntegrator_DSTATE;// '<Root>/Discrete-Time Integrator'
-  real32_T UD_DSTATE;                  // '<S13>/UD'
-  real32_T UD_DSTATE_a;                // '<S14>/UD'
-  real32_T UD_DSTATE_m;                // '<S15>/UD'
-  real32_T UD_DSTATE_j;                // '<S30>/UD'
+  real32_T UD_DSTATE;                  // '<S30>/UD'
   real32_T UD_DSTATE_i;                // '<S31>/UD'
   real32_T UD_DSTATE_c;                // '<S32>/UD'
+  real32_T UD_DSTATE_o;                // '<S13>/UD'
+  real32_T UD_DSTATE_a;                // '<S14>/UD'
+  real32_T UD_DSTATE_m;                // '<S15>/UD'
   int8_T IfActionSubsystem2_SubsysRanBC;// '<S24>/If Action Subsystem2'
   int8_T IfActionSubsystem1_SubsysRanBC;// '<S24>/If Action Subsystem1'
   int8_T IfActionSubsystem_SubsysRanBC;// '<S24>/If Action Subsystem'
@@ -206,27 +203,27 @@ struct DW_offline_snac_SITL_T {
 struct P_offline_snac_SITL_T_ {
   real32_T DiscreteDerivative_ICPrevScaled;
                               // Mask Parameter: DiscreteDerivative_ICPrevScaled
-                                 //  Referenced by: '<S13>/UD'
+                                 //  Referenced by: '<S30>/UD'
 
   real32_T DiscreteDerivative1_ICPrevScale;
                               // Mask Parameter: DiscreteDerivative1_ICPrevScale
-                                 //  Referenced by: '<S14>/UD'
+                                 //  Referenced by: '<S31>/UD'
 
   real32_T DiscreteDerivative2_ICPrevScale;
                               // Mask Parameter: DiscreteDerivative2_ICPrevScale
-                                 //  Referenced by: '<S15>/UD'
-
-  real32_T DiscreteDerivative_ICPrevScal_o;
-                              // Mask Parameter: DiscreteDerivative_ICPrevScal_o
-                                 //  Referenced by: '<S30>/UD'
-
-  real32_T DiscreteDerivative1_ICPrevSca_p;
-                              // Mask Parameter: DiscreteDerivative1_ICPrevSca_p
-                                 //  Referenced by: '<S31>/UD'
-
-  real32_T DiscreteDerivative2_ICPrevSca_g;
-                              // Mask Parameter: DiscreteDerivative2_ICPrevSca_g
                                  //  Referenced by: '<S32>/UD'
+
+  real32_T DiscreteDerivative_ICPrevScal_f;
+                              // Mask Parameter: DiscreteDerivative_ICPrevScal_f
+                                 //  Referenced by: '<S13>/UD'
+
+  real32_T DiscreteDerivative1_ICPrevSca_g;
+                              // Mask Parameter: DiscreteDerivative1_ICPrevSca_g
+                                 //  Referenced by: '<S14>/UD'
+
+  real32_T DiscreteDerivative2_ICPrevSca_i;
+                              // Mask Parameter: DiscreteDerivative2_ICPrevSca_i
+                                 //  Referenced by: '<S15>/UD'
 
   px4_Bus_vehicle_local_position Out1_Y0;// Computed Parameter: Out1_Y0
                                             //  Referenced by: '<S18>/Out1'
@@ -290,6 +287,15 @@ struct P_offline_snac_SITL_T_ {
   real32_T Saturation3_LowerSat;     // Computed Parameter: Saturation3_LowerSat
                                         //  Referenced by: '<S8>/Saturation3'
 
+  real32_T TSamp_WtEt;                 // Computed Parameter: TSamp_WtEt
+                                          //  Referenced by: '<S30>/TSamp'
+
+  real32_T TSamp_WtEt_p;               // Computed Parameter: TSamp_WtEt_p
+                                          //  Referenced by: '<S31>/TSamp'
+
+  real32_T TSamp_WtEt_a;               // Computed Parameter: TSamp_WtEt_a
+                                          //  Referenced by: '<S32>/TSamp'
+
   real32_T Saturation4_UpperSat;     // Computed Parameter: Saturation4_UpperSat
                                         //  Referenced by: '<S8>/Saturation4'
 
@@ -305,7 +311,7 @@ struct P_offline_snac_SITL_T_ {
   real32_T Constant1_Value;            // Computed Parameter: Constant1_Value
                                           //  Referenced by: '<Root>/Constant1'
 
-  real32_T TSamp_WtEt;                 // Computed Parameter: TSamp_WtEt
+  real32_T TSamp_WtEt_ac;              // Computed Parameter: TSamp_WtEt_ac
                                           //  Referenced by: '<S13>/TSamp'
 
   real32_T TSamp_WtEt_c;               // Computed Parameter: TSamp_WtEt_c
@@ -319,15 +325,6 @@ struct P_offline_snac_SITL_T_ {
 
   real32_T Saturation3_LowerSat_k; // Computed Parameter: Saturation3_LowerSat_k
                                       //  Referenced by: '<S1>/Saturation3'
-
-  real32_T TSamp_WtEt_g;               // Computed Parameter: TSamp_WtEt_g
-                                          //  Referenced by: '<S30>/TSamp'
-
-  real32_T TSamp_WtEt_p;               // Computed Parameter: TSamp_WtEt_p
-                                          //  Referenced by: '<S31>/TSamp'
-
-  real32_T TSamp_WtEt_a;               // Computed Parameter: TSamp_WtEt_a
-                                          //  Referenced by: '<S32>/TSamp'
 
   real32_T Saturation2_UpperSat_a; // Computed Parameter: Saturation2_UpperSat_a
                                       //  Referenced by: '<S1>/Saturation2'

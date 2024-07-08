@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'offline_snac_SITL'.
 //
-// Model version                  : 3.20
+// Model version                  : 3.21
 // Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
-// C/C++ source code generated on : Fri Jul  5 14:53:51 2024
+// C/C++ source code generated on : Mon Jul  8 14:27:43 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -21,32 +21,32 @@
 // Block parameters (default storage)
 P_offline_snac_SITL_T offline_snac_SITL_P = {
   // Mask Parameter: DiscreteDerivative_ICPrevScaled
-  //  Referenced by: '<S13>/UD'
-
-  0.0F,
-
-  // Mask Parameter: DiscreteDerivative1_ICPrevScale
-  //  Referenced by: '<S14>/UD'
-
-  0.0F,
-
-  // Mask Parameter: DiscreteDerivative2_ICPrevScale
-  //  Referenced by: '<S15>/UD'
-
-  0.0F,
-
-  // Mask Parameter: DiscreteDerivative_ICPrevScal_o
   //  Referenced by: '<S30>/UD'
 
   0.0F,
 
-  // Mask Parameter: DiscreteDerivative1_ICPrevSca_p
+  // Mask Parameter: DiscreteDerivative1_ICPrevScale
   //  Referenced by: '<S31>/UD'
 
   0.0F,
 
-  // Mask Parameter: DiscreteDerivative2_ICPrevSca_g
+  // Mask Parameter: DiscreteDerivative2_ICPrevScale
   //  Referenced by: '<S32>/UD'
+
+  0.0F,
+
+  // Mask Parameter: DiscreteDerivative_ICPrevScal_f
+  //  Referenced by: '<S13>/UD'
+
+  0.0F,
+
+  // Mask Parameter: DiscreteDerivative1_ICPrevSca_g
+  //  Referenced by: '<S14>/UD'
+
+  0.0F,
+
+  // Mask Parameter: DiscreteDerivative2_ICPrevSca_i
+  //  Referenced by: '<S15>/UD'
 
   0.0F,
 
@@ -327,6 +327,21 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
 
   0.0F,
 
+  // Computed Parameter: TSamp_WtEt
+  //  Referenced by: '<S30>/TSamp'
+
+  1000.0F,
+
+  // Computed Parameter: TSamp_WtEt_p
+  //  Referenced by: '<S31>/TSamp'
+
+  1000.0F,
+
+  // Computed Parameter: TSamp_WtEt_a
+  //  Referenced by: '<S32>/TSamp'
+
+  1000.0F,
+
   // Computed Parameter: Saturation4_UpperSat
   //  Referenced by: '<S8>/Saturation4'
 
@@ -350,9 +365,9 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   // Computed Parameter: Constant1_Value
   //  Referenced by: '<Root>/Constant1'
 
-  0.79F,
+  1.0F,
 
-  // Computed Parameter: TSamp_WtEt
+  // Computed Parameter: TSamp_WtEt_ac
   //  Referenced by: '<S13>/TSamp'
 
   1000.0F,
@@ -376,21 +391,6 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   //  Referenced by: '<S1>/Saturation3'
 
   -1.0F,
-
-  // Computed Parameter: TSamp_WtEt_g
-  //  Referenced by: '<S30>/TSamp'
-
-  1000.0F,
-
-  // Computed Parameter: TSamp_WtEt_p
-  //  Referenced by: '<S31>/TSamp'
-
-  1000.0F,
-
-  // Computed Parameter: TSamp_WtEt_a
-  //  Referenced by: '<S32>/TSamp'
-
-  1000.0F,
 
   // Computed Parameter: Saturation2_UpperSat_a
   //  Referenced by: '<S1>/Saturation2'
