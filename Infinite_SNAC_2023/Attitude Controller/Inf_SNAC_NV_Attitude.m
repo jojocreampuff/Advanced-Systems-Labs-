@@ -18,21 +18,21 @@ Attitude_g = [0 0 0; 0 0 0; 0 0 0; 1/Ix 0 0; 0 1/Iy 0; 0 0 1/Iz];
 
 % Define training Parameters
 N_states = 6;
-N_patterns = 100;
-max_training_loop = 5000;
-threshold = 1e-7;
+N_patterns = 1000;
+max_training_loop = 3000;
+threshold = 1e-5;
 dt = 0.001;
-Attitude_Q = dt*diag([1e6,1e6,1e6,1e5,1e5,1e5]);
+Attitude_Q = dt*diag([1e6,1e6,1e4,1e5,1e5,1e4]);
 Attitude_R = dt*diag([0.5e4,0.5e4,0.5e4]);
 
 % Define domains of training
-PHI_max = 1; PHI_min = -1;
-THE_max = 1; THE_min = -1;
-PSI_max = 1; PSI_min = -1;
+PHI_max = pi/4; PHI_min = -pi/4;
+THE_max = pi/4; THE_min = -pi/4;
+PSI_max = pi; PSI_min = -pi;
 
-p_max =  1; p_min =  -1;
-q_max =  1; q_min =  -1;
-r_max =  1; r_min =  -1;
+p_max =  pi/6; p_min =  -pi/6;
+q_max =  pi/6; q_min =  -pi/6;
+r_max =  pi/6; r_min =  -pi/6;
 
 % Partial x_k+1 / partial x_k
 A = @(x)...
@@ -102,13 +102,18 @@ for i = 1:max_training_loop
 
     % Check for convergence
     error(:, :) = Attitude_W' * basis_func - lambda_k_plus_1_target;
-    if mod(i, 100) == 0
-        fprintf('At: %g iterations, the MAE is %f \n', i,mae(error(:,:)))
-    end
+
     if mae(error(:,:))< threshold
         fprintf('Weights converged, mae = %f \n', mae(error(:,:))) % mean absolutle erro
         break
     end
+
+   error_test = mae(error(:,:));
+
+    if mod(i, 100) == 0
+        fprintf('At: %g iterations, the MAE is %f \n', i, error_test)
+    end
+
 end
 
 %% Simualtion
@@ -286,3 +291,5 @@ title('3D Trajectory')
 xlabel('x (m)'), ylabel('y (m)'), zlabel('z (m)')
 legend(["Reference trajectory", "SNAC"]);
 fprintf('required time for training = %g sec\n', Training_time)
+
+save("test_workspace_att.mat","-v7.3")

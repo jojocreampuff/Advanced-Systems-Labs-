@@ -5,9 +5,12 @@ addpath('Position Controller')
 addpath('Attitude Controller')
 addpath('functions')
 
-% Load workspaces
-load('infinite_Position_SNAC_workspace2.mat','Position_W','Position_R','Position_F','Position_G','dt','grav')
-load('infinite_Attitude_SNAC_workspace2.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G')
+% Load Albertos workspaces
+% load('infinite_Position_SNAC_workspace2.mat','Position_W','Position_R','Position_F','Position_G','dt','grav')
+% load('infinite_Attitude_SNAC_workspace2.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G')
+
+load('test_workspace_pos.mat','Position_W','Position_R','Position_F','Position_G','dt','grav')
+load('test_workspace_att.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G')
 
 % Load necessary variables for the position and attitude
 Position.Position_W = Position_W;   % NN weights
@@ -28,16 +31,16 @@ parameters.Iy   = 0.4;      %
 parameters.Iz   = 0.5;      %
 
 % Define desired reference as function of time
-% reference = @(t)...
-%             [(1-exp(-0.01*t))*9.81*cos(0.2*t);  % reference_x
-%              (1-exp(-0.01*t))*9.81*sin(0.2*t);  % reference_y
-%              -1*t];                             % reference_z
+reference = @(t)...
+            [(1-exp(-0.01*t))*9.81*cos(0.2*t);  % reference_x
+             (1-exp(-0.01*t))*9.81*sin(0.2*t);  % reference_y
+             -1*t];                             % reference_z
 
 % References can be waypoints (not function of time)
-reference = @(t)...
-            [9.81*cos(0.2*t);       % reference_x
-             9.81*sin(0.2*t);     % reference_y
-             -4*cos(1*t)-9.81];      % reference_z
+% reference = @(t)...
+%             [9.81*cos(0.2*t);       % reference_x
+%              9.81*sin(0.2*t);     % reference_y
+%              -4*cos(1*t)-9.81];      % reference_z
 
 % % References can be waypoints (not function of time)
 % reference = @(t)...
@@ -63,7 +66,7 @@ IC = [0 5 -5; % x
 %       0; 
 %       zeros(9,1)];
 
-noise = 0; % 600% noise
+noise = 4; % 600% noise
 
 % Simulating for all IC, simulations saved in structures
 for i = 1:size(IC,2)

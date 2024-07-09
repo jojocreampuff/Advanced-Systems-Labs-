@@ -56,7 +56,7 @@ Position_G = @(x) Position_g(x) * dt;
 
 % Additonal variables
 N = t_f/dt;   
-N_neurons = length(Basis_Func_84(ones(N_states,1)));
+N_neurons = length(Basis_Func_pos(ones(N_states,1)));
 Position_W = rand(N_neurons, N_states);
 
 tic
@@ -77,8 +77,8 @@ for i = 1:max_training_loop
         x_k = [X1; X2; X3; X4; X5; X6];
 
         % Running states through nerual network
-        basis_func(:,j) = Basis_Func_84(x_k);
-        lambda_k_plus_1 = Position_W' * Basis_Func_84(x_k); %step 1
+        basis_func(:,j) = Basis_Func_pos(x_k);
+        lambda_k_plus_1 = Position_W' * Basis_Func_pos(x_k); %step 1
 
         % Optimal control equation
         u_k = -Position_R^-1 * Position_G(x_k).' * lambda_k_plus_1; %step 2
@@ -87,7 +87,7 @@ for i = 1:max_training_loop
         x_k_plus_1 = Position_F(x_k) + Position_G(x_k) * u_k; % step 3
 
         % States through nerual network
-        lambda_k_plus_2 = Position_W' * Basis_Func_84(x_k_plus_1); % step 4
+        lambda_k_plus_2 = Position_W' * Basis_Func_pos(x_k_plus_1); % step 4
 
         % Target costate equation
         A_k_plus_1 = A(x_k_plus_1);
@@ -106,6 +106,11 @@ for i = 1:max_training_loop
     if mae(error(:,:))< threshold
         fprintf('converged\n')
         break
+    end
+    error_test = mae(error(:,:));
+
+    if mod(i, 100) == 0
+        fprintf('At: %g iterations, the MAE is %f \n', i,error_test)
     end
 end
 
@@ -126,6 +131,7 @@ x8 = [5;-5;0;0;0;0];
 x9 = [-5;-5;0;0;0;0]; 
 
 r = [0;0;0;0;0;0];
+
 time = 0:dt:t_f-dt;
 for i = 1:length(time)
     r_position(:,i) = Position_F_r(time(i));
@@ -136,15 +142,15 @@ smooth_r_position = smooth(r_position(1:3,:), x1(1:3)', x1(4:6)', time);
 r = [smooth_r_position; discrete_deriv(smooth_r_position,dt)];
 
 for i = 1:N
-    u1(:,i) = -Position_R^-1 * Position_G(x1(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_84(x1(:,i)-r(:, i));
-    u2(:,i) = -Position_R^-1 * Position_G(x2(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_84(x2(:,i)-r(:, i));
-    u3(:,i) = -Position_R^-1 * Position_G(x3(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_84(x3(:,i)-r(:, i));
-    u4(:,i) = -Position_R^-1 * Position_G(x4(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_84(x4(:,i)-r(:, i));
-    u5(:,i) = -Position_R^-1 * Position_G(x5(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_84(x5(:,i)-r(:, i));
-    u6(:,i) = -Position_R^-1 * Position_G(x6(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_84(x6(:,i)-r(:, i));
-    u7(:,i) = -Position_R^-1 * Position_G(x7(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_84(x7(:,i)-r(:, i));
-    u8(:,i) = -Position_R^-1 * Position_G(x8(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_84(x8(:,i)-r(:, i));
-    u9(:,i) = -Position_R^-1 * Position_G(x9(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_84(x9(:,i)-r(:, i));
+    u1(:,i) = -Position_R^-1 * Position_G(x1(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x1(:,i)-r(:, i));
+    u2(:,i) = -Position_R^-1 * Position_G(x2(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x2(:,i)-r(:, i));
+    u3(:,i) = -Position_R^-1 * Position_G(x3(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x3(:,i)-r(:, i));
+    u4(:,i) = -Position_R^-1 * Position_G(x4(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x4(:,i)-r(:, i));
+    u5(:,i) = -Position_R^-1 * Position_G(x5(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x5(:,i)-r(:, i));
+    u6(:,i) = -Position_R^-1 * Position_G(x6(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x6(:,i)-r(:, i));
+    u7(:,i) = -Position_R^-1 * Position_G(x7(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x7(:,i)-r(:, i));
+    u8(:,i) = -Position_R^-1 * Position_G(x8(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x8(:,i)-r(:, i));
+    u9(:,i) = -Position_R^-1 * Position_G(x9(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x9(:,i)-r(:, i));
     x1(:, i+1) = Position_F(x1(:,i)) + Position_G(x1(:,i)) * u1(:,i);
     x2(:, i+1) = Position_F(x2(:,i)) + Position_G(x2(:,i)) * u2(:,i);
     x3(:, i+1) = Position_F(x3(:,i)) + Position_G(x3(:,i)) * u3(:,i);
@@ -293,6 +299,7 @@ title('3D Trajectory')
 xlabel('x (m)'), ylabel('y (m)'), zlabel('z (m)')
 legend(["Reference trajectory", "SNAC"]);
 
+save("test_workspace_pos.mat","-v7.3")
 
 function uvw = discrete_deriv(x,dt)
     uvw = ones(size(x));
@@ -302,3 +309,4 @@ function uvw = discrete_deriv(x,dt)
     end
     uvw(:, end) = (x(:, end) - x(:, end - 1))/dt;
 end
+
