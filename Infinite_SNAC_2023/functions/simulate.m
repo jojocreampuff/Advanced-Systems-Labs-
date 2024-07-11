@@ -31,9 +31,25 @@ Attitude_error  = zeros(6,N);   % error
 r_initial       = zeros(3,N-1); % original trajectory
 r_phi           = zeros(1,N);   % phi trajectory
 r_the           = zeros(1,N);   % theta trajectory
-% r_psi           = zeros(1,N);   % psi trajectory
+r_psi           = zeros(1,N);   % psi trajectory
 
-% r_psi           = linspace(-pi, pi, N);
+r_psi           = linspace(0, 4*pi, N);
+% r_psi_prev = 0;
+% for j= 1:N
+% 
+%      if mod(j,100) == 0
+%         r_psi(j) = pi/24 + r_psi_prev ;
+% 
+%      else
+%          r_psi(j) = r_psi_prev;
+%      end
+%         %  if r_psi(j) >= pi
+%         %     r_psi(j) = -pi - 0.001;
+%         %     r_psi_prev = 0;
+%         % end
+%      r_psi_prev = r_psi(j);
+% 
+% end
 
 Full_F = @(x,grav,Ix,Iy,Iz) x + dt * Full_f_225(x,grav,Ix,Iy,Iz); % discretized drift dynamics
 Full_G = @(x,m,Ix,Iy,Iz) dt * Full_g_225(x,m,Ix,Iy,Iz);           % discretized control dynamics
@@ -70,8 +86,6 @@ for i = 1:N-1
 
     [ft(i), r_phi(i), r_the(i)] = borna_sys_solve(-uxyz(1,i), -uxyz(2,i), -uxyz(3,i), r_psi(i), m);
     
-
-
     angles(:,i) = [r_phi(i); r_the(i); r_psi(i)];
     angles_ref(:,i) = [angles(:,i); deriv(angles,i,dt)];
 
@@ -79,6 +93,9 @@ for i = 1:N-1
     Attitude_error(:,i) = x(7:12,i) - angles_ref(:,i);
     torques(:,i) = -Attitude_R^-1 * Attitude_G(Attitude_error(:,i))' * Attitude_W(:,:)' * Basis_Func_84(Attitude_error(:,i));
     
+    torques(:,i) = saturation(torques(:,i));
+
+
     % Combining controls
     u(:,i) = [ft(1,i); torques(:, i)];
     u_noise(:,i) = u(:,i) .* (1 + noise.*(2*rand(size(u(:,i))) - 1)); % add randomness
@@ -89,9 +106,8 @@ for i = 1:N-1
     % Passing controls though discretized drone dynamics
     x(:, i+1) = Full_F(x(:,i),grav,Ix,Iy,Iz) + Full_G(x(:,i),m,Ix,Iy,Iz) * u_noise(:,i);
 
-    if mod(i, 100) == 0
-        fprintf('At: %g iterations \n', i)
-    end
+    % x(:,i+1) = x(:,i+1) .* (1 + noise.*(2*rand(size(x(:,i+1))) - 1)); % add randomness
+
 end
 
 results.x = x;
@@ -121,37 +137,41 @@ function uvw = discrete_deriv(x,dt)
     uvw(:, end) = (x(:, end) - x(:, end - 1))/dt;
 end
 
-    function [ft, phi, theta] = system_solver(uxyz,r_psi, m)
-    g = 9.81;
-        % F(x) = 0
-    eqns = @(vars) [uxyz(1) - vars(1)/m.*( sin(vars(2)).*sin(r_psi) + cos(vars(2)).*cos(r_psi).*sin(vars(3)) );...
-                    uxyz(2) - vars(1)/m.*( cos(vars(2)).*sin(r_psi).*sin(vars(3)) - cos(r_psi).*sin(vars(2)) );...
-                    uxyz(3) - vars(1)/m.*(cos(vars(2)).*cos(vars(3)))];
-        % vars(1) = ft;
-        % vars(2) = phi;
-        % vars(3) = theta;
-
-        % initial guess for the solution
-        x0 = [1; pi/4; pi/6];
-        options = optimset('Display','off');
-
-    % for k = 1:3
-    % 
-    %     out = fsolve(eqns, x0, options);
-    % 
-    %     x0 = out;
-    % end
-
-    out = fsolve(eqns, x0, options);
-
-    ft = out(1);
-    phi = out(2);
-    theta = out(3);
-
-end
+%     function [ft, phi, theta] = system_solver(uxyz,r_psi, m)
+%     g = 9.81;
+%         % F(x) = 0
+%     eqns = @(vars) [uxyz(1) - vars(1)/m.*( sin(vars(2)).*sin(r_psi) + cos(vars(2)).*cos(r_psi).*sin(vars(3)) );...
+%                     uxyz(2) - vars(1)/m.*( cos(vars(2)).*sin(r_psi).*sin(vars(3)) - cos(r_psi).*sin(vars(2)) );...
+%                     uxyz(3) - vars(1)/m.*(cos(vars(2)).*cos(vars(3)))];
+%         % vars(1) = ft;
+%         % vars(2) = phi;
+%         % vars(3) = theta;
+% 
+%         % initial guess for the solution
+%         x0 = [1; pi/4; pi/6];
+%         options = optimset('Display','off');
+% 
+%     % for k = 1:3
+%     % 
+%     %     out = fsolve(eqns, x0, options);
+%     % 
+%     %     x0 = out;
+%     % end
+% 
+%     out = fsolve(eqns, x0, options);
+% 
+%     ft = out(1);
+%     phi = out(2);
+%     theta = out(3);
+% 
+% end
 
 function [ft, pitch, roll] = borna_sys_solve(u1, u2, u3, psi, m) % u1 = ux , u2 = uy , u3 = uz - g 
     
+    if psi <= 0.001 && psi >= -0.001
+        psi = 0.001;
+    end
+
     a = sin(psi);
     b = cos(psi);
 
@@ -185,12 +205,30 @@ function [ft, pitch, roll] = borna_sys_solve(u1, u2, u3, psi, m) % u1 = ux , u2 
         ft = 0;
     end
 
-
-
-
-
-
 end
+
+    function torques = saturation(torques)
+
+% based on max actuator output
+        if torques(1) > 8
+            torques(1) = 8;
+        elseif torques(1) < -8
+            torques(1) = -8;
+        end
+
+        if torques(2) > 8
+            torques(2) = 8;
+        elseif torques(2) < -8
+            torques(2) = -8;
+        end
+
+        if torques(3) > 3
+            torques(3) = 3;
+        elseif torques(3) < -3
+            torques(3) = -3;
+        end
+
+    end
 
 end
 

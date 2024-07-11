@@ -5,9 +5,9 @@ close all
 addpath('..\functions')
 
 % Define plant dynamics
-Ix = 0.3;   % moment of inertia (kg*m^2)
-Iy = 0.4;   % moment of inertia (kg*m^2)
-Iz = 0.5;   % moment of inertia (kg*m^2)
+Ix = 3;   % moment of inertia (kg*m^2)
+Iy = 3;   % moment of inertia (kg*m^2)
+Iz = 6;   % moment of inertia (kg*m^2)
 Attitude_f = @(x) [(x(4) + x(5)*(sin(x(1))*tan(x(2))) + x(6)*(cos(x(1))*tan(x(2))));
                    (x(5)*cos(x(1)) - x(6)*sin(x(1)));
                    (x(5)*sin(x(1))/cos(x(2)) + x(6)*cos(x(1))/cos(x(2)));
@@ -18,17 +18,21 @@ Attitude_g = [0 0 0; 0 0 0; 0 0 0; 1/Ix 0 0; 0 1/Iy 0; 0 0 1/Iz];
 
 % Define training Parameters
 N_states = 6;
-N_patterns = 1000;
-max_training_loop = 3000;
+N_patterns = 200;
+max_training_loop = 5000;
 threshold = 1e-5;
 dt = 0.001;
 Attitude_Q = dt*diag([1e6,1e6,1e4,1e5,1e5,1e4]);
-Attitude_R = dt*diag([0.5e4,0.5e4,0.5e4]);
-
+% Attitude_R = dt*diag([0.5e4,0.5e4,0.5e4]);
+Attitude_R = dt*diag([0.1e4,0.1e4,0.1e4]);
 % Define domains of training
 PHI_max = pi/4; PHI_min = -pi/4;
 THE_max = pi/4; THE_min = -pi/4;
 PSI_max = pi; PSI_min = -pi;
+
+% p_max =  pi/4; p_min =  -pi/4;
+% q_max =  pi/4; q_min =  -pi/4;
+% r_max =  pi/4; r_min =  -pi/4;
 
 p_max =  pi/6; p_min =  -pi/6;
 q_max =  pi/6; q_min =  -pi/6;
