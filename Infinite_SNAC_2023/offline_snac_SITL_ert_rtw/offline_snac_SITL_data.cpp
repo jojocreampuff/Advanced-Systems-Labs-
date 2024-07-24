@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'offline_snac_SITL'.
 //
-// Model version                  : 3.25
+// Model version                  : 3.26
 // Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
-// C/C++ source code generated on : Tue Jul  9 19:06:57 2024
+// C/C++ source code generated on : Tue Jul 23 17:59:17 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -269,7 +269,7 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   // Computed Parameter: DiscreteTimeIntegrator_gainval
   //  Referenced by: '<Root>/Discrete-Time Integrator'
 
-  0.001F,
+  0.004F,
 
   // Computed Parameter: DiscreteTimeIntegrator_IC
   //  Referenced by: '<Root>/Discrete-Time Integrator'
@@ -355,17 +355,17 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   // Computed Parameter: TSamp_WtEt
   //  Referenced by: '<S13>/TSamp'
 
-  1000.0F,
+  250.0F,
 
   // Computed Parameter: TSamp_WtEt_c
   //  Referenced by: '<S14>/TSamp'
 
-  1000.0F,
+  250.0F,
 
   // Computed Parameter: TSamp_WtEt_n
   //  Referenced by: '<S15>/TSamp'
 
-  1000.0F,
+  250.0F,
 
   // Computed Parameter: Saturation3_UpperSat_l
   //  Referenced by: '<S1>/Saturation3'
@@ -420,17 +420,17 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   // Computed Parameter: TSamp_WtEt_g
   //  Referenced by: '<S30>/TSamp'
 
-  1000.0F,
+  250.0F,
 
   // Computed Parameter: TSamp_WtEt_p
   //  Referenced by: '<S31>/TSamp'
 
-  1000.0F,
+  250.0F,
 
   // Computed Parameter: TSamp_WtEt_a
   //  Referenced by: '<S32>/TSamp'
 
-  1000.0F,
+  250.0F,
 
   // Computed Parameter: Reset_Value
   //  Referenced by: '<Root>/Reset'

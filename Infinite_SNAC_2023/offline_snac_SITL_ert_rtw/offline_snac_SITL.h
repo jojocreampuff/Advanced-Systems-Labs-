@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'offline_snac_SITL'.
 //
-// Model version                  : 3.25
+// Model version                  : 3.26
 // Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
-// C/C++ source code generated on : Tue Jul  9 19:06:57 2024
+// C/C++ source code generated on : Tue Jul 23 17:59:17 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -98,6 +98,7 @@ extern "C"
 
 // Block signals (default storage)
 struct B_offline_snac_SITL_T {
+  real32_T ref[300000];
   real32_T fv[84];
   px4_Bus_vehicle_local_position In1;  // '<S18>/In1'
   px4_Bus_vehicle_local_position r;
@@ -107,7 +108,6 @@ struct B_offline_snac_SITL_T {
   px4_Bus_sensor_gyro In1_l;           // '<S17>/In1'
   px4_Bus_sensor_gyro r2;
   real32_T fv2[9];
-  real32_T att_error[6];               // '<S1>/Subtract'
   uint16_T pwmValue[8];
   real32_T uxyz[3];
   uint16_T Gain1[4];                   // '<S12>/Gain1'
@@ -131,6 +131,7 @@ struct B_offline_snac_SITL_T {
   real32_T Diff;                       // '<S13>/Diff'
   real32_T Diff_f;                     // '<S14>/Diff'
   real32_T des_yaw_rate;               // '<S1>/Saturation3'
+  real32_T att_error[6];               // '<S1>/Subtract'
   real32_T Saturation2;                // '<S1>/Saturation2'
   real32_T Saturation;                 // '<S1>/Saturation'
   real32_T Saturation1;                // '<S1>/Saturation1'
