@@ -85,6 +85,7 @@ for i = 1:N-1
     % [ft(i), r_phi(i), r_the(i)] = system_solver(uxyz(:,i),0,m);
 
     [ft(i), r_phi(i), r_the(i)] = borna_sys_solve(-uxyz(1,i), -uxyz(2,i), -uxyz(3,i), r_psi(i), m);
+    % [ft(i), r_phi(i), r_the(i)] = borna_sys_solve(-uxyz(1,i), -uxyz(2,i), -uxyz(3,i), x(9,i), m);
     
     angles(:,i) = [r_phi(i); r_the(i); r_psi(i)];
     angles_ref(:,i) = [angles(:,i); deriv(angles,i,dt)];

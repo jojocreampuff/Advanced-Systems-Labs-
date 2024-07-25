@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'offline_snac_SITL'.
 //
-// Model version                  : 3.26
+// Model version                  : 3.30
 // Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
-// C/C++ source code generated on : Tue Jul 23 17:59:17 2024
+// C/C++ source code generated on : Wed Jul 24 18:49:50 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -19,6 +19,7 @@
 #ifndef offline_snac_SITL_types_h_
 #define offline_snac_SITL_types_h_
 #include "rtwtypes.h"
+#include <uORB/topics/vehicle_local_position_setpoint.h>
 #include <uORB/topics/sensor_gyro.h>
 #include <uORB/topics/vehicle_local_position.h>
 #include <uORB/topics/vehicle_attitude.h>
@@ -46,6 +47,20 @@ struct px4_internal_block_Subscriber_T
 };
 
 #endif                                // struct_px4_internal_block_Subscriber_T
+
+#ifndef struct_px4_internal_block_Publisher__T
+#define struct_px4_internal_block_Publisher__T
+
+struct px4_internal_block_Publisher__T
+{
+  boolean_T matlabCodegenIsDeleted;
+  int32_T isInitialized;
+  boolean_T isSetupComplete;
+  orb_advert_t orbAdvertiseObj;
+  orb_metadata_t * orbMetadataObj;
+};
+
+#endif                                // struct_px4_internal_block_Publisher__T
 
 #ifndef struct_px4_internal_block_PWM_offlin_T
 #define struct_px4_internal_block_PWM_offlin_T

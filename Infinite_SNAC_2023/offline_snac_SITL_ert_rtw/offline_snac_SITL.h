@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'offline_snac_SITL'.
 //
-// Model version                  : 3.26
+// Model version                  : 3.30
 // Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
-// C/C++ source code generated on : Tue Jul 23 17:59:17 2024
+// C/C++ source code generated on : Wed Jul 24 18:49:50 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -26,9 +26,11 @@
 #include "rtw_continuous.h"
 #include "rtw_solver.h"
 #include "MW_uORB_Read.h"
+#include "MW_uORB_Write.h"
 #include "MW_PX4_PWM.h"
 #include "offline_snac_SITL_types.h"
 #include <uORB/topics/vehicle_local_position.h>
+#include <uORB/topics/vehicle_local_position_setpoint.h>
 #include <uORB/topics/vehicle_attitude.h>
 #include <uORB/topics/sensor_gyro.h>
 
@@ -100,148 +102,240 @@ extern "C"
 struct B_offline_snac_SITL_T {
   real32_T ref[300000];
   real32_T fv[84];
-  px4_Bus_vehicle_local_position In1;  // '<S18>/In1'
+  px4_Bus_vehicle_local_position In1;  // '<S20>/In1'
   px4_Bus_vehicle_local_position r;
-  px4_Bus_vehicle_attitude In1_b;      // '<S19>/In1'
-  px4_Bus_vehicle_attitude r1;
+  px4_Bus_vehicle_local_position_setpoint BusAssignment;// '<Root>/Bus Assignment' 
+  px4_Bus_vehicle_local_position_setpoint In1_d;// '<S22>/In1'
+  px4_Bus_vehicle_local_position_setpoint r1;
+  px4_Bus_vehicle_attitude In1_l;      // '<S21>/In1'
+  px4_Bus_vehicle_attitude r2;
   real32_T fv1[13];
-  px4_Bus_sensor_gyro In1_l;           // '<S17>/In1'
-  px4_Bus_sensor_gyro r2;
+  px4_Bus_sensor_gyro In1_ly;          // '<S19>/In1'
+  px4_Bus_sensor_gyro r3;
   real32_T fv2[9];
   uint16_T pwmValue[8];
   real32_T uxyz[3];
-  uint16_T Gain1[4];                   // '<S12>/Gain1'
-  real32_T DiscreteTimeIntegrator;     // '<Root>/Discrete-Time Integrator'
-  real32_T SignalConversion;           // '<Root>/Signal Conversion'
-  real32_T sensor_x;                   // '<S8>/Data Type Conversion3'
-  real32_T sensor_y;                   // '<S8>/Data Type Conversion1'
-  real32_T sensor_z;                   // '<S8>/Data Type Conversion2'
-  real32_T sensor_vy;                  // '<S8>/Data Type Conversion6'
-  real32_T sensor_vz;                  // '<S8>/Data Type Conversion4'
-  real32_T r_xdot;                     // '<S8>/Saturation'
-  real32_T r_ydot;                     // '<S8>/Saturation1'
-  real32_T r_zdot;                     // '<S8>/Saturation2'
-  real32_T pos_error[6];               // '<S8>/Subtract'
-  real32_T Saturation3;                // '<S8>/Saturation3'
+  real32_T yaw;// '<Root>/SigConversion_InsertedFor_Bus Selector3_at_outport_6'
+  real32_T sensor_x;                   // '<S11>/Data Type Conversion3'
+  real32_T sensor_y;                   // '<S11>/Data Type Conversion1'
+  real32_T sensor_z;                   // '<S11>/Data Type Conversion2'
+  real32_T sensor_vy;                  // '<S11>/Data Type Conversion6'
+  real32_T sensor_vz;                  // '<S11>/Data Type Conversion4'
+  real32_T x;  // '<Root>/SigConversion_InsertedFor_Bus Selector3_at_outport_0'
+  real32_T y;  // '<Root>/SigConversion_InsertedFor_Bus Selector3_at_outport_1'
+  real32_T z;  // '<Root>/SigConversion_InsertedFor_Bus Selector3_at_outport_2'
+  real32_T pos_error[6];               // '<S11>/Subtract'
   real32_T SignalConversion1;          // '<Root>/Signal Conversion1'
   real32_T SignalConversion2;          // '<Root>/Signal Conversion2'
-  real32_T Saturation4;                // '<S8>/Saturation4'
-  real32_T Saturation5;                // '<S8>/Saturation5'
-  real32_T Constant1;                  // '<Root>/Constant1'
-  real32_T Diff;                       // '<S13>/Diff'
-  real32_T Diff_f;                     // '<S14>/Diff'
-  real32_T des_yaw_rate;               // '<S1>/Saturation3'
+  real32_T SignalConversion;           // '<Root>/Signal Conversion'
+  real32_T Diff;                       // '<S15>/Diff'
+  real32_T Diff_f;                     // '<S16>/Diff'
+  real32_T Diff_c;                     // '<S17>/Diff'
   real32_T att_error[6];               // '<S1>/Subtract'
-  real32_T Saturation2;                // '<S1>/Saturation2'
-  real32_T Saturation;                 // '<S1>/Saturation'
-  real32_T Saturation1;                // '<S1>/Saturation1'
-  real32_T PWM_output[4];              // '<S12>/Product1'
-  real32_T z_test1;                    // '<S10>/Subtract'
-  real32_T z_test2;                    // '<S10>/Subtract1'
-  real32_T z_test3;                    // '<S10>/Subtract2'
+  real32_T DiscreteTimeIntegrator;     // '<Root>/Discrete-Time Integrator'
   real32_T pitch_rate;                 // '<Root>/T_matrix'
   real32_T roll_rate;                  // '<Root>/T_matrix'
   real32_T yaw_rate;                   // '<Root>/T_matrix'
-  real32_T ux;                         // '<S8>/MATLAB Function'
-  real32_T uy;                         // '<S8>/MATLAB Function'
-  real32_T uz;                         // '<S8>/MATLAB Function'
-  real32_T ref_k[6];                   // '<Root>/MATLAB Function2'
+  real32_T ft;                         // '<S11>/MATLAB Function1'
+  real32_T pitch;                      // '<S11>/MATLAB Function1'
+  real32_T roll;                       // '<S11>/MATLAB Function1'
+  real32_T ux;                         // '<S11>/MATLAB Function'
+  real32_T uy;                         // '<S11>/MATLAB Function'
+  real32_T uz;                         // '<S11>/MATLAB Function'
+  real32_T tau_x;                      // '<S1>/MATLAB Function3'
+  real32_T tau_y;                      // '<S1>/MATLAB Function3'
+  real32_T tau_z;                      // '<S1>/MATLAB Function3'
+  real32_T rateLimiterRate;
   real32_T a;
   real32_T b;
-  real32_T B;
-  real32_T C;
-  real32_T Product3;                   // '<S23>/Product3'
-  real32_T Product2;                   // '<S23>/Product2'
-  real32_T Product1;                   // '<S23>/Product1'
-  real32_T fcn5;                       // '<S9>/fcn5'
-  real32_T fcn3;                       // '<S9>/fcn3'
-  boolean_T NOT;                       // '<S5>/NOT'
-  boolean_T NOT_n;                     // '<S6>/NOT'
-  boolean_T NOT_g;                     // '<S7>/NOT'
+  real32_T Product2;                   // '<S26>/Product2'
+  real32_T r_xdot;                     // '<S1>/Rate Limiter3'
+  real32_T r_xdot_p;                   // '<S1>/Rate Limiter1'
+  real32_T r_xdot_h;                   // '<S1>/Rate Limiter2'
+  int32_T i;
+  int32_T i1;
+  uint16_T ch1;                        // '<S14>/MATLAB Function'
+  uint16_T ch2;                        // '<S14>/MATLAB Function'
+  uint16_T ch3;                        // '<S14>/MATLAB Function'
+  uint16_T ch4;                        // '<S14>/MATLAB Function'
+  boolean_T NOT;                       // '<S6>/NOT'
+  boolean_T NOT_j;                     // '<S7>/NOT'
+  boolean_T NOT_b;                     // '<S8>/NOT'
+  boolean_T NOT_h;                     // '<S9>/NOT'
 };
 
 // Block states (default storage) for system '<Root>'
 struct DW_offline_snac_SITL_T {
-  px4_internal_block_Subscriber_T obj; // '<S7>/SourceBlock'
-  px4_internal_block_Subscriber_T obj_k;// '<S6>/SourceBlock'
-  px4_internal_block_Subscriber_T obj_f;// '<S5>/SourceBlock'
-  px4_internal_block_PWM_offlin_T obj_d;// '<S12>/PX4 PWM Output'
-  struct {
-    void *LoggedData;
-  } Pitch_rate_PWORK;                  // '<S10>/Pitch_rate??'
-
-  struct {
-    void *LoggedData;
-  } roll_rate1_PWORK;                  // '<S10>/roll_rate??1'
-
-  struct {
-    void *LoggedData;
-  } yaw_rate1_PWORK;                   // '<S10>/yaw_rate??1'
-
+  px4_internal_block_Subscriber_T obj; // '<S9>/SourceBlock'
+  px4_internal_block_Subscriber_T obj_d;// '<S8>/SourceBlock'
+  px4_internal_block_Subscriber_T obj_e;// '<S7>/SourceBlock'
+  px4_internal_block_Subscriber_T obj_o;// '<S6>/SourceBlock'
+  px4_internal_block_Publisher__T obj_dt;// '<S10>/SinkBlock'
+  px4_internal_block_PWM_offlin_T obj_i;// '<S14>/PX4 PWM Output'
+  real32_T UD_DSTATE;                  // '<S15>/UD'
+  real32_T UD_DSTATE_g;                // '<S16>/UD'
+  real32_T UD_DSTATE_i;                // '<S17>/UD'
   real32_T DiscreteTimeIntegrator_DSTATE;// '<Root>/Discrete-Time Integrator'
-  real32_T UD_DSTATE;                  // '<S13>/UD'
-  real32_T UD_DSTATE_a;                // '<S14>/UD'
-  real32_T UD_DSTATE_m;                // '<S15>/UD'
-  real32_T UD_DSTATE_j;                // '<S30>/UD'
-  real32_T UD_DSTATE_i;                // '<S31>/UD'
-  real32_T UD_DSTATE_c;                // '<S32>/UD'
-  int8_T IfActionSubsystem2_SubsysRanBC;// '<S24>/If Action Subsystem2'
-  int8_T IfActionSubsystem1_SubsysRanBC;// '<S24>/If Action Subsystem1'
-  int8_T IfActionSubsystem_SubsysRanBC;// '<S24>/If Action Subsystem'
-  int8_T EnabledSubsystem_SubsysRanBC; // '<S7>/Enabled Subsystem'
-  int8_T EnabledSubsystem_SubsysRanBC_m;// '<S6>/Enabled Subsystem'
-  int8_T EnabledSubsystem_SubsysRanBC_g;// '<S5>/Enabled Subsystem'
+  real32_T PrevY;                      // '<S11>/Rate Limiter3'
+  real32_T PrevY_p;                    // '<S11>/Rate Limiter4'
+  real32_T PrevY_a;                    // '<S11>/Rate Limiter5'
+  real32_T PrevY_f;                    // '<S11>/Rate Limiter'
+  real32_T PrevY_n;                    // '<S11>/Rate Limiter1'
+  real32_T PrevY_d;                    // '<S11>/Rate Limiter2'
+  real32_T PrevY_pj;                   // '<S1>/Rate Limiter2'
+  real32_T PrevY_k;                    // '<S1>/Rate Limiter1'
+  real32_T PrevY_h;                    // '<S1>/Rate Limiter3'
+  int8_T IfActionSubsystem2_SubsysRanBC;// '<S27>/If Action Subsystem2'
+  int8_T IfActionSubsystem1_SubsysRanBC;// '<S27>/If Action Subsystem1'
+  int8_T IfActionSubsystem_SubsysRanBC;// '<S27>/If Action Subsystem'
+  int8_T EnabledSubsystem_SubsysRanBC; // '<S9>/Enabled Subsystem'
+  int8_T EnabledSubsystem_SubsysRanBC_g;// '<S8>/Enabled Subsystem'
+  int8_T EnabledSubsystem_SubsysRanBC_p;// '<S7>/Enabled Subsystem'
+  int8_T EnabledSubsystem_SubsysRanBC_l;// '<S6>/Enabled Subsystem'
 };
 
 // Parameters (default storage)
 struct P_offline_snac_SITL_T_ {
   real32_T DiscreteDerivative_ICPrevScaled;
                               // Mask Parameter: DiscreteDerivative_ICPrevScaled
-                                 //  Referenced by: '<S13>/UD'
+                                 //  Referenced by: '<S15>/UD'
 
   real32_T DiscreteDerivative1_ICPrevScale;
                               // Mask Parameter: DiscreteDerivative1_ICPrevScale
-                                 //  Referenced by: '<S14>/UD'
+                                 //  Referenced by: '<S16>/UD'
 
   real32_T DiscreteDerivative2_ICPrevScale;
                               // Mask Parameter: DiscreteDerivative2_ICPrevScale
-                                 //  Referenced by: '<S15>/UD'
-
-  real32_T DiscreteDerivative_ICPrevScal_o;
-                              // Mask Parameter: DiscreteDerivative_ICPrevScal_o
-                                 //  Referenced by: '<S30>/UD'
-
-  real32_T DiscreteDerivative1_ICPrevSca_p;
-                              // Mask Parameter: DiscreteDerivative1_ICPrevSca_p
-                                 //  Referenced by: '<S31>/UD'
-
-  real32_T DiscreteDerivative2_ICPrevSca_g;
-                              // Mask Parameter: DiscreteDerivative2_ICPrevSca_g
-                                 //  Referenced by: '<S32>/UD'
+                                 //  Referenced by: '<S17>/UD'
 
   px4_Bus_vehicle_local_position Out1_Y0;// Computed Parameter: Out1_Y0
-                                            //  Referenced by: '<S18>/Out1'
+                                            //  Referenced by: '<S20>/Out1'
 
   px4_Bus_vehicle_local_position Constant_Value;// Computed Parameter: Constant_Value
-                                                   //  Referenced by: '<S6>/Constant'
+                                                   //  Referenced by: '<S7>/Constant'
 
-  px4_Bus_vehicle_attitude Out1_Y0_g;  // Computed Parameter: Out1_Y0_g
+  px4_Bus_vehicle_local_position_setpoint Out1_Y0_f;// Computed Parameter: Out1_Y0_f
+                                                       //  Referenced by: '<S22>/Out1'
+
+  px4_Bus_vehicle_local_position_setpoint Constant_Value_p;// Computed Parameter: Constant_Value_p
+                                                              //  Referenced by: '<S9>/Constant'
+
+  px4_Bus_vehicle_local_position_setpoint Constant_Value_o;// Computed Parameter: Constant_Value_o
+                                                              //  Referenced by: '<S5>/Constant'
+
+  px4_Bus_vehicle_attitude Out1_Y0_h;  // Computed Parameter: Out1_Y0_h
+                                          //  Referenced by: '<S21>/Out1'
+
+  px4_Bus_vehicle_attitude Constant_Value_a;// Computed Parameter: Constant_Value_a
+                                               //  Referenced by: '<S8>/Constant'
+
+  px4_Bus_sensor_gyro Out1_Y0_hw;      // Computed Parameter: Out1_Y0_hw
                                           //  Referenced by: '<S19>/Out1'
 
-  px4_Bus_vehicle_attitude Constant_Value_l;// Computed Parameter: Constant_Value_l
-                                               //  Referenced by: '<S7>/Constant'
+  px4_Bus_sensor_gyro Constant_Value_e;// Computed Parameter: Constant_Value_e
+                                          //  Referenced by: '<S6>/Constant'
 
-  px4_Bus_sensor_gyro Out1_Y0_e;       // Computed Parameter: Out1_Y0_e
-                                          //  Referenced by: '<S17>/Out1'
+  real_T RateLimiter3_RisingLim;       // Expression: 15
+                                          //  Referenced by: '<S11>/Rate Limiter3'
 
-  px4_Bus_sensor_gyro Constant_Value_m;// Computed Parameter: Constant_Value_m
-                                          //  Referenced by: '<S5>/Constant'
+  real_T RateLimiter3_FallingLim;      // Expression: -15
+                                          //  Referenced by: '<S11>/Rate Limiter3'
 
-  real32_T Constant_Value_mk;          // Computed Parameter: Constant_Value_mk
-                                          //  Referenced by: '<S25>/Constant'
+  real_T RateLimiter4_RisingLim;       // Expression: 15
+                                          //  Referenced by: '<S11>/Rate Limiter4'
 
-  real32_T Constant_Value_h;           // Computed Parameter: Constant_Value_h
-                                          //  Referenced by: '<S26>/Constant'
+  real_T RateLimiter4_FallingLim;      // Expression: -15
+                                          //  Referenced by: '<S11>/Rate Limiter4'
+
+  real_T RateLimiter5_RisingLim;       // Expression: 15
+                                          //  Referenced by: '<S11>/Rate Limiter5'
+
+  real_T RateLimiter5_FallingLim;      // Expression: -15
+                                          //  Referenced by: '<S11>/Rate Limiter5'
+
+  real_T RateLimiter_RisingLim;        // Expression: 15
+                                          //  Referenced by: '<S11>/Rate Limiter'
+
+  real_T RateLimiter_FallingLim;       // Expression: -15
+                                          //  Referenced by: '<S11>/Rate Limiter'
+
+  real_T RateLimiter1_RisingLim;       // Expression: 15
+                                          //  Referenced by: '<S11>/Rate Limiter1'
+
+  real_T RateLimiter1_FallingLim;      // Expression: -15
+                                          //  Referenced by: '<S11>/Rate Limiter1'
+
+  real_T RateLimiter2_RisingLim;       // Expression: 15
+                                          //  Referenced by: '<S11>/Rate Limiter2'
+
+  real_T RateLimiter2_FallingLim;      // Expression: -15
+                                          //  Referenced by: '<S11>/Rate Limiter2'
+
+  real_T RateLimiter2_RisingLim_g;     // Expression: 15
+                                          //  Referenced by: '<S1>/Rate Limiter2'
+
+  real_T RateLimiter2_FallingLim_b;    // Expression: -15
+                                          //  Referenced by: '<S1>/Rate Limiter2'
+
+  real_T RateLimiter1_RisingLim_l;     // Expression: 15
+                                          //  Referenced by: '<S1>/Rate Limiter1'
+
+  real_T RateLimiter1_FallingLim_j;    // Expression: -15
+                                          //  Referenced by: '<S1>/Rate Limiter1'
+
+  real_T RateLimiter3_RisingLim_d;     // Expression: 15
+                                          //  Referenced by: '<S1>/Rate Limiter3'
+
+  real_T RateLimiter3_FallingLim_o;    // Expression: -15
+                                          //  Referenced by: '<S1>/Rate Limiter3'
+
+  real32_T Constant_Value_k;           // Computed Parameter: Constant_Value_k
+                                          //  Referenced by: '<S28>/Constant'
+
+  real32_T Constant_Value_d;           // Computed Parameter: Constant_Value_d
+                                          //  Referenced by: '<S29>/Constant'
+
+  real32_T Constant1_Value;            // Computed Parameter: Constant1_Value
+                                          //  Referenced by: '<S11>/Constant1'
+
+  real32_T RateLimiter3_IC;            // Computed Parameter: RateLimiter3_IC
+                                          //  Referenced by: '<S11>/Rate Limiter3'
+
+  real32_T RateLimiter4_IC;            // Computed Parameter: RateLimiter4_IC
+                                          //  Referenced by: '<S11>/Rate Limiter4'
+
+  real32_T RateLimiter5_IC;            // Computed Parameter: RateLimiter5_IC
+                                          //  Referenced by: '<S11>/Rate Limiter5'
+
+  real32_T RateLimiter_IC;             // Computed Parameter: RateLimiter_IC
+                                          //  Referenced by: '<S11>/Rate Limiter'
+
+  real32_T RateLimiter1_IC;            // Computed Parameter: RateLimiter1_IC
+                                          //  Referenced by: '<S11>/Rate Limiter1'
+
+  real32_T RateLimiter2_IC;            // Computed Parameter: RateLimiter2_IC
+                                          //  Referenced by: '<S11>/Rate Limiter2'
+
+  real32_T Constant_Value_e1;          // Computed Parameter: Constant_Value_e1
+                                          //  Referenced by: '<S11>/Constant'
+
+  real32_T TSamp_WtEt;                 // Computed Parameter: TSamp_WtEt
+                                          //  Referenced by: '<S15>/TSamp'
+
+  real32_T RateLimiter2_IC_l;          // Computed Parameter: RateLimiter2_IC_l
+                                          //  Referenced by: '<S1>/Rate Limiter2'
+
+  real32_T TSamp_WtEt_c;               // Computed Parameter: TSamp_WtEt_c
+                                          //  Referenced by: '<S16>/TSamp'
+
+  real32_T RateLimiter1_IC_d;          // Computed Parameter: RateLimiter1_IC_d
+                                          //  Referenced by: '<S1>/Rate Limiter1'
+
+  real32_T TSamp_WtEt_h;               // Computed Parameter: TSamp_WtEt_h
+                                          //  Referenced by: '<S17>/TSamp'
+
+  real32_T RateLimiter3_IC_i;          // Computed Parameter: RateLimiter3_IC_i
+                                          //  Referenced by: '<S1>/Rate Limiter3'
 
   real32_T DiscreteTimeIntegrator_gainval;
                            // Computed Parameter: DiscreteTimeIntegrator_gainval
@@ -251,98 +345,11 @@ struct P_offline_snac_SITL_T_ {
                                 // Computed Parameter: DiscreteTimeIntegrator_IC
                                    //  Referenced by: '<Root>/Discrete-Time Integrator'
 
-  real32_T Mixermatrix_Value[16];      // Computed Parameter: Mixermatrix_Value
-                                          //  Referenced by: '<S12>/Mixer matrix'
+  real32_T Constant2_Value;            // Computed Parameter: Constant2_Value
+                                          //  Referenced by: '<Root>/Constant2'
 
-  real32_T Saturation_UpperSat;       // Computed Parameter: Saturation_UpperSat
-                                         //  Referenced by: '<S8>/Saturation'
-
-  real32_T Saturation_LowerSat;       // Computed Parameter: Saturation_LowerSat
-                                         //  Referenced by: '<S8>/Saturation'
-
-  real32_T Saturation1_UpperSat;     // Computed Parameter: Saturation1_UpperSat
-                                        //  Referenced by: '<S8>/Saturation1'
-
-  real32_T Saturation1_LowerSat;     // Computed Parameter: Saturation1_LowerSat
-                                        //  Referenced by: '<S8>/Saturation1'
-
-  real32_T Saturation2_UpperSat;     // Computed Parameter: Saturation2_UpperSat
-                                        //  Referenced by: '<S8>/Saturation2'
-
-  real32_T Saturation2_LowerSat;     // Computed Parameter: Saturation2_LowerSat
-                                        //  Referenced by: '<S8>/Saturation2'
-
-  real32_T Constant_Value_e;           // Computed Parameter: Constant_Value_e
-                                          //  Referenced by: '<S8>/Constant'
-
-  real32_T Saturation3_UpperSat;     // Computed Parameter: Saturation3_UpperSat
-                                        //  Referenced by: '<S8>/Saturation3'
-
-  real32_T Saturation3_LowerSat;     // Computed Parameter: Saturation3_LowerSat
-                                        //  Referenced by: '<S8>/Saturation3'
-
-  real32_T Saturation4_UpperSat;     // Computed Parameter: Saturation4_UpperSat
-                                        //  Referenced by: '<S8>/Saturation4'
-
-  real32_T Saturation4_LowerSat;     // Computed Parameter: Saturation4_LowerSat
-                                        //  Referenced by: '<S8>/Saturation4'
-
-  real32_T Saturation5_UpperSat;     // Computed Parameter: Saturation5_UpperSat
-                                        //  Referenced by: '<S8>/Saturation5'
-
-  real32_T Saturation5_LowerSat;     // Computed Parameter: Saturation5_LowerSat
-                                        //  Referenced by: '<S8>/Saturation5'
-
-  real32_T Constant1_Value;            // Computed Parameter: Constant1_Value
-                                          //  Referenced by: '<Root>/Constant1'
-
-  real32_T TSamp_WtEt;                 // Computed Parameter: TSamp_WtEt
-                                          //  Referenced by: '<S13>/TSamp'
-
-  real32_T TSamp_WtEt_c;               // Computed Parameter: TSamp_WtEt_c
-                                          //  Referenced by: '<S14>/TSamp'
-
-  real32_T TSamp_WtEt_n;               // Computed Parameter: TSamp_WtEt_n
-                                          //  Referenced by: '<S15>/TSamp'
-
-  real32_T Saturation3_UpperSat_l; // Computed Parameter: Saturation3_UpperSat_l
-                                      //  Referenced by: '<S1>/Saturation3'
-
-  real32_T Saturation3_LowerSat_k; // Computed Parameter: Saturation3_LowerSat_k
-                                      //  Referenced by: '<S1>/Saturation3'
-
-  real32_T Saturation2_UpperSat_a; // Computed Parameter: Saturation2_UpperSat_a
-                                      //  Referenced by: '<S1>/Saturation2'
-
-  real32_T Saturation2_LowerSat_n; // Computed Parameter: Saturation2_LowerSat_n
-                                      //  Referenced by: '<S1>/Saturation2'
-
-  real32_T Saturation_UpperSat_m;   // Computed Parameter: Saturation_UpperSat_m
-                                       //  Referenced by: '<S1>/Saturation'
-
-  real32_T Saturation_LowerSat_h;   // Computed Parameter: Saturation_LowerSat_h
-                                       //  Referenced by: '<S1>/Saturation'
-
-  real32_T Saturation1_UpperSat_o; // Computed Parameter: Saturation1_UpperSat_o
-                                      //  Referenced by: '<S1>/Saturation1'
-
-  real32_T Saturation1_LowerSat_n; // Computed Parameter: Saturation1_LowerSat_n
-                                      //  Referenced by: '<S1>/Saturation1'
-
-  real32_T Gain1_Gain;                 // Computed Parameter: Gain1_Gain
-                                          //  Referenced by: '<S12>/Gain1'
-
-  real32_T Constant_Value_lo;          // Computed Parameter: Constant_Value_lo
+  real32_T Constant_Value_g;           // Computed Parameter: Constant_Value_g
                                           //  Referenced by: '<Root>/Constant'
-
-  real32_T TSamp_WtEt_g;               // Computed Parameter: TSamp_WtEt_g
-                                          //  Referenced by: '<S30>/TSamp'
-
-  real32_T TSamp_WtEt_p;               // Computed Parameter: TSamp_WtEt_p
-                                          //  Referenced by: '<S31>/TSamp'
-
-  real32_T TSamp_WtEt_a;               // Computed Parameter: TSamp_WtEt_a
-                                          //  Referenced by: '<S32>/TSamp'
 
   boolean_T Reset_Value;               // Computed Parameter: Reset_Value
                                           //  Referenced by: '<Root>/Reset'
@@ -466,15 +473,12 @@ extern volatile boolean_T runModel;
 //-
 //  These blocks were eliminated from the model due to optimizations:
 //
-//  Block '<S13>/Data Type Duplicate' : Unused code path elimination
-//  Block '<S14>/Data Type Duplicate' : Unused code path elimination
 //  Block '<S15>/Data Type Duplicate' : Unused code path elimination
-//  Block '<S30>/Data Type Duplicate' : Unused code path elimination
-//  Block '<S31>/Data Type Duplicate' : Unused code path elimination
-//  Block '<S32>/Data Type Duplicate' : Unused code path elimination
+//  Block '<S16>/Data Type Duplicate' : Unused code path elimination
+//  Block '<S17>/Data Type Duplicate' : Unused code path elimination
 //  Block '<Root>/Data Type Conversion1' : Eliminate redundant data type conversion
-//  Block '<S8>/Data Type Conversion5' : Eliminate redundant data type conversion
-//  Block '<S8>/Data Type Conversion7' : Eliminate redundant data type conversion
+//  Block '<S11>/Data Type Conversion5' : Eliminate redundant data type conversion
+//  Block '<S11>/Data Type Conversion7' : Eliminate redundant data type conversion
 
 
 //-
@@ -496,34 +500,35 @@ extern volatile boolean_T runModel;
 //  '<S2>'   : 'offline_snac_SITL/MATLAB Function1'
 //  '<S3>'   : 'offline_snac_SITL/MATLAB Function2'
 //  '<S4>'   : 'offline_snac_SITL/MATLAB Function9'
-//  '<S5>'   : 'offline_snac_SITL/PX4 uORB Read'
-//  '<S6>'   : 'offline_snac_SITL/PX4 uORB Read1'
-//  '<S7>'   : 'offline_snac_SITL/PX4 uORB Read2'
-//  '<S8>'   : 'offline_snac_SITL/Position & Altitude controller'
-//  '<S9>'   : 'offline_snac_SITL/Quaternions to Rotation Angles'
-//  '<S10>'  : 'offline_snac_SITL/Subsystem'
-//  '<S11>'  : 'offline_snac_SITL/T_matrix'
-//  '<S12>'  : 'offline_snac_SITL/To Actuator'
-//  '<S13>'  : 'offline_snac_SITL/Attitude controller/Discrete Derivative?'
-//  '<S14>'  : 'offline_snac_SITL/Attitude controller/Discrete Derivative?1'
-//  '<S15>'  : 'offline_snac_SITL/Attitude controller/Discrete Derivative?2'
-//  '<S16>'  : 'offline_snac_SITL/Attitude controller/MATLAB Function3'
-//  '<S17>'  : 'offline_snac_SITL/PX4 uORB Read/Enabled Subsystem'
-//  '<S18>'  : 'offline_snac_SITL/PX4 uORB Read1/Enabled Subsystem'
-//  '<S19>'  : 'offline_snac_SITL/PX4 uORB Read2/Enabled Subsystem'
-//  '<S20>'  : 'offline_snac_SITL/Position & Altitude controller/MATLAB Function'
-//  '<S21>'  : 'offline_snac_SITL/Position & Altitude controller/MATLAB Function1'
-//  '<S22>'  : 'offline_snac_SITL/Quaternions to Rotation Angles/Angle Calculation'
-//  '<S23>'  : 'offline_snac_SITL/Quaternions to Rotation Angles/Quaternion Normalize'
-//  '<S24>'  : 'offline_snac_SITL/Quaternions to Rotation Angles/Angle Calculation/Protect asincos input'
-//  '<S25>'  : 'offline_snac_SITL/Quaternions to Rotation Angles/Angle Calculation/Protect asincos input/If Action Subsystem'
-//  '<S26>'  : 'offline_snac_SITL/Quaternions to Rotation Angles/Angle Calculation/Protect asincos input/If Action Subsystem1'
-//  '<S27>'  : 'offline_snac_SITL/Quaternions to Rotation Angles/Angle Calculation/Protect asincos input/If Action Subsystem2'
-//  '<S28>'  : 'offline_snac_SITL/Quaternions to Rotation Angles/Quaternion Normalize/Quaternion Modulus'
-//  '<S29>'  : 'offline_snac_SITL/Quaternions to Rotation Angles/Quaternion Normalize/Quaternion Modulus/Quaternion Norm'
-//  '<S30>'  : 'offline_snac_SITL/Subsystem/Discrete Derivative'
-//  '<S31>'  : 'offline_snac_SITL/Subsystem/Discrete Derivative1'
-//  '<S32>'  : 'offline_snac_SITL/Subsystem/Discrete Derivative2'
+//  '<S5>'   : 'offline_snac_SITL/PX4 uORB Message'
+//  '<S6>'   : 'offline_snac_SITL/PX4 uORB Read'
+//  '<S7>'   : 'offline_snac_SITL/PX4 uORB Read1'
+//  '<S8>'   : 'offline_snac_SITL/PX4 uORB Read2'
+//  '<S9>'   : 'offline_snac_SITL/PX4 uORB Read3'
+//  '<S10>'  : 'offline_snac_SITL/PX4 uORB Write'
+//  '<S11>'  : 'offline_snac_SITL/Position & Altitude controller'
+//  '<S12>'  : 'offline_snac_SITL/Quaternions to Rotation Angles'
+//  '<S13>'  : 'offline_snac_SITL/T_matrix'
+//  '<S14>'  : 'offline_snac_SITL/To Actuator'
+//  '<S15>'  : 'offline_snac_SITL/Attitude controller/Discrete Derivative?'
+//  '<S16>'  : 'offline_snac_SITL/Attitude controller/Discrete Derivative?1'
+//  '<S17>'  : 'offline_snac_SITL/Attitude controller/Discrete Derivative?2'
+//  '<S18>'  : 'offline_snac_SITL/Attitude controller/MATLAB Function3'
+//  '<S19>'  : 'offline_snac_SITL/PX4 uORB Read/Enabled Subsystem'
+//  '<S20>'  : 'offline_snac_SITL/PX4 uORB Read1/Enabled Subsystem'
+//  '<S21>'  : 'offline_snac_SITL/PX4 uORB Read2/Enabled Subsystem'
+//  '<S22>'  : 'offline_snac_SITL/PX4 uORB Read3/Enabled Subsystem'
+//  '<S23>'  : 'offline_snac_SITL/Position & Altitude controller/MATLAB Function'
+//  '<S24>'  : 'offline_snac_SITL/Position & Altitude controller/MATLAB Function1'
+//  '<S25>'  : 'offline_snac_SITL/Quaternions to Rotation Angles/Angle Calculation'
+//  '<S26>'  : 'offline_snac_SITL/Quaternions to Rotation Angles/Quaternion Normalize'
+//  '<S27>'  : 'offline_snac_SITL/Quaternions to Rotation Angles/Angle Calculation/Protect asincos input'
+//  '<S28>'  : 'offline_snac_SITL/Quaternions to Rotation Angles/Angle Calculation/Protect asincos input/If Action Subsystem'
+//  '<S29>'  : 'offline_snac_SITL/Quaternions to Rotation Angles/Angle Calculation/Protect asincos input/If Action Subsystem1'
+//  '<S30>'  : 'offline_snac_SITL/Quaternions to Rotation Angles/Angle Calculation/Protect asincos input/If Action Subsystem2'
+//  '<S31>'  : 'offline_snac_SITL/Quaternions to Rotation Angles/Quaternion Normalize/Quaternion Modulus'
+//  '<S32>'  : 'offline_snac_SITL/Quaternions to Rotation Angles/Quaternion Normalize/Quaternion Modulus/Quaternion Norm'
+//  '<S33>'  : 'offline_snac_SITL/To Actuator/MATLAB Function'
 
 #endif                                 // offline_snac_SITL_h_
 
