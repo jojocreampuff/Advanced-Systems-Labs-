@@ -25,16 +25,16 @@ Attitude.Attitude_R = Attitude_R;   % Control penalizing matrix
 parameters.dt   = 0.001;    % time step
 parameters.t_f  = 50;       % final time
 parameters.grav = 9.81;     % gravity (m/s^2)
-parameters.m    = 3.06;        % mass (kg)
-parameters.Ix   = 3;      % moments of inertia (kg*m^2)
-parameters.Iy   = 3;      %
-parameters.Iz   = 6;      %
+parameters.m    = 3.2;        % mass (kg)
+parameters.Ix   = 2;      % moments of inertia (kg*m^2)
+parameters.Iy   = 2;      %
+parameters.Iz   = 4;      %
 
 % Define desired reference as function of time
 reference = @(t)...
             [(1-exp(-0.01*t))*9.81*cos(0.2*t);  % reference_x
              (1-exp(-0.01*t))*9.81*sin(0.2*t);  % reference_y
-             -1*t];                             % reference_z
+             -.5*t];                             % reference_z
 
 % References can be waypoints (not function of time)
 % reference = @(t)...

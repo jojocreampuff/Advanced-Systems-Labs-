@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'offline_snac_SITL'.
 //
-// Model version                  : 3.30
+// Model version                  : 3.31
 // Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
-// C/C++ source code generated on : Wed Jul 24 18:49:50 2024
+// C/C++ source code generated on : Thu Jul 25 18:03:29 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -370,35 +370,75 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
 
   -15.0,
 
-  // Expression: 15
-  //  Referenced by: '<S1>/Rate Limiter2'
+  // Expression: 3
+  //  Referenced by: '<S11>/Rate Limiter6'
 
-  15.0,
+  3.0,
 
-  // Expression: -15
-  //  Referenced by: '<S1>/Rate Limiter2'
+  // Expression: -3
+  //  Referenced by: '<S11>/Rate Limiter6'
 
-  -15.0,
+  -3.0,
 
-  // Expression: 15
-  //  Referenced by: '<S1>/Rate Limiter1'
-
-  15.0,
-
-  // Expression: -15
-  //  Referenced by: '<S1>/Rate Limiter1'
-
-  -15.0,
-
-  // Expression: 15
+  // Expression: 2
   //  Referenced by: '<S1>/Rate Limiter3'
 
-  15.0,
+  2.0,
 
-  // Expression: -15
+  // Expression: -2
   //  Referenced by: '<S1>/Rate Limiter3'
 
-  -15.0,
+  -2.0,
+
+  // Expression: 2
+  //  Referenced by: '<S1>/Rate Limiter4'
+
+  2.0,
+
+  // Expression: -2
+  //  Referenced by: '<S1>/Rate Limiter4'
+
+  -2.0,
+
+  // Expression: 2
+  //  Referenced by: '<S1>/Rate Limiter5'
+
+  2.0,
+
+  // Expression: -2
+  //  Referenced by: '<S1>/Rate Limiter5'
+
+  -2.0,
+
+  // Expression: 2
+  //  Referenced by: '<S1>/Rate Limiter1'
+
+  2.0,
+
+  // Expression: -2
+  //  Referenced by: '<S1>/Rate Limiter1'
+
+  -2.0,
+
+  // Expression: 2
+  //  Referenced by: '<S1>/Rate Limiter'
+
+  2.0,
+
+  // Expression: -2
+  //  Referenced by: '<S1>/Rate Limiter'
+
+  -2.0,
+
+  // Expression: 2
+  //  Referenced by: '<S1>/Rate Limiter2'
+
+  2.0,
+
+  // Expression: -2
+  //  Referenced by: '<S1>/Rate Limiter2'
+
+  -2.0,
 
   // Computed Parameter: Constant_Value_k
   //  Referenced by: '<S28>/Constant'
@@ -450,13 +490,18 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
 
   3.2F,
 
+  // Computed Parameter: RateLimiter6_IC
+  //  Referenced by: '<S11>/Rate Limiter6'
+
+  0.0F,
+
   // Computed Parameter: TSamp_WtEt
   //  Referenced by: '<S15>/TSamp'
 
   250.0F,
 
-  // Computed Parameter: RateLimiter2_IC_l
-  //  Referenced by: '<S1>/Rate Limiter2'
+  // Computed Parameter: RateLimiter3_IC_b
+  //  Referenced by: '<S1>/Rate Limiter3'
 
   0.0F,
 
@@ -465,8 +510,8 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
 
   250.0F,
 
-  // Computed Parameter: RateLimiter1_IC_d
-  //  Referenced by: '<S1>/Rate Limiter1'
+  // Computed Parameter: RateLimiter4_IC_i
+  //  Referenced by: '<S1>/Rate Limiter4'
 
   0.0F,
 
@@ -475,8 +520,23 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
 
   250.0F,
 
-  // Computed Parameter: RateLimiter3_IC_i
-  //  Referenced by: '<S1>/Rate Limiter3'
+  // Computed Parameter: RateLimiter5_IC_k
+  //  Referenced by: '<S1>/Rate Limiter5'
+
+  0.0F,
+
+  // Computed Parameter: RateLimiter1_IC_e
+  //  Referenced by: '<S1>/Rate Limiter1'
+
+  0.0F,
+
+  // Computed Parameter: RateLimiter_IC_o
+  //  Referenced by: '<S1>/Rate Limiter'
+
+  0.0F,
+
+  // Computed Parameter: RateLimiter2_IC_p
+  //  Referenced by: '<S1>/Rate Limiter2'
 
   0.0F,
 
@@ -493,7 +553,7 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   // Computed Parameter: Constant2_Value
   //  Referenced by: '<Root>/Constant2'
 
-  1.0F,
+  0.1F,
 
   // Computed Parameter: Constant_Value_g
   //  Referenced by: '<Root>/Constant'

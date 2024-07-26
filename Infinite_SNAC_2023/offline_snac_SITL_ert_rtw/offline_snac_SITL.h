@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'offline_snac_SITL'.
 //
-// Model version                  : 3.30
+// Model version                  : 3.31
 // Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
-// C/C++ source code generated on : Wed Jul 24 18:49:50 2024
+// C/C++ source code generated on : Thu Jul 25 18:03:29 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -101,7 +101,7 @@ extern "C"
 // Block signals (default storage)
 struct B_offline_snac_SITL_T {
   real32_T ref[300000];
-  real32_T fv[84];
+  real32_T fv[96];
   px4_Bus_vehicle_local_position In1;  // '<S20>/In1'
   px4_Bus_vehicle_local_position r;
   px4_Bus_vehicle_local_position_setpoint BusAssignment;// '<Root>/Bus Assignment' 
@@ -118,42 +118,45 @@ struct B_offline_snac_SITL_T {
   real32_T yaw;// '<Root>/SigConversion_InsertedFor_Bus Selector3_at_outport_6'
   real32_T sensor_x;                   // '<S11>/Data Type Conversion3'
   real32_T sensor_y;                   // '<S11>/Data Type Conversion1'
-  real32_T sensor_z;                   // '<S11>/Data Type Conversion2'
+  real32_T sensor_z;                   // '<S11>/Product'
+  real32_T sensor_vx;                  // '<S11>/Data Type Conversion5'
   real32_T sensor_vy;                  // '<S11>/Data Type Conversion6'
   real32_T sensor_vz;                  // '<S11>/Data Type Conversion4'
-  real32_T x;  // '<Root>/SigConversion_InsertedFor_Bus Selector3_at_outport_0'
-  real32_T y;  // '<Root>/SigConversion_InsertedFor_Bus Selector3_at_outport_1'
-  real32_T z;  // '<Root>/SigConversion_InsertedFor_Bus Selector3_at_outport_2'
+  real32_T r_x;                        // '<S11>/Rate Limiter3'
+  real32_T r_y;                        // '<S11>/Rate Limiter4'
+  real32_T r_z;                        // '<S11>/Rate Limiter5'
+  real32_T r_xdot;                     // '<S11>/Rate Limiter'
+  real32_T r_ydot;                     // '<S11>/Rate Limiter1'
+  real32_T r_zdot;                     // '<S11>/Rate Limiter2'
   real32_T pos_error[6];               // '<S11>/Subtract'
+  real32_T RateLimiter6;               // '<S11>/Rate Limiter6'
   real32_T SignalConversion1;          // '<Root>/Signal Conversion1'
   real32_T SignalConversion2;          // '<Root>/Signal Conversion2'
   real32_T SignalConversion;           // '<Root>/Signal Conversion'
-  real32_T Diff;                       // '<S15>/Diff'
-  real32_T Diff_f;                     // '<S16>/Diff'
-  real32_T Diff_c;                     // '<S17>/Diff'
+  real32_T des_pitch_rate;             // '<S1>/Rate Limiter3'
+  real32_T des_roll_rate;              // '<S1>/Rate Limiter4'
   real32_T att_error[6];               // '<S1>/Subtract'
+  real32_T RateLimiter1;               // '<S1>/Rate Limiter1'
+  real32_T RateLimiter;                // '<S1>/Rate Limiter'
+  real32_T RateLimiter2;               // '<S1>/Rate Limiter2'
   real32_T DiscreteTimeIntegrator;     // '<Root>/Discrete-Time Integrator'
   real32_T pitch_rate;                 // '<Root>/T_matrix'
   real32_T roll_rate;                  // '<Root>/T_matrix'
   real32_T yaw_rate;                   // '<Root>/T_matrix'
-  real32_T ft;                         // '<S11>/MATLAB Function1'
   real32_T pitch;                      // '<S11>/MATLAB Function1'
   real32_T roll;                       // '<S11>/MATLAB Function1'
   real32_T ux;                         // '<S11>/MATLAB Function'
   real32_T uy;                         // '<S11>/MATLAB Function'
   real32_T uz;                         // '<S11>/MATLAB Function'
-  real32_T tau_x;                      // '<S1>/MATLAB Function3'
-  real32_T tau_y;                      // '<S1>/MATLAB Function3'
-  real32_T tau_z;                      // '<S1>/MATLAB Function3'
-  real32_T rateLimiterRate;
   real32_T a;
   real32_T b;
+  real32_T B;
+  real32_T C;
   real32_T Product2;                   // '<S26>/Product2'
-  real32_T r_xdot;                     // '<S1>/Rate Limiter3'
-  real32_T r_xdot_p;                   // '<S1>/Rate Limiter1'
-  real32_T r_xdot_h;                   // '<S1>/Rate Limiter2'
+  real32_T SignalConversion2_tmp;
   int32_T i;
   int32_T i1;
+  int32_T i2;
   uint16_T ch1;                        // '<S14>/MATLAB Function'
   uint16_T ch2;                        // '<S14>/MATLAB Function'
   uint16_T ch3;                        // '<S14>/MATLAB Function'
@@ -182,9 +185,13 @@ struct DW_offline_snac_SITL_T {
   real32_T PrevY_f;                    // '<S11>/Rate Limiter'
   real32_T PrevY_n;                    // '<S11>/Rate Limiter1'
   real32_T PrevY_d;                    // '<S11>/Rate Limiter2'
-  real32_T PrevY_pj;                   // '<S1>/Rate Limiter2'
-  real32_T PrevY_k;                    // '<S1>/Rate Limiter1'
-  real32_T PrevY_h;                    // '<S1>/Rate Limiter3'
+  real32_T PrevY_l;                    // '<S11>/Rate Limiter6'
+  real32_T PrevY_k;                    // '<S1>/Rate Limiter3'
+  real32_T PrevY_c;                    // '<S1>/Rate Limiter4'
+  real32_T PrevY_i;                    // '<S1>/Rate Limiter5'
+  real32_T PrevY_cf;                   // '<S1>/Rate Limiter1'
+  real32_T PrevY_ak;                   // '<S1>/Rate Limiter'
+  real32_T PrevY_dq;                   // '<S1>/Rate Limiter2'
   int8_T IfActionSubsystem2_SubsysRanBC;// '<S27>/If Action Subsystem2'
   int8_T IfActionSubsystem1_SubsysRanBC;// '<S27>/If Action Subsystem1'
   int8_T IfActionSubsystem_SubsysRanBC;// '<S27>/If Action Subsystem'
@@ -271,23 +278,47 @@ struct P_offline_snac_SITL_T_ {
   real_T RateLimiter2_FallingLim;      // Expression: -15
                                           //  Referenced by: '<S11>/Rate Limiter2'
 
-  real_T RateLimiter2_RisingLim_g;     // Expression: 15
-                                          //  Referenced by: '<S1>/Rate Limiter2'
+  real_T RateLimiter6_RisingLim;       // Expression: 3
+                                          //  Referenced by: '<S11>/Rate Limiter6'
 
-  real_T RateLimiter2_FallingLim_b;    // Expression: -15
-                                          //  Referenced by: '<S1>/Rate Limiter2'
+  real_T RateLimiter6_FallingLim;      // Expression: -3
+                                          //  Referenced by: '<S11>/Rate Limiter6'
 
-  real_T RateLimiter1_RisingLim_l;     // Expression: 15
-                                          //  Referenced by: '<S1>/Rate Limiter1'
-
-  real_T RateLimiter1_FallingLim_j;    // Expression: -15
-                                          //  Referenced by: '<S1>/Rate Limiter1'
-
-  real_T RateLimiter3_RisingLim_d;     // Expression: 15
+  real_T RateLimiter3_RisingLim_o;     // Expression: 2
                                           //  Referenced by: '<S1>/Rate Limiter3'
 
-  real_T RateLimiter3_FallingLim_o;    // Expression: -15
+  real_T RateLimiter3_FallingLim_p;    // Expression: -2
                                           //  Referenced by: '<S1>/Rate Limiter3'
+
+  real_T RateLimiter4_RisingLim_c;     // Expression: 2
+                                          //  Referenced by: '<S1>/Rate Limiter4'
+
+  real_T RateLimiter4_FallingLim_h;    // Expression: -2
+                                          //  Referenced by: '<S1>/Rate Limiter4'
+
+  real_T RateLimiter5_RisingLim_k;     // Expression: 2
+                                          //  Referenced by: '<S1>/Rate Limiter5'
+
+  real_T RateLimiter5_FallingLim_a;    // Expression: -2
+                                          //  Referenced by: '<S1>/Rate Limiter5'
+
+  real_T RateLimiter1_RisingLim_a;     // Expression: 2
+                                          //  Referenced by: '<S1>/Rate Limiter1'
+
+  real_T RateLimiter1_FallingLim_j;    // Expression: -2
+                                          //  Referenced by: '<S1>/Rate Limiter1'
+
+  real_T RateLimiter_RisingLim_c;      // Expression: 2
+                                          //  Referenced by: '<S1>/Rate Limiter'
+
+  real_T RateLimiter_FallingLim_g;     // Expression: -2
+                                          //  Referenced by: '<S1>/Rate Limiter'
+
+  real_T RateLimiter2_RisingLim_f;     // Expression: 2
+                                          //  Referenced by: '<S1>/Rate Limiter2'
+
+  real_T RateLimiter2_FallingLim_o;    // Expression: -2
+                                          //  Referenced by: '<S1>/Rate Limiter2'
 
   real32_T Constant_Value_k;           // Computed Parameter: Constant_Value_k
                                           //  Referenced by: '<S28>/Constant'
@@ -319,23 +350,35 @@ struct P_offline_snac_SITL_T_ {
   real32_T Constant_Value_e1;          // Computed Parameter: Constant_Value_e1
                                           //  Referenced by: '<S11>/Constant'
 
+  real32_T RateLimiter6_IC;            // Computed Parameter: RateLimiter6_IC
+                                          //  Referenced by: '<S11>/Rate Limiter6'
+
   real32_T TSamp_WtEt;                 // Computed Parameter: TSamp_WtEt
                                           //  Referenced by: '<S15>/TSamp'
 
-  real32_T RateLimiter2_IC_l;          // Computed Parameter: RateLimiter2_IC_l
-                                          //  Referenced by: '<S1>/Rate Limiter2'
+  real32_T RateLimiter3_IC_b;          // Computed Parameter: RateLimiter3_IC_b
+                                          //  Referenced by: '<S1>/Rate Limiter3'
 
   real32_T TSamp_WtEt_c;               // Computed Parameter: TSamp_WtEt_c
                                           //  Referenced by: '<S16>/TSamp'
 
-  real32_T RateLimiter1_IC_d;          // Computed Parameter: RateLimiter1_IC_d
-                                          //  Referenced by: '<S1>/Rate Limiter1'
+  real32_T RateLimiter4_IC_i;          // Computed Parameter: RateLimiter4_IC_i
+                                          //  Referenced by: '<S1>/Rate Limiter4'
 
   real32_T TSamp_WtEt_h;               // Computed Parameter: TSamp_WtEt_h
                                           //  Referenced by: '<S17>/TSamp'
 
-  real32_T RateLimiter3_IC_i;          // Computed Parameter: RateLimiter3_IC_i
-                                          //  Referenced by: '<S1>/Rate Limiter3'
+  real32_T RateLimiter5_IC_k;          // Computed Parameter: RateLimiter5_IC_k
+                                          //  Referenced by: '<S1>/Rate Limiter5'
+
+  real32_T RateLimiter1_IC_e;          // Computed Parameter: RateLimiter1_IC_e
+                                          //  Referenced by: '<S1>/Rate Limiter1'
+
+  real32_T RateLimiter_IC_o;           // Computed Parameter: RateLimiter_IC_o
+                                          //  Referenced by: '<S1>/Rate Limiter'
+
+  real32_T RateLimiter2_IC_p;          // Computed Parameter: RateLimiter2_IC_p
+                                          //  Referenced by: '<S1>/Rate Limiter2'
 
   real32_T DiscreteTimeIntegrator_gainval;
                            // Computed Parameter: DiscreteTimeIntegrator_gainval
@@ -477,7 +520,7 @@ extern volatile boolean_T runModel;
 //  Block '<S16>/Data Type Duplicate' : Unused code path elimination
 //  Block '<S17>/Data Type Duplicate' : Unused code path elimination
 //  Block '<Root>/Data Type Conversion1' : Eliminate redundant data type conversion
-//  Block '<S11>/Data Type Conversion5' : Eliminate redundant data type conversion
+//  Block '<S11>/Data Type Conversion2' : Eliminate redundant data type conversion
 //  Block '<S11>/Data Type Conversion7' : Eliminate redundant data type conversion
 
 
@@ -506,7 +549,7 @@ extern volatile boolean_T runModel;
 //  '<S8>'   : 'offline_snac_SITL/PX4 uORB Read2'
 //  '<S9>'   : 'offline_snac_SITL/PX4 uORB Read3'
 //  '<S10>'  : 'offline_snac_SITL/PX4 uORB Write'
-//  '<S11>'  : 'offline_snac_SITL/Position & Altitude controller'
+//  '<S11>'  : 'offline_snac_SITL/Position '
 //  '<S12>'  : 'offline_snac_SITL/Quaternions to Rotation Angles'
 //  '<S13>'  : 'offline_snac_SITL/T_matrix'
 //  '<S14>'  : 'offline_snac_SITL/To Actuator'
@@ -518,8 +561,8 @@ extern volatile boolean_T runModel;
 //  '<S20>'  : 'offline_snac_SITL/PX4 uORB Read1/Enabled Subsystem'
 //  '<S21>'  : 'offline_snac_SITL/PX4 uORB Read2/Enabled Subsystem'
 //  '<S22>'  : 'offline_snac_SITL/PX4 uORB Read3/Enabled Subsystem'
-//  '<S23>'  : 'offline_snac_SITL/Position & Altitude controller/MATLAB Function'
-//  '<S24>'  : 'offline_snac_SITL/Position & Altitude controller/MATLAB Function1'
+//  '<S23>'  : 'offline_snac_SITL/Position /MATLAB Function'
+//  '<S24>'  : 'offline_snac_SITL/Position /MATLAB Function1'
 //  '<S25>'  : 'offline_snac_SITL/Quaternions to Rotation Angles/Angle Calculation'
 //  '<S26>'  : 'offline_snac_SITL/Quaternions to Rotation Angles/Quaternion Normalize'
 //  '<S27>'  : 'offline_snac_SITL/Quaternions to Rotation Angles/Angle Calculation/Protect asincos input'

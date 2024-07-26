@@ -1,8 +1,7 @@
-clc
-clear
-close all
+clc; clear; close all;
 
-addpath('..\functions')
+addpath("/home/engelhardt/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions/")
+% addpath('..\functions')
 
 % Define plant dynamics
 grav = 9.81;
@@ -15,10 +14,9 @@ N_states = 6;
 N_patterns = 1000;
 max_training_loop = 40000;
 threshold = 1e-5;
-dt = 0.001;
-Position_Q = dt*diag([1e6,1e6,1e5,1e5,1e5,1e5]);
-% Position_Q = dt*diag([1e6,1e6,1e6,1,1,1]);
-Position_R = dt*diag([0.5e4,0.5e4,0.5e4]);
+dt = 0.004;
+Position_Q = diag([100,100,100,100,100,100]);
+Position_R = diag([100,100,100]); % SITL has too much control input
 % Position_R = dt*diag([0.5e4,0.5e4,0.5e4]);
 
 % Define domains of training
@@ -299,7 +297,7 @@ title('3D Trajectory')
 xlabel('x (m)'), ylabel('y (m)'), zlabel('z (m)')
 legend(["Reference trajectory", "SNAC"]);
 
-save("test_workspace_pos.mat","-v7.3")
+% save("test_workspace_pos.mat","-v7.3")
 
 function uvw = discrete_deriv(x,dt)
     uvw = ones(size(x));
