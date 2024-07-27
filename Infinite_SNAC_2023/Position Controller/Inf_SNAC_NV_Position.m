@@ -11,12 +11,12 @@ Position_g = @(x) [0 0 0; 0 0 0; 0 0 0; -1 0 0; 0 -1 0; 0 0 -1];
 
 % Define training Parameters
 N_states = 6;
-N_patterns = 1000;
+N_patterns = 2000;
 max_training_loop = 40000;
 threshold = 1e-5;
 dt = 0.004;
-Position_Q = diag([100,100,100,100,100,100]);
-Position_R = diag([100,100,100]); % SITL has too much control input
+Position_Q = diag([10000,10000,10000,10000,10000,10000]);
+Position_R = diag([1000,1000,1000]); % SITL has too much control input
 % Position_R = dt*diag([0.5e4,0.5e4,0.5e4]);
 
 % Define domains of training

@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'offline_snac_SITL'.
 //
-// Model version                  : 3.31
+// Model version                  : 3.32
 // Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
-// C/C++ source code generated on : Thu Jul 25 18:03:29 2024
+// C/C++ source code generated on : Fri Jul 26 14:06:32 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -133,6 +133,8 @@ struct B_offline_snac_SITL_T {
   real32_T SignalConversion1;          // '<Root>/Signal Conversion1'
   real32_T SignalConversion2;          // '<Root>/Signal Conversion2'
   real32_T SignalConversion;           // '<Root>/Signal Conversion'
+  real32_T RateLimiter7;               // '<S11>/Rate Limiter7'
+  real32_T RateLimiter8;               // '<S11>/Rate Limiter8'
   real32_T des_pitch_rate;             // '<S1>/Rate Limiter3'
   real32_T des_roll_rate;              // '<S1>/Rate Limiter4'
   real32_T att_error[6];               // '<S1>/Subtract'
@@ -143,8 +145,6 @@ struct B_offline_snac_SITL_T {
   real32_T pitch_rate;                 // '<Root>/T_matrix'
   real32_T roll_rate;                  // '<Root>/T_matrix'
   real32_T yaw_rate;                   // '<Root>/T_matrix'
-  real32_T pitch;                      // '<S11>/MATLAB Function1'
-  real32_T roll;                       // '<S11>/MATLAB Function1'
   real32_T ux;                         // '<S11>/MATLAB Function'
   real32_T uy;                         // '<S11>/MATLAB Function'
   real32_T uz;                         // '<S11>/MATLAB Function'
@@ -186,6 +186,8 @@ struct DW_offline_snac_SITL_T {
   real32_T PrevY_n;                    // '<S11>/Rate Limiter1'
   real32_T PrevY_d;                    // '<S11>/Rate Limiter2'
   real32_T PrevY_l;                    // '<S11>/Rate Limiter6'
+  real32_T PrevY_e;                    // '<S11>/Rate Limiter7'
+  real32_T PrevY_o;                    // '<S11>/Rate Limiter8'
   real32_T PrevY_k;                    // '<S1>/Rate Limiter3'
   real32_T PrevY_c;                    // '<S1>/Rate Limiter4'
   real32_T PrevY_i;                    // '<S1>/Rate Limiter5'
@@ -284,6 +286,18 @@ struct P_offline_snac_SITL_T_ {
   real_T RateLimiter6_FallingLim;      // Expression: -3
                                           //  Referenced by: '<S11>/Rate Limiter6'
 
+  real_T RateLimiter7_RisingLim;       // Expression: 3
+                                          //  Referenced by: '<S11>/Rate Limiter7'
+
+  real_T RateLimiter7_FallingLim;      // Expression: -3
+                                          //  Referenced by: '<S11>/Rate Limiter7'
+
+  real_T RateLimiter8_RisingLim;       // Expression: 3
+                                          //  Referenced by: '<S11>/Rate Limiter8'
+
+  real_T RateLimiter8_FallingLim;      // Expression: -3
+                                          //  Referenced by: '<S11>/Rate Limiter8'
+
   real_T RateLimiter3_RisingLim_o;     // Expression: 2
                                           //  Referenced by: '<S1>/Rate Limiter3'
 
@@ -352,6 +366,12 @@ struct P_offline_snac_SITL_T_ {
 
   real32_T RateLimiter6_IC;            // Computed Parameter: RateLimiter6_IC
                                           //  Referenced by: '<S11>/Rate Limiter6'
+
+  real32_T RateLimiter7_IC;            // Computed Parameter: RateLimiter7_IC
+                                          //  Referenced by: '<S11>/Rate Limiter7'
+
+  real32_T RateLimiter8_IC;            // Computed Parameter: RateLimiter8_IC
+                                          //  Referenced by: '<S11>/Rate Limiter8'
 
   real32_T TSamp_WtEt;                 // Computed Parameter: TSamp_WtEt
                                           //  Referenced by: '<S15>/TSamp'

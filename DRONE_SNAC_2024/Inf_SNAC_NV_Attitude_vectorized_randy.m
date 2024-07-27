@@ -2,9 +2,9 @@ clc
 clear
 close all
 % Define plant dynamics
-Ix = 0.3;   % moment of inertia (kg*m^2)
-Iy = 0.4;   % moment of inertia (kg*m^2)
-Iz = 0.5;   % moment of inertia (kg*m^2)
+Ix = 2;   % moment of inertia (kg*m^2)
+Iy = 2;   % moment of inertia (kg*m^2)
+Iz = 4;   % moment of inertia (kg*m^2)
 Attitude_f = @(x) [(x(4) + x(5)*(sin(x(1))*tan(x(2))) + x(6)*(cos(x(1))*tan(x(2))));
                    (x(5)*cos(x(1)) - x(6)*sin(x(1)));
                    (x(5)*sin(x(1))/cos(x(2)) + x(6)*cos(x(1))/cos(x(2)));
@@ -18,10 +18,10 @@ N_states = 6;
 N_patterns = 1000;
 max_training_loop = 3000;
 threshold = 1e-5;
-dt = 0.001;
+dt = 0.004;
 discount = 0.96;
-Attitude_Q = dt*diag([4e7,4e7,4e7,3e5,3e5,3e5]);
-Attitude_R = dt*diag([1e3,1e3,1e3]);
+Attitude_Q = diag([100,100,10,100,100,10]);
+Attitude_R = diag([20,20,20]);
 % Attitude_Q = dt*diag([3e6,3e6,3e4,1e8,1e8,1e7]);
 % Attitude_R = dt*diag([2e3,2e3,2e3]);
 
@@ -368,25 +368,25 @@ subplot(3,1,3); plot(...
 xlabel('Time (sec)' )
 ylabel('u3')
 
-save att.mat
+% save att.mat
 
-% figure
-% grid on
-% hold on
-% plot3(r(1,:), r(2,:), -r(3,:), '--', 'Linewidth', 1.5)
-% plot3(x1(1,:), x1(2,:), -x1(3,:), 'Linewidth', 1.5)
-% plot3(x2(1,:), x2(2,:), -x2(3,:), 'Linewidth', 1.5)
-% plot3(x3(1,:), x3(2,:), -x3(3,:), 'Linewidth', 1.5)
-% plot3(x4(1,:), x4(2,:), -x4(3,:), 'Linewidth', 1.5)
+figure
+grid on
+hold on
+plot3(r(1,:), r(2,:), -r(3,:), '--', 'Linewidth', 1.5)
+plot3(x1(1,:), x1(2,:), -x1(3,:), 'Linewidth', 1.5)
+plot3(x2(1,:), x2(2,:), -x2(3,:), 'Linewidth', 1.5)
+plot3(x3(1,:), x3(2,:), -x3(3,:), 'Linewidth', 1.5)
+plot3(x4(1,:), x4(2,:), -x4(3,:), 'Linewidth', 1.5)
 % plot3(x5(1,:), x5(2,:), -x5(3,:), 'Linewidth', 1.5)
 % plot3(x6(1,:), x6(2,:), -x6(3,:), 'Linewidth', 1.5)
 % plot3(x7(1,:), x7(2,:), -x7(3,:), 'Linewidth', 1.5)
 % plot3(x8(1,:), x8(2,:), -x8(3,:), 'Linewidth', 1.5)
 % plot3(x9(1,:), x9(2,:), -x9(3,:), 'Linewidth', 1.5)
-% title('3D Trajectory')
-% xlabel('x (m)'), ylabel('y (m)'), zlabel('z (m)')
-% legend(["Reference trajectory", "SNAC"]);
-% fprintf('required time for training = %g sec\n', Training_time)
+title('3D Trajectory')
+xlabel('x (m)'), ylabel('y (m)'), zlabel('z (m)')
+legend(["Reference trajectory", "SNAC"]);
+fprintf('required time for training = %g sec\n', Training_time)
 
 
 

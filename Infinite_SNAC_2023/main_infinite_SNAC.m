@@ -10,7 +10,8 @@ addpath('functions')
 % load('infinite_Attitude_SNAC_workspace2.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G')
 
 load('test_workspace_pos.mat','Position_W','Position_R','Position_F','Position_G','dt','grav')
-load('test_workspace_att.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G')
+load('test_workspace_att_V_10k_less_R.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G')
+% load('test_workspace_att.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G')
 
 % Load necessary variables for the position and attitude
 Position.Position_W = Position_W;   % NN weights
@@ -22,8 +23,8 @@ Attitude.Attitude_G = Attitude_G;   % Attitude control dynamics
 Attitude.Attitude_R = Attitude_R;   % Control penalizing matrix
 
 % Define simulation parameters
-parameters.dt   = 0.001;    % time step
-parameters.t_f  = 50;       % final time
+parameters.dt   = 0.004;    % time step
+parameters.t_f  = 100;       % final time
 parameters.grav = 9.81;     % gravity (m/s^2)
 parameters.m    = 3.2;        % mass (kg)
 parameters.Ix   = 2;      % moments of inertia (kg*m^2)
@@ -66,7 +67,7 @@ IC = [0 5 -5  5 -5; % x
 %       0; 
 %       zeros(9,1)];
 
-noise = 0; % 600% noise
+noise = 3; % 600% noise
 
 % Simulating for all IC, simulations saved in structures
 for i = 1:size(IC,2)

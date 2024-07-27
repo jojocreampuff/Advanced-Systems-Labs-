@@ -22,7 +22,7 @@ max_training_loop = 7000;
 threshold = 1e-3;
 dt = 0.004;
 % Attitude_Q = dt*diag([1e6,1e6,1e4,1e5,1e5,1e4]);
-Attitude_Q = diag([10,10,1,10,10,1]);
+Attitude_Q = diag([100,100,10,100,100,10]);
 Attitude_R = diag([20,20,20]);
 % Attitude_R = dt*diag([0.5e4,0.5e4,0.5e4]);
 
@@ -50,7 +50,7 @@ A = @(x)...
 
 % Define simulation parameters
 t_f = 100;
-
+discount = .99;
 % Euler integration
 Attitude_F = @(x) x + dt * Attitude_f(x);
 Attitude_G = @(x) Attitude_g * dt;
@@ -92,8 +92,7 @@ for i = 1:max_training_loop
 
         % Target costate equation
         A_k_plus_1 = A(x_k_plus_1);
-        lambda_k_plus_1_target(:,j) = Attitude_Q * (x_k_plus_1) ...
-            + A_k_plus_1.' * lambda_k_plus_2;
+        lambda_k_plus_1_target(:,j) = Attitude_Q * (x_k_plus_1) + discount*(A_k_plus_1.' * lambda_k_plus_2);
     end
 
     % Least squares to update network weights

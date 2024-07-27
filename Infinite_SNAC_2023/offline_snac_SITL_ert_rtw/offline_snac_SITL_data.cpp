@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'offline_snac_SITL'.
 //
-// Model version                  : 3.31
+// Model version                  : 3.32
 // Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
-// C/C++ source code generated on : Thu Jul 25 18:03:29 2024
+// C/C++ source code generated on : Fri Jul 26 14:06:32 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -380,6 +380,26 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
 
   -3.0,
 
+  // Expression: 3
+  //  Referenced by: '<S11>/Rate Limiter7'
+
+  3.0,
+
+  // Expression: -3
+  //  Referenced by: '<S11>/Rate Limiter7'
+
+  -3.0,
+
+  // Expression: 3
+  //  Referenced by: '<S11>/Rate Limiter8'
+
+  3.0,
+
+  // Expression: -3
+  //  Referenced by: '<S11>/Rate Limiter8'
+
+  -3.0,
+
   // Expression: 2
   //  Referenced by: '<S1>/Rate Limiter3'
 
@@ -488,10 +508,20 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   // Computed Parameter: Constant_Value_e1
   //  Referenced by: '<S11>/Constant'
 
-  3.2F,
+  3.3F,
 
   // Computed Parameter: RateLimiter6_IC
   //  Referenced by: '<S11>/Rate Limiter6'
+
+  0.0F,
+
+  // Computed Parameter: RateLimiter7_IC
+  //  Referenced by: '<S11>/Rate Limiter7'
+
+  0.0F,
+
+  // Computed Parameter: RateLimiter8_IC
+  //  Referenced by: '<S11>/Rate Limiter8'
 
   0.0F,
 
