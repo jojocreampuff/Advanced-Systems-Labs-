@@ -70,31 +70,24 @@ r_smooth = [smooth_r_position; discrete_deriv(smooth_r_position,dt)];
 for i = 1:N-1
 
     % SNAC controller used to track trajectory - optimal control equation
-    uxyz(:,i) = -Position_R^-1 * Position_G(x(1:6,i) - r_smooth(:, i))' * Position_W(:,:)' * Basis_Func_pos(x(1:6,i) - r_smooth(:, i));
-    
-    % NN estimating ft and angles from ux, uy, and uz
-    % ft_angles(:, i) = NN7(uxyz(1, i), uxyz(2, i), uxyz(3, i) );
-    % ft(i) = ft_angles(1,i);
-    % if ft(i) < 0
-    %     ft(i) = 0;
-    % end
+    Pos_error(:,i) = x(1:6,i) - r_smooth(:, i);
 
-    angles(:,i) = [ft_angles(2,i);ft_angles(3,i); 0];
+    uxyz(:,i) = -Position_R^-1 * Position_G(Pos_error(:,i))' * Position_W(:,:)' * Basis_Func_pos(Pos_error(:,i));
+   
 
 %     Numerically solving for ft and angles from ux, uy, and uz
     % [ft(i), r_phi(i), r_the(i)] = system_solver(uxyz(:,i),0,m);
 
     [ft(i), r_phi(i), r_the(i)] = borna_sys_solve(-uxyz(1,i), -uxyz(2,i), -uxyz(3,i), r_psi(i), m);
-    % [ft(i), r_phi(i), r_the(i)] = borna_sys_solve(-uxyz(1,i), -uxyz(2,i), -uxyz(3,i), x(9,i), m);
     
     angles(:,i) = [r_phi(i); r_the(i); r_psi(i)];
     angles_ref(:,i) = [angles(:,i); deriv(angles,i,dt)];
 
     % SNAC controller used to track angles - error regulation and optimal control equation
-    Attitude_error(:,i) = x(7:12,i) - angles_ref(:,i);
-    torques(:,i) = -Attitude_R^-1 * Attitude_G(Attitude_error(:,i))' * Attitude_W(:,:)' * Basis_Func_84(Attitude_error(:,i));
+    Att_error(:,i) = x(7:12,i) - angles_ref(:,i);
+    torques(:,i) = -Attitude_R^-1 * Attitude_G(Att_error(:,i))' * Attitude_W(:,:)' * Basis_Func_84(Att_error(:,i));
     
-    torques(:,i) = saturation(torques(:,i));
+    % torques(:,i) = saturation(torques(:,i));
 
 
     % Combining controls
@@ -117,6 +110,10 @@ results.r_smooth = r_smooth;
 results.r_initial = r_initial;
 results.angles_ref = angles_ref;
 results.time = time;
+results.uxyz = uxyz;
+results.Pos_error = Pos_error;
+results.Att_error = Att_error;
+% results.angles_ref = angles_ref;
 
 function pqr = deriv(angles, i, dt)
 if i == 1
@@ -138,34 +135,6 @@ function uvw = discrete_deriv(x,dt)
     uvw(:, end) = (x(:, end) - x(:, end - 1))/dt;
 end
 
-%     function [ft, phi, theta] = system_solver(uxyz,r_psi, m)
-%     g = 9.81;
-%         % F(x) = 0
-%     eqns = @(vars) [uxyz(1) - vars(1)/m.*( sin(vars(2)).*sin(r_psi) + cos(vars(2)).*cos(r_psi).*sin(vars(3)) );...
-%                     uxyz(2) - vars(1)/m.*( cos(vars(2)).*sin(r_psi).*sin(vars(3)) - cos(r_psi).*sin(vars(2)) );...
-%                     uxyz(3) - vars(1)/m.*(cos(vars(2)).*cos(vars(3)))];
-%         % vars(1) = ft;
-%         % vars(2) = phi;
-%         % vars(3) = theta;
-% 
-%         % initial guess for the solution
-%         x0 = [1; pi/4; pi/6];
-%         options = optimset('Display','off');
-% 
-%     % for k = 1:3
-%     % 
-%     %     out = fsolve(eqns, x0, options);
-%     % 
-%     %     x0 = out;
-%     % end
-% 
-%     out = fsolve(eqns, x0, options);
-% 
-%     ft = out(1);
-%     phi = out(2);
-%     theta = out(3);
-% 
-% end
 
 function [ft, pitch, roll] = borna_sys_solve(u1, u2, u3, psi, m) % u1 = ux , u2 = uy , u3 = uz - g 
     
@@ -234,4 +203,31 @@ end
 end
 
 
-
+%     function [ft, phi, theta] = system_solver(uxyz,r_psi, m)
+%     g = 9.81;
+%         % F(x) = 0
+%     eqns = @(vars) [uxyz(1) - vars(1)/m.*( sin(vars(2)).*sin(r_psi) + cos(vars(2)).*cos(r_psi).*sin(vars(3)) );...
+%                     uxyz(2) - vars(1)/m.*( cos(vars(2)).*sin(r_psi).*sin(vars(3)) - cos(r_psi).*sin(vars(2)) );...
+%                     uxyz(3) - vars(1)/m.*(cos(vars(2)).*cos(vars(3)))];
+%         % vars(1) = ft;
+%         % vars(2) = phi;
+%         % vars(3) = theta;
+% 
+%         % initial guess for the solution
+%         x0 = [1; pi/4; pi/6];
+%         options = optimset('Display','off');
+% 
+%     % for k = 1:3
+%     % 
+%     %     out = fsolve(eqns, x0, options);
+%     % 
+%     %     x0 = out;
+%     % end
+% 
+%     out = fsolve(eqns, x0, options);
+% 
+%     ft = out(1);
+%     phi = out(2);
+%     theta = out(3);
+% 
+% end

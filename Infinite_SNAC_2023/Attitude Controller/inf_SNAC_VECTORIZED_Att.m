@@ -16,19 +16,18 @@ Attitude_g = [0 0 0; 0 0 0; 0 0 0; 1/Ix 0 0; 0 1/Iy 0; 0 0 1/Iz];
 
 % Define training Parameters
 N_states = 6;
-N_patterns = 150000;
+N_patterns = 20000;
 max_training_loop = 3000;
-threshold = 1e-5;
+threshold = 1e-3;
 dt = 0.004;
 discount = 0.99;
-Attitude_Q = diag([100,100,100,100,100,100])*1000;
-Attitude_R = diag([10,10,10]);
-% Attitude_Q = dt*diag([3e6,3e6,3e4,1e8,1e8,1e7]);
-% Attitude_R = dt*diag([2e3,2e3,2e3]);
+Attitude_Q = diag([100,100,100,100,100,100])*100;
+Attitude_R = diag([1,1,1]);
+
 
 % Define domains of training
-PHI_max = pi/6; PHI_min = -pi/6;
-THE_max = pi/6; THE_min = -pi/6;
+PHI_max = pi/4; PHI_min = -pi/4;
+THE_max = pi/4; THE_min = -pi/4;
 PSI_max = pi; PSI_min = -pi;
 
 p_max =  pi/6; p_min =  -pi/6;
@@ -110,17 +109,17 @@ Attitude_G = @(x) Attitude_g * dt;
 % Additonal variables
 N_neurons = length(Basis_Func_84(ones(N_states,1)));
 N = t_f/dt;   
-Attitude_W = rand(N_neurons, N_states)*.1;
+Attitude_W = randn(N_neurons, N_states)*.01;
 weight_plot = zeros((N_neurons* N_states),max_training_loop);
 
 tic
 fprintf("starting training\n")
 
 for i = 1:max_training_loop
-
+ % N_patterns = round(N_patterns - i/1000);
     X1 = PHI_min + (PHI_max - PHI_min) * rand(1, N_patterns);
     X2 = THE_min + (THE_max - THE_min) * rand(1, N_patterns);
-    X3 = PSI_min + (PSI_max - PSI_min) * rand(1, N_patterns);    
+    X3 = PSI_min + (PSI_max - PSI_min) *rand(1, N_patterns);    
     X4 = p_min + (p_max - p_min) * rand(1, N_patterns);
     X5 = q_min + (q_max - q_min) * rand(1, N_patterns);
     X6 = r_min + (r_max - r_min) * rand(1, N_patterns); 
@@ -172,10 +171,34 @@ for i = 1:max_training_loop
     weight_plot(:,i) = reshape(Attitude_W.',1,[]);
     error(:, :) = Attitude_W - Last_W;
     error_test = mae(error(:,:));
-    if mod(i, 50) == 0
+    if mod(i, 10) == 0
         fprintf('At: %g iterations, the MAE is %f \n', i,error_test)
     end
 
+    % [value, index]= max(abs(Attitude_W(:,1)));
+    % if value > 1000
+    %     Attitude_W(index,1) = 0; 
+    % end
+    % [value, index]= max(abs(Attitude_W(:,2)));
+    % if value > 1000
+    %     Attitude_W(index,2) = 0; 
+    % end
+    % [value, index]= max(abs(Attitude_W(:,3)));
+    % if value > 1000
+    %     Attitude_W(index,3) = 0; 
+    % end
+    % [value, index]= max(abs(Attitude_W(:,4)));
+    % if value > 1000
+    %     Attitude_W(index,4) = 0; 
+    % end
+    % [value, index]= max(abs(Attitude_W(:,5)));
+    % if value > 1000
+    %     Attitude_W(index,5) = 0; 
+    % end
+    % [value, index]= max(abs(Attitude_W(:,6)));
+    % if value > 1000
+    %     Attitude_W(index,6) = 0; 
+    % end
     if error_test< threshold
         fprintf('Weights converged, mae = %f \n', mae(error(:,:)))
         break
@@ -192,7 +215,7 @@ for k = 1:size(weight_plot,1)
 end
 xlabel('Iterations');
 ylabel('Weights');
-xlim([0 5000]); 
+xlim([0 i]); 
 
 
 Training_time = toc;
@@ -305,5 +328,5 @@ xlabel('x (m)'), ylabel('y (m)'), zlabel('z (m)')
 legend(["Reference trajectory", "SNAC"]);
 fprintf('required time for training = %g sec\n', Training_time)
 
-% save("test_workspace_att_V.mat","-v7.3")
+% save("test_workspace_att_V.mat",'Attitude_W','Attitude_R','Attitude_F','Attitude_G',"-v7.3")
 % save('test_workspace_att_V_10k_less_R.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G',"-v7.3")

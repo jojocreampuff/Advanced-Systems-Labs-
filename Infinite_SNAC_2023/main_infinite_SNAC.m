@@ -10,7 +10,7 @@ addpath('functions')
 % load('infinite_Attitude_SNAC_workspace2.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G')
 
 load('test_workspace_pos.mat','Position_W','Position_R','Position_F','Position_G','dt','grav')
-load('test_workspace_att_V_10k_less_R.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G')
+load('test_workspace_att_V.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G')
 % load('test_workspace_att.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G')
 
 % Load necessary variables for the position and attitude
@@ -24,7 +24,7 @@ Attitude.Attitude_R = Attitude_R;   % Control penalizing matrix
 
 % Define simulation parameters
 parameters.dt   = 0.004;    % time step
-parameters.t_f  = 100;       % final time
+parameters.t_f  = 20;       % final time
 parameters.grav = 9.81;     % gravity (m/s^2)
 parameters.m    = 3.2;        % mass (kg)
 parameters.Ix   = 2;      % moments of inertia (kg*m^2)
@@ -67,7 +67,7 @@ IC = [0 5 -5  5 -5; % x
 %       0; 
 %       zeros(9,1)];
 
-noise = 3; % 600% noise
+noise = 1; % 600% noise
 
 % Simulating for all IC, simulations saved in structures
 for i = 1:size(IC,2)
@@ -75,6 +75,9 @@ for i = 1:size(IC,2)
     simulations.(['results_', num2str(i)]) = results;
     x.(['x_',[num2str(i)]]) = results.x;
     u.(['u_',[num2str(i)]]) = results.u;
+    uxyz.(['uxyz_',[num2str(i)]]) = results.uxyz;
+    Pos_error.(['Pos_error_',[num2str(i)]]) = results.Pos_error;
+    Att_error.(['Att_error_',[num2str(i)]]) = results.Att_error;
     r_smooth.(['r_smooth_',[num2str(i)]]) = results.r_smooth;
     r_initial.(['r_initial_',[num2str(i)]]) = results.r_initial;
     angles_ref.(['angles_ref_',[num2str(i)]]) = results.angles_ref;
@@ -82,7 +85,7 @@ for i = 1:size(IC,2)
 end
 
 %% Plotting 
-figure
+figure(1)
 plot3(r_initial.r_initial_1(1,:), r_initial.r_initial_1(2,:), r_initial.r_initial_1(3,:), 'b--', 'Linewidth', 1.5)
 grid on
 hold on
@@ -93,6 +96,134 @@ plot3(r_initial.r_initial_1(1,:), r_initial.r_initial_1(2,:), r_initial.r_initia
 title('3D Trajectory')
 xlabel('x (m)'), ylabel('y (m)'), zlabel('z (m)')
 legend('Reference Trajectory', 'Path 1','Path 2','Path 3','path 4','path 5', 'Location', 'northeast');
+
+c_size = length(u.u_1(1,:))-1;
+figure(2)
+hold on
+grid on
+plot(time(1:c_size), u.u_1(1,1:c_size), 'Linewidth', 1.5)
+title('Quadcopter Controls')
+ylabel('$f_t$ (N)','Interpreter','latex'), xlabel('time (s)')
+% ylim([9.7 10.1])
+% 
+figure(3)
+hold on
+grid on
+plot(time(1:c_size), u.u_1(2,1:c_size), 'Linewidth', 1.5)
+ylabel('$\tau_x$ (Nm)','Interpreter','latex'), xlabel('time (s)')
+% ylim([-4E-4 4E-4])
+% 
+figure(4)
+hold on
+grid on
+plot(time(1:c_size), u.u_1(3,1:c_size), 'Linewidth', 1.5)
+ylabel('$\tau_y$ (Nm)','Interpreter','latex'), xlabel('time (s)')
+% ylim([-4E-4 8E-4])
+% 
+figure(5)
+hold on
+grid on
+plot(time(1:c_size), u.u_1(4,1:c_size), 'Linewidth', 1.5)
+ylabel('$\tau_z$ (Nm)','Interpreter','latex'), xlabel('time (s)')
+
+figure(6)
+subplot(3,1,1)
+title("Position Controller Output",'Interpreter','latex')
+hold on
+grid on
+plot(time(1:c_size), uxyz.uxyz_1(1,1:c_size), 'Linewidth', 1.5)
+ylabel('$u_x$ (m/s)','Interpreter','latex'), xlabel('time (s)')
+
+subplot(3,1,2)
+hold on
+grid on
+plot(time(1:c_size), uxyz.uxyz_1(2,1:c_size), 'Linewidth', 1.5)
+ylabel('$u_y$ (m/s)','Interpreter','latex'), xlabel('time (s)')
+
+subplot(3,1,3)
+hold on
+grid on
+plot(time(1:c_size), uxyz.uxyz_1(3,1:c_size), 'Linewidth', 1.5)
+ylabel('$u_z$ (m/s)','Interpreter','latex'), xlabel('time (s)')
+
+figure(7)
+subplot(3,1,1)
+title("Position error",'Interpreter','latex')
+hold on
+grid on
+plot(time(1:c_size), Pos_error.Pos_error_1(1,1:c_size), 'Linewidth', 1.5)
+ylabel('$error_x$ (m)','Interpreter','latex'), xlabel('time (s)')
+
+subplot(3,1,2)
+hold on
+grid on
+plot(time(1:c_size), Pos_error.Pos_error_1(2,1:c_size), 'Linewidth', 1.5)
+ylabel('$error_y$ (m)','Interpreter','latex'), xlabel('time (s)')
+
+subplot(3,1,3)
+hold on
+grid on
+plot(time(1:c_size), Pos_error.Pos_error_1(3,1:c_size), 'Linewidth', 1.5)
+ylabel('$error_z$ (m)','Interpreter','latex'), xlabel('time (s)')
+% ylim([-1.5E-5 1.5E-5])
+
+figure(8)
+subplot(3,1,1)
+title("Attitude error",'Interpreter','latex')
+hold on
+grid on
+plot(time(1:c_size), Att_error.Att_error_1(1,1:c_size), 'Linewidth', 1.5)
+ylabel('$error_/phi$ (rad)','Interpreter','latex'), xlabel('time (s)')
+
+subplot(3,1,2)
+hold on
+grid on
+plot(time(1:c_size), Att_error.Att_error_1(2,1:c_size), 'Linewidth', 1.5)
+ylabel('$error_/theta$ (rad)','Interpreter','latex'), xlabel('time (s)')
+
+subplot(3,1,3)
+hold on
+grid on
+plot(time(1:c_size), Att_error.Att_error_1(3,1:c_size), 'Linewidth', 1.5)
+ylabel('$error_/psi$ (rad)','Interpreter','latex'), xlabel('time (s)')
+
+figure(9)
+subplot(6,1,1)
+title("Ref Angles",'Interpreter','latex')
+hold on
+grid on
+plot(time(1:c_size), angles_ref.angles_ref_1(1,1:c_size), 'Linewidth', 1.5)
+ylabel('$/phi$ (rad)','Interpreter','latex'), xlabel('time (s)')
+
+subplot(6,1,2)
+hold on
+grid on
+plot(time(1:c_size), angles_ref.angles_ref_1(2,1:c_size), 'Linewidth', 1.5)
+ylabel('$/theta$ (rad)','Interpreter','latex'), xlabel('time (s)')
+
+subplot(6,1,3)
+hold on
+grid on
+plot(time(1:c_size), angles_ref.angles_ref_1(3,1:c_size), 'Linewidth', 1.5)
+ylabel('$/psi$ (rad)','Interpreter','latex'), xlabel('time (s)')
+
+subplot(6,1,4)
+hold on
+grid on
+plot(time(1:c_size), angles_ref.angles_ref_1(4,1:c_size), 'Linewidth', 1.5)
+ylabel('$/phi_s$ (rad/s)','Interpreter','latex'), xlabel('time (s)')
+
+subplot(6,1,5)
+hold on
+grid on
+plot(time(1:c_size), angles_ref.angles_ref_1(5,1:c_size), 'Linewidth', 1.5)
+ylabel('$/theta_s$ (rad/s)','Interpreter','latex'), xlabel('time (s)')
+
+subplot(6,1,6)
+hold on
+grid on
+plot(time(1:c_size), angles_ref.angles_ref_1(6,1:c_size), 'Linewidth', 1.5)
+ylabel('$/psi_s$ (rad/s)','Interpreter','latex'), xlabel('time (s)')
 
 % % Position Plotting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 
@@ -130,37 +261,7 @@ legend('Reference Trajectory', 'Path 1','Path 2','Path 3','path 4','path 5', 'Lo
 % ylabel('z (m)'), xlabel('time (s)')
 % 
 % % Control Plotting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% c_size = length(u.u_1(1,:))-1;
-% figure
-% subplot(4,1,1)
-% hold on
-% grid on
-% plot(time(1:c_size), u.u_1(1,1:c_size), 'Linewidth', 1.5)
-% title('Quadcopter Controls')
-% ylabel('$f_t$ (N)','Interpreter','latex'), xlabel('time (s)')
-% ylim([9.7 10.1])
-% 
-% subplot(4,1,2)
-% hold on
-% grid on
-% plot(time(1:c_size), u.u_1(2,1:c_size), 'Linewidth', 1.5)
-% ylabel('$\tau_x$ (Nm)','Interpreter','latex'), xlabel('time (s)')
-% ylim([-4E-4 4E-4])
-% 
-% subplot(4,1,3)
-% hold on
-% grid on
-% plot(time(1:c_size), u.u_1(3,1:c_size), 'Linewidth', 1.5)
-% ylabel('$\tau_y$ (Nm)','Interpreter','latex'), xlabel('time (s)')
-% ylim([-4E-4 8E-4])
-% 
-% subplot(4,1,4)
-% hold on
-% grid on
-% plot(time(1:c_size), u.u_1(4,1:c_size), 'Linewidth', 1.5)
-% ylabel('$\tau_z$ (Nm)','Interpreter','latex'), xlabel('time (s)')
-% ylim([-1.5E-5 1.5E-5])
+
 % 
 % % Velocity Plotting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 

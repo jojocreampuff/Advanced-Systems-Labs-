@@ -44,8 +44,8 @@ A = @(x)...
     -dt*(x(6)*cos(x(1)) + x(5)*sin(x(1))), 1, 0,  0,  dt*cos(x(1)),  -dt*sin(x(1)); 
     dt*((x(5)*cos(x(1)))/cos(x(2)) - (x(6)*sin(x(1)))/cos(x(2))), dt*((x(6)*cos(x(1))*sin(x(2)))/cos(x(2))^2 + (x(5)*sin(x(1))*sin(x(2)))/cos(x(2))^2), 1,  0,  (dt*sin(x(1)))/cos(x(2)),  (dt*cos(x(1)))/cos(x(2)); 
     0, 0, 0,  1,  (dt*x(6)*(Iy - Iz))/Ix,  (dt*x(5)*(Iy - Iz))/Ix; 
-    0, 0, 0,  -(dt*x(6)*(Ix - Iz))/Iy,  1,  -(dt*x(4)*(Ix - Iz))/Iy; 
-    0, 0, 0,  (dt*x(5)*(Ix - Iy))/Iz,  (dt*x(4)*(Ix - Iy))/Iz,  1; 
+     0, 0, 0,  -(dt*x(6)*(Ix - Iz))/Iy,  1,  -(dt*x(4)*(Ix - Iz))/Iy; 
+    0, 0, 0, (dt*x(5)*(Ix - Iy))/Iz,  (dt*x(4)*(Ix - Iy))/Iz,  1; 
     ]; % row representation
 
 % Define simulation parameters

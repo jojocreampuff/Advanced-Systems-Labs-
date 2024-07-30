@@ -70,22 +70,16 @@ r_smooth = [smooth_r_position; discrete_deriv(smooth_r_position,dt)];
 for i = 1:N-1
 
     % SNAC controller used to track trajectory - optimal control equation
+    Position_error = 
     uxyz(:,i) = -Position_R^-1 * Position_G(x(1:6,i) - r_smooth(:, i))' * Position_W(:,:)' * Basis_Func_pos(x(1:6,i) - r_smooth(:, i));
     
-    % NN estimating ft and angles from ux, uy, and uz
-    % ft_angles(:, i) = NN7(uxyz(1, i), uxyz(2, i), uxyz(3, i) );
-    % ft(i) = ft_angles(1,i);
-    % if ft(i) < 0
-    %     ft(i) = 0;
-    % end
 
     angles(:,i) = [ft_angles(2,i);ft_angles(3,i); 0];
 
 %     Numerically solving for ft and angles from ux, uy, and uz
     % [ft(i), r_phi(i), r_the(i)] = system_solver(uxyz(:,i),0,m);
 
-    % [ft(i), r_phi(i), r_the(i)] = borna_sys_solve(-uxyz(1,i), -uxyz(2,i), -uxyz(3,i), r_psi(i), m);
-    % [ft(i), r_phi(i), r_the(i)] = borna_sys_solve(-uxyz(1,i), -uxyz(2,i), -uxyz(3,i), x(9,i), m);
+    [ft(i), r_phi(i), r_the(i)] = borna_sys_solve(-uxyz(1,i), -uxyz(2,i), -uxyz(3,i), r_psi(i), m);
     
     angles(:,i) = [r_phi(i); r_the(i); r_psi(i)];
     angles_ref(:,i) = [angles(:,i); deriv(angles,i,dt)];
@@ -117,6 +111,7 @@ results.r_smooth = r_smooth;
 results.r_initial = r_initial;
 results.angles_ref = angles_ref;
 results.time = time;
+results.uxyz = uxyz;
 
 function pqr = deriv(angles, i, dt)
 if i == 1
