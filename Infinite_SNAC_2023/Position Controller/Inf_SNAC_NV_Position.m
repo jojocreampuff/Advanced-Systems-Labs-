@@ -11,22 +11,24 @@ Position_g = @(x) [0 0 0; 0 0 0; 0 0 0; -1 0 0; 0 -1 0; 0 0 -1];
 
 % Define training Parameters
 N_states = 6;
-N_patterns = 2000;
+N_patterns = 1000;
 max_training_loop = 40000;
 threshold = 1e-5;
 dt = 0.004;
-Position_Q = diag([10000,10000,10000,10000,10000,10000]);
-Position_R = diag([1000,1000,1000]); % SITL has too much control input
+Position_Q = diag([100000,100000,100000,100000,100000,100000]);
+Position_R = diag([10000,10000,10000]); % SITL has too much control input
 % Position_R = dt*diag([0.5e4,0.5e4,0.5e4]);
+% Position_Q = diag([1000,1000,1000,1000,1000,1000]);
+% Position_R = diag([100,100,100]);
 
 % Define domains of training
-X_max = 100; X_min = -100;
-Y_max = 100; Y_min = -100;
+X_max = 1000; X_min = -1000;
+Y_max = 1000; Y_min = -1000;
 Z_max = 100; Z_min = -100;
 
-u_max = 100; u_min = -100;
-v_max = 100; v_min = -100;
-w_max = 100; w_min = -100;
+u_max = 20; u_min = -20;
+v_max = 20; v_min = -20;
+w_max = 20; w_min = -20;
 
 % Partial x_k+1 / partial x_k grad(f(x) + g(x) *u)
 A = @(x)...
@@ -55,7 +57,7 @@ Position_G = @(x) Position_g(x) * dt;
 % Additonal variables
 N = t_f/dt;   
 N_neurons = length(Basis_Func_pos(ones(N_states,1)));
-Position_W = rand(N_neurons, N_states);
+Position_W = randn(N_neurons, N_states)*.1;
 
 tic
 % Nonvectorzied SNAC training loop
@@ -98,7 +100,7 @@ for i = 1:max_training_loop
         fprintf('Divergence in trainig \n')
         break
     end
-
+    weight_plot(:,i) = reshape(Position_W.',1,[]);
     % Check for convergence
     error(:, :) = Position_W' * basis_func - lambda_k_plus_1_target;
     if mae(error(:,:))< threshold
@@ -111,6 +113,15 @@ for i = 1:max_training_loop
         fprintf('At: %g iterations, the MAE is %f \n', i,error_test)
     end
 end
+
+figure(1);
+for k = 1:size(weight_plot,1) 
+    hold on;
+    plot(1:size(weight_plot,2) ,weight_plot(k,:)); 
+end
+xlabel('Iterations');
+ylabel('Weights');
+xlim([0 i]); 
 
 Training_time = toc;
 fprintf('required time for training = %g sec\n', Training_time)
@@ -297,7 +308,7 @@ title('3D Trajectory')
 xlabel('x (m)'), ylabel('y (m)'), zlabel('z (m)')
 legend(["Reference trajectory", "SNAC"]);
 
-% save("test_workspace_pos.mat","-v7.3")
+save("test_workspace_pos.mat","-v7.3")
 
 function uvw = discrete_deriv(x,dt)
     uvw = ones(size(x));

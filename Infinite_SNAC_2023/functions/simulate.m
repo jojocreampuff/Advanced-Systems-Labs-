@@ -21,35 +21,21 @@ N = t_f/dt;
 % Preallocating variables
 u               = zeros(4,N-1); % quadcopter controls [ft tx ty tz]
 u_noise         = zeros(4,N-1); % noisy quadcopter controls
+PWM_channels    = zeros(4,N-1);
 uxyz            = zeros(3,N);   % output of position SNAC
-ft_angles       = zeros(3,N);   % output of NN [ft phi theta] psi = 0
 torques         = zeros(3,N);   % output of attitude SNAC
 ft              = zeros(1,N);   % thrust
 angles          = zeros(3,N);   % angles
 angles_ref      = zeros(6,N-1); % angles and angular velocities
-Attitude_error  = zeros(6,N);   % error 
+Att_error  = zeros(6,N);   % error 
+Pos_error = zeros(6,N);
 r_initial       = zeros(3,N-1); % original trajectory
 r_phi           = zeros(1,N);   % phi trajectory
 r_the           = zeros(1,N);   % theta trajectory
-r_psi           = zeros(1,N);   % psi trajectory
+r_psi           = 1+zeros(1,N);   % psi trajectory
 
-r_psi           = linspace(0, 4*pi, N);
-% r_psi_prev = 0;
-% for j= 1:N
-% 
-%      if mod(j,100) == 0
-%         r_psi(j) = pi/24 + r_psi_prev ;
-% 
-%      else
-%          r_psi(j) = r_psi_prev;
-%      end
-%         %  if r_psi(j) >= pi
-%         %     r_psi(j) = -pi - 0.001;
-%         %     r_psi_prev = 0;
-%         % end
-%      r_psi_prev = r_psi(j);
-% 
-% end
+% r_psi           = linspace(0, 4*pi, N);    % saftey limit threshold on desired pitch and roll
+
 
 Full_F = @(x,grav,Ix,Iy,Iz) x + dt * Full_f_225(x,grav,Ix,Iy,Iz); % discretized drift dynamics
 Full_G = @(x,m,Ix,Iy,Iz) dt * Full_g_225(x,m,Ix,Iy,Iz);           % discretized control dynamics
@@ -66,6 +52,13 @@ smooth_r_position = smooth(r_initial, x(1:3)', x(4:6)', time);
 r_smooth = [smooth_r_position; discrete_deriv(smooth_r_position,dt)];
 
 
+r = .24;
+drag = 0.01; % (drag coef)
+Tmin = 1;
+Tmax = 18;
+Max_torque = 8.64;
+MAX_PWM = 2000;
+MIN_PWM = 1000;
 
 for i = 1:N-1
 
@@ -87,12 +80,52 @@ for i = 1:N-1
     Att_error(:,i) = x(7:12,i) - angles_ref(:,i);
     torques(:,i) = -Attitude_R^-1 * Attitude_G(Att_error(:,i))' * Attitude_W(:,:)' * Basis_Func_84(Att_error(:,i));
     
-    % torques(:,i) = saturation(torques(:,i));
 
+    for p = 1:3
+        if torques(p,i) > Max_torque
+            torques(p,i) = Max_torque;
+        elseif torques(p,i) < -Max_torque
+            torques(p,i) = -Max_torque;
+        end
+    end
+    
+    T1 = (ft(i) - torques(1,i)/(2*r) - torques(2,i)/(2*r) + torques(3,i)/(4*drag)) / 4;
+    T2 = (ft(i) - torques(1,i)/(2*r) + torques(2,i)/(2*r) + torques(3,i)/(4*drag)) / 4;
+    T3 = (ft(i) + torques(1,i)/(2*r) - torques(2,i)/(2*r) - torques(3,i)/(4*drag)) / 4;
+    T4 = (ft(i) + torques(1,i)/(2*r) + torques(2,i)/(2*r) - torques(3,i)/(4*drag)) / 4;
+
+ 
+    each_motor_thrust(:,i) = [T1;T2;T3;T4];
+
+    for j = 1:4
+        if each_motor_thrust(j,i) > Tmax
+            each_motor_thrust(j,i) = Tmax;
+        elseif each_motor_thrust(j,i) < Tmin
+            each_motor_thrust(j,i) = Tmin;
+        end
+    end
+
+    ch1 = 1000 + (((each_motor_thrust(1,i) - Tmin ) / (Tmax-Tmin)) * 1000  );
+    ch2 = 1000 + (((each_motor_thrust(2,i) - Tmin) / (Tmax-Tmin)) * 1000  );
+    ch3 = 1000 + (((each_motor_thrust(3,i) - Tmin) / (Tmax-Tmin)) * 1000  );
+    ch4 = 1000 + (((each_motor_thrust(4,i) - Tmin) / (Tmax-Tmin)) * 1000 );
+    
+   
+    PWM_channels(:,i) = [ch1;ch2;ch3;ch4];
 
     % Combining controls
-    u(:,i) = [ft(1,i); torques(:, i)];
-    u_noise(:,i) = u(:,i) .* (1 + noise.*(2*rand(size(u(:,i))) - 1)); % add randomness
+    % thrust cant be more then the max of all 4 rotors!
+    ft(1,i) = sum(each_motor_thrust(:,i));
+
+    if ft(1,i)>72
+        ft(1,i) = 72;
+    elseif ft(1,i)<0
+        ft(1,i) = 0;
+    end
+
+    u(:,i) = [ft(i); torques(:, i)];
+
+    u_noise(:,i) = u(:,i) + (1 + noise.*(2*rand(size(u(:,i))) - 1)); % add randomness
     if u_noise(1,i) < 0 
         u_noise(1,i) = 0;
     end
@@ -100,7 +133,6 @@ for i = 1:N-1
     % Passing controls though discretized drone dynamics
     x(:, i+1) = Full_F(x(:,i),grav,Ix,Iy,Iz) + Full_G(x(:,i),m,Ix,Iy,Iz) * u_noise(:,i);
 
-    % x(:,i+1) = x(:,i+1) .* (1 + noise.*(2*rand(size(x(:,i+1))) - 1)); % add randomness
 
 end
 
@@ -113,7 +145,8 @@ results.time = time;
 results.uxyz = uxyz;
 results.Pos_error = Pos_error;
 results.Att_error = Att_error;
-% results.angles_ref = angles_ref;
+results.PWM_channels = PWM_channels;
+results.each_motor_thrust = each_motor_thrust;
 
 function pqr = deriv(angles, i, dt)
 if i == 1
@@ -169,36 +202,32 @@ function [ft, pitch, roll] = borna_sys_solve(u1, u2, u3, psi, m) % u1 = ux , u2 
 
     % add a threshold (this is the max thrust of the combined actuators at
     % full throttle 
-    if ft>72
-        ft = 72;
-    elseif ft<0
-        ft = 0;
-    end
+
 
 end
 
-    function torques = saturation(torques)
-
-% based on max actuator output
-        if torques(1) > 8
-            torques(1) = 8;
-        elseif torques(1) < -8
-            torques(1) = -8;
-        end
-
-        if torques(2) > 8
-            torques(2) = 8;
-        elseif torques(2) < -8
-            torques(2) = -8;
-        end
-
-        if torques(3) > 3
-            torques(3) = 3;
-        elseif torques(3) < -3
-            torques(3) = -3;
-        end
-
-    end
+%     function [tau_x, tau_y, tau_z] = sat(tau_x, tau_y, tau_z)
+%     Max_torque = 8.64;
+% % based on max actuator output
+%         if tau_x > Max_torque
+%             tau_x = Max_torque;
+%         elseif tau_x < -Max_torque
+%             tau_x = -Max_torque;
+%         end
+% 
+%         if tau_y > Max_torque
+%             tau_y = Max_torque;
+%         elseif tau_y < -Max_torque
+%             tau_y = -Max_torque;
+%         end
+% 
+%         if tau_z > 5
+%             tau_z = 5;
+%         elseif tau_z < -5
+%             tau_z = -5;
+%         end
+% 
+%     end
 
 end
 

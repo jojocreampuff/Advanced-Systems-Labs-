@@ -24,7 +24,7 @@ Attitude.Attitude_R = Attitude_R;   % Control penalizing matrix
 
 % Define simulation parameters
 parameters.dt   = 0.004;    % time step
-parameters.t_f  = 20;       % final time
+parameters.t_f  = 100;       % final time
 parameters.grav = 9.81;     % gravity (m/s^2)
 parameters.m    = 3.2;        % mass (kg)
 parameters.Ix   = 2;      % moments of inertia (kg*m^2)
@@ -33,8 +33,8 @@ parameters.Iz   = 4;      %
 
 % Define desired reference as function of time
 reference = @(t)...
-            [(1-exp(-0.01*t))*9.81*cos(0.2*t);  % reference_x
-             (1-exp(-0.01*t))*9.81*sin(0.2*t);  % reference_y
+            [(1-exp(-0.01*t))*9.81*cos(0.5*t);  % reference_x
+             (1-exp(-0.01*t))*9.81*sin(0.5*t);  % reference_y
              -.5*t];                             % reference_z
 
 % References can be waypoints (not function of time)
@@ -43,22 +43,22 @@ reference = @(t)...
 %              9.81*sin(0.2*t);     % reference_y
 %              -4*cos(1*t)-9.81];      % reference_z
 
-% % References can be waypoints (not function of time)
+% References can be waypoints (not function of time)
 % reference = @(t)...
-%             [-3;       % reference_x
-%              -2.5;     % reference_y
+%             [3;       % reference_x
+%              2.5;     % reference_y
 %              -5];      % reference_z
 
 % Define initial condition, each column is a new set of ICs
 IC = [0 5 -5  5 -5; % x
       0 5 -5 -5  5; % y
-      0 0  0  0  0; % z 
+      0 0  0  0  0; % z
       zeros(9,5)];  % velocity, angles, angular velocities
 
 % % Define initial condition, each column is a new set of ICs
 % IC = [0 5 -5; % x
 %       0 5 -5; % y
-%       0 -1  -2; % z 
+%       0 -1  -2; % z
 %       zeros(9,3)];  % velocity, angles, angular velocities
 
 % One set of IC
@@ -67,7 +67,7 @@ IC = [0 5 -5  5 -5; % x
 %       0; 
 %       zeros(9,1)];
 
-noise = 1; % 600% noise
+noise = 0; % 600% noise
 
 % Simulating for all IC, simulations saved in structures
 for i = 1:size(IC,2)
@@ -81,6 +81,8 @@ for i = 1:size(IC,2)
     r_smooth.(['r_smooth_',[num2str(i)]]) = results.r_smooth;
     r_initial.(['r_initial_',[num2str(i)]]) = results.r_initial;
     angles_ref.(['angles_ref_',[num2str(i)]]) = results.angles_ref;
+    PWM_channels.(['PWM_channels_',[num2str(i)]]) = results.PWM_channels;
+    each_motor_thrust.(['each_motor_thrust_',[num2str(i)]]) = results.each_motor_thrust;
     time = results.time;
 end
 
@@ -126,6 +128,7 @@ grid on
 plot(time(1:c_size), u.u_1(4,1:c_size), 'Linewidth', 1.5)
 ylabel('$\tau_z$ (Nm)','Interpreter','latex'), xlabel('time (s)')
 
+%% Position Controller Output 
 figure(6)
 subplot(3,1,1)
 title("Position Controller Output",'Interpreter','latex')
@@ -146,6 +149,7 @@ grid on
 plot(time(1:c_size), uxyz.uxyz_1(3,1:c_size), 'Linewidth', 1.5)
 ylabel('$u_z$ (m/s)','Interpreter','latex'), xlabel('time (s)')
 
+%% Pos Error
 figure(7)
 subplot(3,1,1)
 title("Position error",'Interpreter','latex')
@@ -165,8 +169,9 @@ hold on
 grid on
 plot(time(1:c_size), Pos_error.Pos_error_1(3,1:c_size), 'Linewidth', 1.5)
 ylabel('$error_z$ (m)','Interpreter','latex'), xlabel('time (s)')
-% ylim([-1.5E-5 1.5E-5])
 
+
+%% Att Error
 figure(8)
 subplot(3,1,1)
 title("Attitude error",'Interpreter','latex')
@@ -187,6 +192,7 @@ grid on
 plot(time(1:c_size), Att_error.Att_error_1(3,1:c_size), 'Linewidth', 1.5)
 ylabel('$error_/psi$ (rad)','Interpreter','latex'), xlabel('time (s)')
 
+%% Refernce angles given to att controller
 figure(9)
 subplot(6,1,1)
 title("Ref Angles",'Interpreter','latex')
@@ -224,6 +230,60 @@ hold on
 grid on
 plot(time(1:c_size), angles_ref.angles_ref_1(6,1:c_size), 'Linewidth', 1.5)
 ylabel('$/psi_s$ (rad/s)','Interpreter','latex'), xlabel('time (s)')
+
+%% PWM figure
+figure(10)
+subplot(4,1,1)
+title("PWM Channels",'Interpreter','latex')
+hold on
+grid on
+plot(time(1:c_size), PWM_channels.PWM_channels_1(1,1:c_size), 'Linewidth', 1.5)
+ylabel('Ch1','Interpreter','latex'), xlabel('time (s)')
+
+subplot(4,1,2)
+hold on
+grid on
+plot(time(1:c_size), PWM_channels.PWM_channels_1(2,1:c_size), 'Linewidth', 1.5)
+ylabel('ch2','Interpreter','latex'), xlabel('time (s)')
+
+subplot(4,1,3)
+hold on
+grid on
+plot(time(1:c_size), PWM_channels.PWM_channels_1(3,1:c_size), 'Linewidth', 1.5)
+ylabel('ch3','Interpreter','latex'), xlabel('time (s)')
+
+subplot(4,1,4)
+hold on
+grid on
+plot(time(1:c_size), PWM_channels.PWM_channels_1(4,1:c_size), 'Linewidth', 1.5)
+ylabel('ch4','Interpreter','latex'), xlabel('time (s)')
+
+%% Each Motor Thrust
+figure(11)
+subplot(4,1,1)
+title("Each Motor Thrust",'Interpreter','latex')
+hold on
+grid on
+plot(time(1:c_size), each_motor_thrust.each_motor_thrust_1(1,1:c_size), 'Linewidth', 1.5)
+ylabel('Motor 1 (N)','Interpreter','latex'), xlabel('time (s)')
+
+subplot(4,1,2)
+hold on
+grid on
+plot(time(1:c_size), each_motor_thrust.each_motor_thrust_1(2,1:c_size), 'Linewidth', 1.5)
+ylabel('Motor 2 (N)','Interpreter','latex'), xlabel('time (s)')
+
+subplot(4,1,3)
+hold on
+grid on
+plot(time(1:c_size), each_motor_thrust.each_motor_thrust_1(3,1:c_size), 'Linewidth', 1.5)
+ylabel('Motor 3 (N)','Interpreter','latex'), xlabel('time (s)')
+
+subplot(4,1,4)
+hold on
+grid on
+plot(time(1:c_size), each_motor_thrust.each_motor_thrust_1(4,1:c_size), 'Linewidth', 1.5)
+ylabel('Motor 4 (N)','Interpreter','latex'), xlabel('time (s)')
 
 % % Position Plotting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 

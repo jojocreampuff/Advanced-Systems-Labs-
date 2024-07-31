@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'offline_snac_SITL'.
 //
-// Model version                  : 3.33
+// Model version                  : 3.36
 // Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
-// C/C++ source code generated on : Mon Jul 29 17:32:34 2024
+// C/C++ source code generated on : Tue Jul 30 18:10:12 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -21,22 +21,22 @@
 // Block parameters (default storage)
 P_offline_snac_SITL_T offline_snac_SITL_P = {
   // Mask Parameter: DiscreteDerivative_ICPrevScaled
-  //  Referenced by: '<S15>/UD'
+  //  Referenced by: '<S13>/UD'
 
   0.0F,
 
   // Mask Parameter: DiscreteDerivative1_ICPrevScale
-  //  Referenced by: '<S16>/UD'
+  //  Referenced by: '<S14>/UD'
 
   0.0F,
 
   // Mask Parameter: DiscreteDerivative2_ICPrevScale
-  //  Referenced by: '<S17>/UD'
+  //  Referenced by: '<S15>/UD'
 
   0.0F,
 
   // Computed Parameter: Out1_Y0
-  //  Referenced by: '<S20>/Out1'
+  //  Referenced by: '<S21>/Out1'
 
   {
     (0ULL),                            // timestamp
@@ -95,7 +95,7 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   },
 
   // Computed Parameter: Constant_Value
-  //  Referenced by: '<S7>/Constant'
+  //  Referenced by: '<S5>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -154,7 +154,7 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   },
 
   // Computed Parameter: Out1_Y0_f
-  //  Referenced by: '<S22>/Out1'
+  //  Referenced by: '<S23>/Out1'
 
   {
     (0ULL),                            // timestamp
@@ -177,7 +177,7 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   },
 
   // Computed Parameter: Constant_Value_p
-  //  Referenced by: '<S9>/Constant'
+  //  Referenced by: '<S7>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -200,7 +200,7 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   },
 
   // Computed Parameter: Constant_Value_o
-  //  Referenced by: '<S5>/Constant'
+  //  Referenced by: '<S19>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -223,7 +223,7 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   },
 
   // Computed Parameter: Out1_Y0_h
-  //  Referenced by: '<S21>/Out1'
+  //  Referenced by: '<S22>/Out1'
 
   {
     (0ULL),                            // timestamp
@@ -244,7 +244,7 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   },
 
   // Computed Parameter: Constant_Value_a
-  //  Referenced by: '<S8>/Constant'
+  //  Referenced by: '<S6>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -265,7 +265,7 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   },
 
   // Computed Parameter: Out1_Y0_hw
-  //  Referenced by: '<S19>/Out1'
+  //  Referenced by: '<S20>/Out1'
 
   {
     (0ULL),                            // timestamp
@@ -288,7 +288,7 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   },
 
   // Computed Parameter: Constant_Value_e
-  //  Referenced by: '<S6>/Constant'
+  //  Referenced by: '<S4>/Constant'
 
   {
     (0ULL),                            // timestamp
@@ -311,62 +311,62 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   },
 
   // Expression: 15
-  //  Referenced by: '<S11>/Rate Limiter3'
+  //  Referenced by: '<S9>/Rate Limiter3'
 
   15.0,
 
   // Expression: -15
-  //  Referenced by: '<S11>/Rate Limiter3'
+  //  Referenced by: '<S9>/Rate Limiter3'
 
   -15.0,
 
   // Expression: 15
-  //  Referenced by: '<S11>/Rate Limiter4'
+  //  Referenced by: '<S9>/Rate Limiter4'
 
   15.0,
 
   // Expression: -15
-  //  Referenced by: '<S11>/Rate Limiter4'
+  //  Referenced by: '<S9>/Rate Limiter4'
 
   -15.0,
 
   // Expression: 15
-  //  Referenced by: '<S11>/Rate Limiter5'
+  //  Referenced by: '<S9>/Rate Limiter5'
 
   15.0,
 
   // Expression: -15
-  //  Referenced by: '<S11>/Rate Limiter5'
+  //  Referenced by: '<S9>/Rate Limiter5'
 
   -15.0,
 
   // Expression: 15
-  //  Referenced by: '<S11>/Rate Limiter'
+  //  Referenced by: '<S9>/Rate Limiter'
 
   15.0,
 
   // Expression: -15
-  //  Referenced by: '<S11>/Rate Limiter'
+  //  Referenced by: '<S9>/Rate Limiter'
 
   -15.0,
 
   // Expression: 15
-  //  Referenced by: '<S11>/Rate Limiter1'
+  //  Referenced by: '<S9>/Rate Limiter1'
 
   15.0,
 
   // Expression: -15
-  //  Referenced by: '<S11>/Rate Limiter1'
+  //  Referenced by: '<S9>/Rate Limiter1'
 
   -15.0,
 
   // Expression: 15
-  //  Referenced by: '<S11>/Rate Limiter2'
+  //  Referenced by: '<S9>/Rate Limiter2'
 
   15.0,
 
   // Expression: -15
-  //  Referenced by: '<S11>/Rate Limiter2'
+  //  Referenced by: '<S9>/Rate Limiter2'
 
   -15.0,
 
@@ -401,52 +401,82 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   -2.0,
 
   // Computed Parameter: Constant_Value_k
-  //  Referenced by: '<S28>/Constant'
-
-  1.0F,
-
-  // Computed Parameter: Constant_Value_d
   //  Referenced by: '<S29>/Constant'
 
   1.0F,
 
+  // Computed Parameter: Constant_Value_d
+  //  Referenced by: '<S30>/Constant'
+
+  1.0F,
+
   // Computed Parameter: Constant1_Value
-  //  Referenced by: '<S11>/Constant1'
+  //  Referenced by: '<S9>/Constant1'
 
   1.0F,
 
   // Computed Parameter: RateLimiter3_IC
-  //  Referenced by: '<S11>/Rate Limiter3'
+  //  Referenced by: '<S9>/Rate Limiter3'
 
   0.0F,
 
   // Computed Parameter: RateLimiter4_IC
-  //  Referenced by: '<S11>/Rate Limiter4'
+  //  Referenced by: '<S9>/Rate Limiter4'
 
   0.0F,
 
   // Computed Parameter: RateLimiter5_IC
-  //  Referenced by: '<S11>/Rate Limiter5'
+  //  Referenced by: '<S9>/Rate Limiter5'
 
   0.0F,
 
   // Computed Parameter: RateLimiter_IC
-  //  Referenced by: '<S11>/Rate Limiter'
+  //  Referenced by: '<S9>/Rate Limiter'
 
   0.0F,
 
   // Computed Parameter: RateLimiter1_IC
-  //  Referenced by: '<S11>/Rate Limiter1'
+  //  Referenced by: '<S9>/Rate Limiter1'
 
   0.0F,
 
   // Computed Parameter: RateLimiter2_IC
-  //  Referenced by: '<S11>/Rate Limiter2'
+  //  Referenced by: '<S9>/Rate Limiter2'
+
+  0.0F,
+
+  // Computed Parameter: Saturation3_UpperSat
+  //  Referenced by: '<S9>/Saturation3'
+
+  2.0F,
+
+  // Computed Parameter: Saturation3_LowerSat
+  //  Referenced by: '<S9>/Saturation3'
+
+  -2.0F,
+
+  // Computed Parameter: Saturation4_UpperSat
+  //  Referenced by: '<S9>/Saturation4'
+
+  2.0F,
+
+  // Computed Parameter: Saturation4_LowerSat
+  //  Referenced by: '<S9>/Saturation4'
+
+  -2.0F,
+
+  // Computed Parameter: Saturation5_UpperSat
+  //  Referenced by: '<S9>/Saturation5'
+
+  15.0F,
+
+  // Computed Parameter: Saturation5_LowerSat
+  //  Referenced by: '<S9>/Saturation5'
 
   0.0F,
 
   // Computed Parameter: TSamp_WtEt
-  //  Referenced by: '<S15>/TSamp'
+  //  Referenced by: '<S13>/TSamp'
 
   250.0F,
 
@@ -456,7 +486,7 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   0.0F,
 
   // Computed Parameter: TSamp_WtEt_c
-  //  Referenced by: '<S16>/TSamp'
+  //  Referenced by: '<S14>/TSamp'
 
   250.0F,
 
@@ -466,7 +496,7 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   0.0F,
 
   // Computed Parameter: TSamp_WtEt_h
-  //  Referenced by: '<S17>/TSamp'
+  //  Referenced by: '<S15>/TSamp'
 
   250.0F,
 
@@ -476,22 +506,22 @@ P_offline_snac_SITL_T offline_snac_SITL_P = {
   0.0F,
 
   // Computed Parameter: DiscreteTimeIntegrator_gainval
-  //  Referenced by: '<Root>/Discrete-Time Integrator'
+  //  Referenced by: '<S3>/Discrete-Time Integrator'
 
   0.004F,
 
   // Computed Parameter: DiscreteTimeIntegrator_IC
-  //  Referenced by: '<Root>/Discrete-Time Integrator'
+  //  Referenced by: '<S3>/Discrete-Time Integrator'
 
   0.0F,
 
   // Computed Parameter: Constant2_Value
-  //  Referenced by: '<Root>/Constant2'
+  //  Referenced by: '<S3>/Constant2'
 
-  0.01F,
+  0.3F,
 
   // Computed Parameter: Constant_Value_g
-  //  Referenced by: '<Root>/Constant'
+  //  Referenced by: '<S3>/Constant'
 
   1.0F,
 

@@ -175,30 +175,6 @@ for i = 1:max_training_loop
         fprintf('At: %g iterations, the MAE is %f \n', i,error_test)
     end
 
-    % [value, index]= max(abs(Attitude_W(:,1)));
-    % if value > 1000
-    %     Attitude_W(index,1) = 0; 
-    % end
-    % [value, index]= max(abs(Attitude_W(:,2)));
-    % if value > 1000
-    %     Attitude_W(index,2) = 0; 
-    % end
-    % [value, index]= max(abs(Attitude_W(:,3)));
-    % if value > 1000
-    %     Attitude_W(index,3) = 0; 
-    % end
-    % [value, index]= max(abs(Attitude_W(:,4)));
-    % if value > 1000
-    %     Attitude_W(index,4) = 0; 
-    % end
-    % [value, index]= max(abs(Attitude_W(:,5)));
-    % if value > 1000
-    %     Attitude_W(index,5) = 0; 
-    % end
-    % [value, index]= max(abs(Attitude_W(:,6)));
-    % if value > 1000
-    %     Attitude_W(index,6) = 0; 
-    % end
     if error_test< threshold
         fprintf('Weights converged, mae = %f \n', mae(error(:,:)))
         break
