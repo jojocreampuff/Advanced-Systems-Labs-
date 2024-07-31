@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'offline_snac_SITL'.
 //
-// Model version                  : 3.36
+// Model version                  : 3.37
 // Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
-// C/C++ source code generated on : Tue Jul 30 18:10:12 2024
+// C/C++ source code generated on : Wed Jul 31 15:51:59 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -30633,10 +30633,10 @@ void offline_snac_SITL_initialize(void)
   offline_snac_SITL_M->Timing.stepSize0 = 0.004;
 
   // External mode info
-  offline_snac_SITL_M->Sizes.checksums[0] = (2648309687U);
-  offline_snac_SITL_M->Sizes.checksums[1] = (2228668294U);
-  offline_snac_SITL_M->Sizes.checksums[2] = (4243912089U);
-  offline_snac_SITL_M->Sizes.checksums[3] = (4122808837U);
+  offline_snac_SITL_M->Sizes.checksums[0] = (464394552U);
+  offline_snac_SITL_M->Sizes.checksums[1] = (383621435U);
+  offline_snac_SITL_M->Sizes.checksums[2] = (1094732433U);
+  offline_snac_SITL_M->Sizes.checksums[3] = (2162569053U);
 
   {
     static const sysRanDType rtAlwaysEnabled = SUBSYS_RAN_BC_ENABLE;
