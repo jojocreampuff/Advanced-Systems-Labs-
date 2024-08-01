@@ -9,7 +9,7 @@
 //
 // Model version                  : 3.37
 // Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
-// C/C++ source code generated on : Wed Jul 31 15:51:59 2024
+// C/C++ source code generated on : Wed Jul 31 16:50:15 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -100,7 +100,6 @@ extern "C"
 
 // Block signals (default storage)
 struct B_offline_snac_SITL_T {
-  real32_T ref[150000];
   real32_T fv[172];
   px4_Bus_vehicle_local_position In1;  // '<S21>/In1'
   px4_Bus_vehicle_local_position r;

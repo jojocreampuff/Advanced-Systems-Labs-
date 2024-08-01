@@ -16,7 +16,7 @@ load('test_workspace_att_V.mat','Attitude_W','Attitude_R','Attitude_F','Attitude
 % Load necessary variables for the position and attitude
 Position.Position_W = Position_W;   % NN weights
 Position.Position_G = Position_G;   % Position control dynamics
-Position.Position_R = Position_R;   % Control penalizing matrixPosistion
+Position.Position_R = Position_R;   % Control penalizing matrixPosistionF_tx_
 
 Attitude.Attitude_W = Attitude_W;   % NN weights
 Attitude.Attitude_G = Attitude_G;   % Attitude control dynamics
@@ -33,8 +33,8 @@ parameters.Iz   = 4;      %
 
 % Define desired reference as function of time
 reference = @(t)...
-            [(1-exp(-0.01*t))*9.81*cos(0.5*t);  % reference_x
-             (1-exp(-0.01*t))*9.81*sin(0.5*t);  % reference_y
+            [(1-exp(-0.01*t))*9.81*cos(0.2*t);  % reference_x
+             (1-exp(-0.01*t))*9.81*sin(0.2*t);  % reference_y
              -.5*t];                             % reference_z
 
 % References can be waypoints (not function of time)
