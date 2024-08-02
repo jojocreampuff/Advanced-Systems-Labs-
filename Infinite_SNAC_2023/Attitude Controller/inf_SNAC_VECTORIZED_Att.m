@@ -1,6 +1,7 @@
 clc; clear; close all;
 
-addpath("/home/engelhardt/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions/")
+% addpath("/home/engelhardt/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions/")
+addpath("/home/users10/re606359/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions")
 
 % Define plant dynamics
 Ix = 2;   % moment of inertia (kg*m^2)
@@ -16,12 +17,12 @@ Attitude_g = [0 0 0; 0 0 0; 0 0 0; 1/Ix 0 0; 0 1/Iy 0; 0 0 1/Iz];
 
 % Define training Parameters
 N_states = 6;
-N_patterns = 20000;
+N_patterns = 30000;
 max_training_loop = 3000;
 threshold = 1e-3;
 dt = 0.004;
 discount = 0.99;
-Attitude_Q = diag([100,100,100,100,100,100])*100;
+Attitude_Q = diag([100,100,100,100,100,100])*300;
 Attitude_R = diag([1,1,1]);
 
 
