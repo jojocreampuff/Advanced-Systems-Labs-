@@ -32,7 +32,7 @@ net.divideParam.testRatio = 15/100;
 % Test the Network
 y = net(x);
 e = gsubtract(t,y);
-performance = perform(net,t,y)
+performance = perform(net,t,y);
 
 % View the Network
 view(net)

@@ -17,8 +17,8 @@ Attitude_g = [0 0 0; 0 0 0; 0 0 0; 1/Ix 0 0; 0 1/Iy 0; 0 0 1/Iz];
 
 % Define training Parameters
 N_states = 6;
-N_patterns = 50000;
-max_training_loop = 3000;
+N_patterns = 3000;
+max_training_loop = 2000;
 threshold = 1e-7;
 dt = 0.004;
 discount = 0.99;
@@ -27,13 +27,13 @@ Attitude_R = diag([10,10,10]);
 
 
 % Define domains of training
-PHI_max = pi/4; PHI_min = -pi/4;
-THE_max = pi/4; THE_min = -pi/4;
-PSI_max = pi/2; PSI_min = -pi/2;
+PHI_max = pi/6; PHI_min = -pi/6;
+THE_max = pi/6; THE_min = -pi/6;
+PSI_max = pi; PSI_min = -pi;
 
-p_max =  pi/6; p_min =  -pi/6;
-q_max =  pi/6; q_min =  -pi/6;
-r_max =  pi/8; r_min =  -pi/8;
+p_max =  pi/8; p_min =  -pi/8;
+q_max =  pi/8; q_min =  -pi/8;
+r_max =  pi/10; r_min =  -pi/10;
 
 % Partial x_k+1 / partial x_k
 %% 
@@ -193,8 +193,9 @@ for k = 1:size(weight_plot,1)
 end
 xlabel('Iterations');
 ylabel('Weights');
-xlim([0 i]); 
+xlim([0 i]);
 
+MAE_norm = error_test/norm(Attitude_W);
 
 Training_time = toc;
 x1 = 1.2*[rand(3,1);0;0;0];
@@ -307,6 +308,6 @@ legend(["Reference trajectory", "SNAC"]);
 fprintf('required time for training = %g sec\n', Training_time)
 
 % save("test_workspace_att_V.mat",'Attitude_W','Attitude_R','Attitude_F','Attitude_G',"-v7.3")
-% save('test_workspace_att_V_10k_less_R.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G',"-v7.3")
+save('test_workspace_att_V_10k_less_R.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G',"-v7.3")
 % save("z_train_network_x" , "z_x_train")
 % save("z_target","z_target")
