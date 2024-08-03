@@ -24,7 +24,8 @@ save("reference_SITL","ref_states","-v7.3")
 
 %% save the open loop controls
 F_tx_ty_tz = single(u.u_1);
- F_tx_ty_tz(1,44:77) = 35
+
+ % F_tx_ty_tz(1,44:77) = 35
 
 u1_u2_u3 = single(uxyz.uxyz_1);
 

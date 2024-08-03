@@ -17,19 +17,19 @@ Attitude_g = [0 0 0; 0 0 0; 0 0 0; 1/Ix 0 0; 0 1/Iy 0; 0 0 1/Iz];
 
 % Define training Parameters
 N_states = 6;
-N_patterns = 30000;
+N_patterns = 50000;
 max_training_loop = 3000;
-threshold = 1e-3;
+threshold = 1e-7;
 dt = 0.004;
 discount = 0.99;
 Attitude_Q = diag([100,100,100,100,100,100])*300;
-Attitude_R = diag([1,1,1]);
+Attitude_R = diag([10,10,10]);
 
 
 % Define domains of training
 PHI_max = pi/4; PHI_min = -pi/4;
 THE_max = pi/4; THE_min = -pi/4;
-PSI_max = pi; PSI_min = -pi;
+PSI_max = pi/2; PSI_min = -pi/2;
 
 p_max =  pi/6; p_min =  -pi/6;
 q_max =  pi/6; q_min =  -pi/6;
@@ -161,6 +161,7 @@ for i = 1:max_training_loop
     Last_W = Attitude_W;
     % Least squares to update network weights
     Attitude_W = (LHS * LHS')\(LHS * lambda_k_plus_1_target');
+
     if isnan(Attitude_W)
         fprintf('Divergence in trainig \n')
         break
@@ -170,7 +171,7 @@ for i = 1:max_training_loop
     
     %error(:, :) = Attitude_W' * LHS - lambda_k_plus_1_target;
     weight_plot(:,i) = reshape(Attitude_W.',1,[]);
-    error(:, :) = Attitude_W - Last_W;
+    error(:, :) = Attitude_W' * LHS - lambda_k_plus_1_target;
     error_test = mae(error(:,:));
     if mod(i, 10) == 0
         fprintf('At: %g iterations, the MAE is %f \n', i,error_test)
@@ -307,3 +308,5 @@ fprintf('required time for training = %g sec\n', Training_time)
 
 % save("test_workspace_att_V.mat",'Attitude_W','Attitude_R','Attitude_F','Attitude_G',"-v7.3")
 % save('test_workspace_att_V_10k_less_R.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G',"-v7.3")
+% save("z_train_network_x" , "z_x_train")
+% save("z_target","z_target")

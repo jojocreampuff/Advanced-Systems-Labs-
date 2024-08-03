@@ -88,13 +88,13 @@ end
 
 %% Plotting 
 figure(1)
-plot3(r_initial.r_initial_1(1,:), r_initial.r_initial_1(2,:), r_initial.r_initial_1(3,:), 'b--', 'Linewidth', 1.5)
+plot3(r_initial.r_initial_1(1,:), r_initial.r_initial_1(2,:), -r_initial.r_initial_1(3,:), 'b--', 'Linewidth', 1.5)
 grid on
 hold on
 for i = 1:size(IC,2)
-plot3(x.(['x_',[num2str(i)]])(1,:), x.(['x_',[num2str(i)]])(2,:), x.(['x_',[num2str(i)]])(3,:), 'Linewidth', 1.5)
+plot3(x.(['x_',[num2str(i)]])(1,:), x.(['x_',[num2str(i)]])(2,:), -x.(['x_',[num2str(i)]])(3,:), 'Linewidth', 1.5)
 end
-plot3(r_initial.r_initial_1(1,:), r_initial.r_initial_1(2,:), r_initial.r_initial_1(3,:), 'b--', 'Linewidth', 1.5)
+plot3(r_initial.r_initial_1(1,:), r_initial.r_initial_1(2,:), -r_initial.r_initial_1(3,:), 'b--', 'Linewidth', 1.5)
 title('3D Trajectory')
 xlabel('x (m)'), ylabel('y (m)'), zlabel('z (m)')
 legend('Reference Trajectory', 'Path 1','Path 2','Path 3','path 4','path 5', 'Location', 'northeast');

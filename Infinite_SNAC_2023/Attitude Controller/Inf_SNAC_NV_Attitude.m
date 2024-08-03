@@ -17,7 +17,7 @@ Attitude_g = [0 0 0; 0 0 0; 0 0 0; 1/Ix 0 0; 0 1/Iy 0; 0 0 1/Iz];
 
 % Define training Parameters
 N_states = 6;
-N_patterns = 500;
+N_patterns = 1000;
 max_training_loop = 7000;
 threshold = 1e-3;
 dt = 0.004;
