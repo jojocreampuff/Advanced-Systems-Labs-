@@ -17,13 +17,13 @@ Attitude_g = [0 0 0; 0 0 0; 0 0 0; 1/Ix 0 0; 0 1/Iy 0; 0 0 1/Iz];
 
 % Define training Parameters
 N_states = 6;
-N_patterns = 3000;
-max_training_loop = 2000;
-threshold = 1e-7;
+N_patterns = 10000;
+max_training_loop = 1500;
+threshold = 1e-5;
 dt = 0.004;
 discount = 0.99;
-Attitude_Q = diag([100,100,100,100,100,100])*300;
-Attitude_R = diag([10,10,10]);
+Attitude_Q = diag([100,100,100,100,100,100])*10000;
+Attitude_R = diag([1,1,1])*100;
 
 
 % Define domains of training
@@ -198,16 +198,21 @@ xlim([0 i]);
 MAE_norm = error_test/norm(Attitude_W);
 
 Training_time = toc;
-x1 = 1.2*[rand(3,1);0;0;0];
-x2 = [rand(3,1);0;0;0];
-x3 = [rand(3,1);0;0;0];
-x4 = [rand(3,1);0;0;0]; 
+x1 = 1.5*[randn(3,1);0;0;0];
+x2 = [randn(3,1);0;0;0];
+x3 = [randn(3,1);0;0;0];
+x4 = [randn(3,1);0;0;0]; 
 
 r = [0;0;0;0;0;0];
+
 
 for i = 1:N
     time(i) = (i-1)*dt;
     r(:, i) = time(i)*0;
+    x1(:,i) = add_noise(x1(:,i),.05, 1);
+    x2(:,i) = add_noise(x2(:,i),.05, 1);
+    x3(:,i) = add_noise(x3(:,i),.05, 1);
+    x4(:,i) = add_noise(x4(:,i),.05, 1);
     u1(:,i) = -Attitude_R^-1 * Attitude_G(x1(:,i)-r(:, i))' * Attitude_W(:,:)' * Basis_Func_84(x1(:,i)-r(:, i));
     u2(:,i) = -Attitude_R^-1 * Attitude_G(x2(:,i)-r(:, i))' * Attitude_W(:,:)' * Basis_Func_84(x2(:,i)-r(:, i));
     u3(:,i) = -Attitude_R^-1 * Attitude_G(x3(:,i)-r(:, i))' * Attitude_W(:,:)' * Basis_Func_84(x3(:,i)-r(:, i));
@@ -307,7 +312,18 @@ xlabel('x (m)'), ylabel('y (m)'), zlabel('z (m)')
 legend(["Reference trajectory", "SNAC"]);
 fprintf('required time for training = %g sec\n', Training_time)
 
-% save("test_workspace_att_V.mat",'Attitude_W','Attitude_R','Attitude_F','Attitude_G',"-v7.3")
-save('test_workspace_att_V_10k_less_R.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G',"-v7.3")
-% save("z_train_network_x" , "z_x_train")
-% save("z_target","z_target")
+save("test_workspace_att_V.mat",'Attitude_W','Attitude_R','Attitude_F','Attitude_G',"-v7.3")
+% save('test_workspace_att_V_10k_less_R.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G',"-v7.3")
+% x_train_init = x_k_plus_1;
+% target_init = lambda_k_plus_1_target;
+% save("init_train_params.mat","x_train_init","target_init", "Attitude_Q","Attitude_R")
+
+function noisy_vector = add_noise(state_vector, std_devs, noise_percent)
+
+    
+    % Calculate the noise to be added
+    noise = (noise_percent / 100) * std_devs .* randn(size(state_vector));
+    
+    % Add noise to the state vector
+    noisy_vector = state_vector + noise;
+end

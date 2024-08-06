@@ -11,42 +11,21 @@ Position_g = @(x) [0 0 0; 0 0 0; 0 0 0; -1 0 0; 0 -1 0; 0 0 -1];
 % Define training Parameters
 N_states = 6;
 N_patterns = 10000;
-max_training_loop = 10000;
+max_training_loop = 5000;
 threshold = 1e-7;
 dt = 0.004;
-Position_Q = dt*diag([1e7,1e7,1e7,1e6,1e6,1e6]);
-% Position_Q = dt*diag([1e6,1e6,1e6,1,1,1]);
-%Position_R = dt*diag([0.1e4,0.1e4,0.1e4]);
-Position_R = dt*diag([1e3,1e3,1e3]);
+Position_Q = diag([100000,100000,100000,100000,100000,100000]);
+Position_R = diag([1,1,1])*10000; % SITL has too much control input
 
 % Define domains of training
-X_max = 30; X_min = -30;
-Y_max = 30; Y_min = -30;
-Z_max = 30; Z_min = -30;
+X_max = 1000; X_min = -1000;
+Y_max = 1000; Y_min = -1000;
+Z_max = 100; Z_min = -100;
 
-u_max = 30; u_min = -30;
-v_max = 30; v_min = -30;
-w_max = 30; w_min = -30;
+u_max = 20; u_min = -20;
+v_max = 20; v_min = -20;
+w_max = 20; w_min = -20;
 
-% Partial x_k+1 / partial x_k
-% A_k_plus_1 = @(x)...
-%     [
-%     1, 0, 0, dt,  0,  0; 
-%     0, 1, 0,  0, dt,  0; 
-%     0, 0, 1,  0,  0, dt; 
-%     0, 0, 0,  1,  0,  0; 
-%     0, 0, 0,  0,  1,  0; 
-%     0, 0, 0,  0,  0,  1; 
-%     ]; % row representation
-
-%     [
-%     1,  0,  0,  0,  0,  0; 
-%     0,  1,  0,  0,  0,  0; 
-%     0,  0,  1,  0,  0,  0; 
-%     dt, 0,  0,  1,  0,  0; 
-%     0,  dt, 0,  0,  1,  0; 
-%     0,  0,  dt, 0,  0,  1; 
-%     ];
 A_k_plus_1_T = @(x)...
     [
     ones(1,length(x(1,:))); zeros(1,length(x(1,:))); zeros(1,length(x(1,:))); zeros(1,length(x(1,:)));  zeros(1,length(x(1,:)));  zeros(1,length(x(1,:))); 
@@ -78,9 +57,6 @@ Position_W = rand(N_neurons, N_states)*.1;
 tic
 % Nonvectorzied SNAC training loop
 for i = 1:max_training_loop
-    %basis_func = zeros(N_neurons, N_patterns); 
-    %lambda_k_plus_1_target = zeros(N_states, N_patterns); 
-    % Generating target costate for all number of patterns
 
         X1 = X_min + (X_max - X_min) * rand(1, N_patterns);
         X2 = Y_min + (Y_max - Y_min) * rand(1, N_patterns);
@@ -128,48 +104,41 @@ for i = 1:max_training_loop
     A(26,:).*L(2,:) + A(29,:).*L(5,:) ;
     A(33,:).*L(3,:) + A(36,:).*L(6,:) ;
     ];
-        lambda_k_plus_1_target = Position_Q * (x_k_plus_1) + KEEP_DIMS;
+        lambda_k_plus_1_target = Position_Q * (x_k_plus_1) + .99*KEEP_DIMS;
 
 
     % Least squares to update network weights
     Position_W = (LHS * LHS')\(LHS * lambda_k_plus_1_target');
 
-    if isnan(Position_W)
-        fprintf('Divergence in trainig \n')
-        break
-    end
-
+    weight_plot(:,i) = reshape(Position_W.',1,[]);
     % Check for convergence
     error(:, :) = Position_W' * LHS - lambda_k_plus_1_target;
+    if mae(error(:,:))< threshold
+        fprintf('converged\n')
+        break
+    end
     error_test = mae(error(:,:));
 
     if mod(i, 100) == 0
         fprintf('At: %g iterations, the MAE is %f \n', i,error_test)
     end
-
-    % if error_test< threshold
-    %     fprintf('converged\n')
-    %     break
-    % end
 end
+figure(1);
+for k = 1:size(weight_plot,1) 
+    hold on;
+    plot(1:size(weight_plot,2) ,weight_plot(k,:)); 
+end
+xlabel('Iterations');
+ylabel('Weights');
+xlim([0 i]); 
 
 Training_time = toc;
 fprintf('required time for training = %g sec\n', Training_time)
-
 %% Simualtion
 
-% x1 = [0;0;0;0;0;0];
-x1 = rand(6,1)*10;
-x2 = [-1;-1;0;0;0;0];
-x3 = [1;-1;0;0;0;0];
-x4 = [-1;1;0;0;0;0]; 
-x5 = [1;1;0;0;0;0];
-x6 = [5; 5;0;0;0;0]; 
-x7 = [-5; 5;0;0;0;0]; 
-x8 = [5;-5;0;0;0;0];
-x9 = [-5;-5;0;0;0;0]; 
+x1 = [0;0;0;0;0;0]; 
+r = [0;0;0;0;0;0];
 
-%r = [0;0;0;0;0;0];
 time = 0:dt:t_f-dt;
 for i = 1:length(time)
     r_position(:,i) = Position_F_r(time(i));
@@ -181,163 +150,32 @@ r = [smooth_r_position; discrete_deriv(smooth_r_position,dt)];
 
 for i = 1:N
     u1(:,i) = -Position_R^-1 * Position_G(x1(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x1(:,i)-r(:, i));
-    u2(:,i) = -Position_R^-1 * Position_G(x2(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x2(:,i)-r(:, i));
-    u3(:,i) = -Position_R^-1 * Position_G(x3(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x3(:,i)-r(:, i));
-    u4(:,i) = -Position_R^-1 * Position_G(x4(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x4(:,i)-r(:, i));
-    u5(:,i) = -Position_R^-1 * Position_G(x5(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x5(:,i)-r(:, i));
-    u6(:,i) = -Position_R^-1 * Position_G(x6(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x6(:,i)-r(:, i));
-    u7(:,i) = -Position_R^-1 * Position_G(x7(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x7(:,i)-r(:, i));
-    u8(:,i) = -Position_R^-1 * Position_G(x8(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x8(:,i)-r(:, i));
-    u9(:,i) = -Position_R^-1 * Position_G(x9(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x9(:,i)-r(:, i));
+
     x1(:, i+1) = Position_F(x1(:,i)) + Position_G(x1(:,i)) * u1(:,i);
-    x2(:, i+1) = Position_F(x2(:,i)) + Position_G(x2(:,i)) * u2(:,i);
-    x3(:, i+1) = Position_F(x3(:,i)) + Position_G(x3(:,i)) * u3(:,i);
-    x4(:, i+1) = Position_F(x4(:,i)) + Position_G(x4(:,i)) * u4(:,i);
-    x5(:, i+1) = Position_F(x5(:,i)) + Position_G(x5(:,i)) * u5(:,i);
-    x6(:, i+1) = Position_F(x6(:,i)) + Position_G(x6(:,i)) * u6(:,i);
-    x7(:, i+1) = Position_F(x7(:,i)) + Position_G(x7(:,i)) * u7(:,i);
-    x8(:, i+1) = Position_F(x8(:,i)) + Position_G(x8(:,i)) * u8(:,i);
-    x9(:, i+1) = Position_F(x9(:,i)) + Position_G(x9(:,i)) * u9(:,i);
 end
-figure
-    
-% subplot(3,1,1); plot(...
-%     time, r(1, 1:length(time)), 'r--',...
-%     time, x1(1, 1:length(time)),...
-%     time, x2(1, 1:length(time)),...
-%     time, x3(1, 1:length(time)),...
-%     time, x4(1, 1:length(time)),...
-%     time, x5(1, 1:length(time)),...
-%     time, x6(1, 1:length(time)),...
-%     time, x7(1, 1:length(time)),...
-%     time, x8(1, 1:length(time)),...
-%     time, x9(1, 1:length(time)))
-% xlabel('Time (sec)' )
-% ylabel('x')
-% subplot(3,1,2); plot( ...
-%     time, r(2, 1:length(time)), 'r--',...
-%     time, x1(2, 1:length(time)), ...
-%     time, x2(2, 1:length(time)), ...
-%     time, x3(2, 1:length(time)), ...
-%     time, x4(2, 1:length(time)), ...
-%     time, x5(2, 1:length(time)),...
-%     time, x6(2, 1:length(time)),...
-%     time, x7(2, 1:length(time)),...
-%     time, x8(2, 1:length(time)),...
-%     time, x9(2, 1:length(time)))
-% xlabel('Time (sec)' )
-% ylabel('y')
-% subplot(3,1,3); plot( ...
-%     time, r(3, 1:length(time)), 'r--',...
-%     time, x1(3, 1:length(time)), ...
-%     time, x2(3, 1:length(time)), ...
-%     time, x3(3, 1:length(time)), ...
-%     time, x4(3, 1:length(time)), ...
-%     time, x5(3, 1:length(time)),...
-%     time, x6(3, 1:length(time)),...
-%     time, x7(3, 1:length(time)),...
-%     time, x8(3, 1:length(time)),...
-%     time, x9(3, 1:length(time)))
-% xlabel('Time (sec)' )
-% ylabel('z')
-% 
-% figure
-% subplot(3,1,1); plot(...
-%     time, r(4, 1:length(time)), 'r--',...
-%     time, x1(4, 1:length(time)),...
-%     time, x2(4, 1:length(time)),...
-%     time, x3(4, 1:length(time)),...
-%     time, x4(4, 1:length(time)),...
-%     time, x5(4, 1:length(time)),...
-%     time, x6(4, 1:length(time)),...
-%     time, x7(4, 1:length(time)),...
-%     time, x8(4, 1:length(time)),...
-%     time, x9(4, 1:length(time)))
-% xlabel('Time (sec)' )
-% ylabel('x')
-% subplot(3,1,2); plot( ...
-%     time, r(5, 1:length(time)), 'r--',...
-%     time, x1(5, 1:length(time)), ...
-%     time, x2(5, 1:length(time)), ...
-%     time, x3(5, 1:length(time)), ...
-%     time, x4(5, 1:length(time)), ...
-%     time, x5(5, 1:length(time)),...
-%     time, x6(5, 1:length(time)),...
-%     time, x7(5, 1:length(time)),...
-%     time, x8(5, 1:length(time)),...
-%     time, x9(5, 1:length(time)))
-% xlabel('Time (sec)' )
-% ylabel('y')
-% subplot(3,1,3); plot( ...
-%     time, r(6, 1:length(time)), 'r--',...
-%     time, x1(6, 1:length(time)), ...
-%     time, x2(6, 1:length(time)), ...
-%     time, x3(6, 1:length(time)), ...
-%     time, x4(6, 1:length(time)), ...
-%     time, x5(6, 1:length(time)),...
-%     time, x6(6, 1:length(time)),...
-%     time, x7(6, 1:length(time)),...
-%     time, x8(6, 1:length(time)),...
-%     time, x9(6, 1:length(time)))
-% xlabel('Time (sec)' )
-% ylabel('y')
 
-figure
-subplot(3,1,1); plot(...
-    time, u1(1,1:length(time)),...
-    time, u2(1,1:length(time)),...
-    time, u3(1,1:length(time)),...
-    time, u4(1,1:length(time)),...
-    time, u5(1,1:length(time)),...
-    time, u6(1,1:length(time)),...
-    time, u7(1,1:length(time)),...
-    time, u8(1,1:length(time)),...
-    time, u9(1,1:length(time)))
-xlabel('Time (sec)' )
-ylabel('u1')
-subplot(3,1,2); plot(...
-    time, u1(2,1:length(time)),...
-    time, u2(2,1:length(time)),...
-    time, u3(2,1:length(time)),...
-    time, u4(2,1:length(time)),...
-    time, u5(2,1:length(time)),...
-    time, u6(2,1:length(time)),...
-    time, u7(2,1:length(time)),...
-    time, u8(2,1:length(time)),...
-    time, u9(2,1:length(time)))
-xlabel('Time (sec)' )
-ylabel('u2')
-subplot(3,1,3); plot(...
-    time, u1(3,1:length(time)),...
-    time, u2(3,1:length(time)),...
-    time, u3(3,1:length(time)),...
-    time, u4(3,1:length(time)),...
-    time, u5(3,1:length(time)),...
-    time, u6(3,1:length(time)),...
-    time, u7(3,1:length(time)),...
-    time, u8(3,1:length(time)),...
-    time, u9(3,1:length(time)))
-xlabel('Time (sec)' )
-ylabel('u3')
+stdv = std(x1(:,end-1)-r, 0 , 2);
+stdv(3) = (stdv(1)+stdv(2))/2;
+x1(:,1) = [0;0;0;0;0;0]; 
 
-figure
+for i = 1:N
+    x1(:,i) = add_noise(x1(:,i),stdv, .5);
+    u1(:,i) = -Position_R^-1 * Position_G(x1(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x1(:,i)-r(:, i));
+
+    x1(:, i+1) = Position_F(x1(:,i)) + Position_G(x1(:,i)) * u1(:,i);
+end
+
+figure(2)
 grid on
 hold on
 plot3(r(1,:), r(2,:), -r(3,:), '--', 'Linewidth', 1.5)
 plot3(x1(1,:), x1(2,:), -x1(3,:), 'Linewidth', 1.5)
-plot3(x2(1,:), x2(2,:), -x2(3,:), 'Linewidth', 1.5)
-plot3(x3(1,:), x3(2,:), -x3(3,:), 'Linewidth', 1.5)
-plot3(x4(1,:), x4(2,:), -x4(3,:), 'Linewidth', 1.5)
-plot3(x5(1,:), x5(2,:), -x5(3,:), 'Linewidth', 1.5)
-plot3(x6(1,:), x6(2,:), -x6(3,:), 'Linewidth', 1.5)
-plot3(x7(1,:), x7(2,:), -x7(3,:), 'Linewidth', 1.5)
-plot3(x8(1,:), x8(2,:), -x8(3,:), 'Linewidth', 1.5)
-plot3(x9(1,:), x9(2,:), -x9(3,:), 'Linewidth', 1.5)
+
 title('3D Trajectory')
 xlabel('x (m)'), ylabel('y (m)'), zlabel('z (m)')
 legend(["Reference trajectory", "SNAC"]);
 
-save pos.mat
+save("test_workspace_pos.mat","-v7.3")
 
 function uvw = discrete_deriv(x,dt)
     uvw = ones(size(x));
@@ -346,6 +184,16 @@ function uvw = discrete_deriv(x,dt)
         uvw(:, k) = (x(:, k + 1) - x(:, k - 1))/(2*dt);
     end
     uvw(:, end) = (x(:, end) - x(:, end - 1))/dt;
+end
+
+function noisy_vector = add_noise(state_vector, std_devs, noise_percent)
+
+    
+    % Calculate the noise to be added
+    noise = (noise_percent / 100) * std_devs .* randn(size(state_vector));
+    
+    % Add noise to the state vector
+    noisy_vector = state_vector + noise;
 end
 
 

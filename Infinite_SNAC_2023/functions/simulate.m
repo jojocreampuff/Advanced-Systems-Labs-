@@ -53,15 +53,17 @@ r_smooth = [smooth_r_position; discrete_deriv(smooth_r_position,dt)];
 
 
 r = .24;
-drag = 0.01; % (drag coef)
+drag = 0.1; % (drag coef)
 Tmin = 1;
 Tmax = 18;
 Max_torque = 8.64;
 MAX_PWM = 2000;
 MIN_PWM = 1000;
 
-for i = 1:N-1
+stdv = [1; 1; 1; 1; 1; 1; .01; .01; .01; .01; .01; .01]/10;
 
+for i = 1:N-1
+    x(:,i) = add_noise(x(:,i),stdv, noise);
     % SNAC controller used to track trajectory - optimal control equation
     Pos_error(:,i) = x(1:6,i) - r_smooth(:, i);
 
@@ -125,7 +127,7 @@ for i = 1:N-1
 
     u(:,i) = [ft(i); torques(:, i)];
 
-    u_noise(:,i) = u(:,i) + (1 + noise.*(2*rand(size(u(:,i))) - 1)); % add randomness
+    u_noise(:,i) = u(:,i); %+ (1 + noise.*(2*rand(size(u(:,i))) - 1)); % add randomness
     if u_noise(1,i) < 0 
         u_noise(1,i) = 0;
     end
@@ -229,6 +231,16 @@ end
 % 
 %     end
 
+end
+
+function noisy_vector = add_noise(state_vector, std_devs, noise_percent)
+
+    
+    % Calculate the noise to be added
+    noise = (noise_percent / 100) * std_devs .* randn(size(state_vector));
+    
+    % Add noise to the state vector
+    noisy_vector = state_vector + noise;
 end
 
 
