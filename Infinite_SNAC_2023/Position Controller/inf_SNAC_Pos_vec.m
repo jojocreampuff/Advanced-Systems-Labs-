@@ -10,7 +10,7 @@ Position_g = @(x) [0 0 0; 0 0 0; 0 0 0; -1 0 0; 0 -1 0; 0 0 -1];
 
 % Define training Parameters
 N_states = 6;
-N_patterns = 10000;
+N_patterns = 1000;
 max_training_loop = 5000;
 threshold = 1e-7;
 dt = 0.004;
@@ -18,8 +18,8 @@ Position_Q = diag([100000,100000,100000,100000,100000,100000]);
 Position_R = diag([1,1,1])*10000; % SITL has too much control input
 
 % Define domains of training
-X_max = 1000; X_min = -1000;
-Y_max = 1000; Y_min = -1000;
+X_max = 100; X_min = -100;
+Y_max = 100; Y_min = -100;
 Z_max = 100; Z_min = -100;
 
 u_max = 20; u_min = -20;
@@ -104,7 +104,7 @@ for i = 1:max_training_loop
     A(26,:).*L(2,:) + A(29,:).*L(5,:) ;
     A(33,:).*L(3,:) + A(36,:).*L(6,:) ;
     ];
-        lambda_k_plus_1_target = Position_Q * (x_k_plus_1) + .99*KEEP_DIMS;
+        lambda_k_plus_1_target = Position_Q * (x_k_plus_1) + KEEP_DIMS;
 
 
     % Least squares to update network weights

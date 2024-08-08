@@ -1,7 +1,12 @@
 clc; clear; close all;
 
-addpath("/home/engelhardt/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions/")
-% addpath('..\functions')
+% my pc path
+% addpath("/home/engelhardt/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions/")
+
+% lab work stations paths
+% addpath("/home/users10/re606359/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions")
+
+addpath("C:\Users\re606359\Desktop\Advanced-Systems-Labs-\Infinite_SNAC_2023\functions " )
 
 % Define plant dynamics
 grav = 9.81;
@@ -13,7 +18,7 @@ Position_g = @(x) [0 0 0; 0 0 0; 0 0 0; -1 0 0; 0 -1 0; 0 0 -1];
 N_states = 6;
 N_patterns = 1000;
 max_training_loop = 5000;
-threshold = 5e-6;
+threshold = 1e-5;
 dt = 0.004;
 Position_Q = diag([100000,100000,100000,100000,100000,100000]);
 Position_R = diag([1,1,1])*10000; % SITL has too much control input
@@ -101,14 +106,22 @@ for i = 1:max_training_loop
     weight_plot(:,i) = reshape(Position_W.',1,[]);
     % Check for convergence
     error(:, :) = Position_W' * basis_func - lambda_k_plus_1_target;
-    if mae(error(:,:))< threshold
+    error_mae = mae(error(:,:));
+    error_mse = mean(mean((error(:,:).^2) ));
+
+    if error_mae < threshold
         fprintf('converged\n')
         break
     end
-    error_test = mae(error(:,:));
+
+    % if mod(i, 100) == 0
+    %     fprintf('At: %d iterations, the MAE is %f \n', i ,error_mae)
+    % end
 
     if mod(i, 100) == 0
-        fprintf('At: %g iterations, the MAE is %f \n', i,error_test)
+        disp(['i = ', num2str(i)]);
+        disp(['error_mae = ', num2str(error_mae)]);
+        disp(['error_mse = ', num2str(error_mse)]);
     end
 end
 
@@ -123,6 +136,13 @@ xlim([0 i]);
 
 Training_time = toc;
 fprintf('required time for training = %g sec\n', Training_time)
+
+%% Test/Train error
+[mae_train, mse_train, mae_test, mse_test] = pos_test_train_error(x_k, Position_W, Position_R, Position_G, Position_F, Position_Q, A, N_states, N_patterns, X_min, X_max, Y_min, Y_max, Z_min, Z_max, u_min, u_max, v_min, v_max, w_min, w_max);
+fprintf("\ntraining error: mae = %f\n",mae_train)
+fprintf("training error: mse = %f\n",mse_train)
+fprintf("Test error: mae = %f\n", mae_test)
+fprintf("Test error: mse = %f\n",mse_test)
 
 %% Simualtion
 

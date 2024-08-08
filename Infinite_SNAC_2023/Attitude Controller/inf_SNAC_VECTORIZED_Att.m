@@ -4,6 +4,7 @@ clc; clear; close all;
 
 % lab work stations paths
 % addpath("/home/users10/re606359/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions")
+
 addpath("C:\Users\re606359\Desktop\Advanced-Systems-Labs-\Infinite_SNAC_2023\functions " )
 
 % Define plant dynamics
@@ -21,12 +22,12 @@ Attitude_g = [0 0 0; 0 0 0; 0 0 0; 1/Ix 0 0; 0 1/Iy 0; 0 0 1/Iz];
 % Define training Parameters
 N_states = 6;
 N_patterns = 10000;
-max_training_loop = 1500;
+max_training_loop = 2000;
 threshold = 1e-5;
 dt = 0.004;
 discount = 0.99;
-Attitude_Q = diag([100,100,100,100,100,100])*10000;
-Attitude_R = diag([1,1,1])*100;
+Attitude_Q = diag([100,100,100,100,100,100])*100000;
+Attitude_R = diag([1,1,1])*1000;
 
 
 % Define domains of training
@@ -161,7 +162,6 @@ for i = 1:max_training_loop
     sum( A_col6(:,:).*L(:,:));
     ]; % keep_dims must be 6x # train
     lambda_k_plus_1_target = Attitude_Q * (x_k_plus_1) + discount*KEEP_DIMS;
-    Last_W = Attitude_W;
     % Least squares to update network weights
     Attitude_W = (LHS * LHS')\(LHS * lambda_k_plus_1_target');
 
@@ -174,18 +174,29 @@ for i = 1:max_training_loop
     
     %error(:, :) = Attitude_W' * LHS - lambda_k_plus_1_target;
     weight_plot(:,i) = reshape(Attitude_W.',1,[]);
-    error(:, :) = Attitude_W' * LHS - lambda_k_plus_1_target;
-    error_test = mae(error(:,:));
-    if mod(i, 10) == 0
-        fprintf('At: %g iterations, the MAE is %f \n', i,error_test)
+    error(:, :) = lambda_k_plus_1 - lambda_k_plus_1_target;
+    error_mae = mae(error(:,:));
+    error_mse = mean(mean((error(:,:).^2) ));
+
+    if mod(i, 100) == 0
+        disp(['i = ', num2str(i)]);
+        disp(['error_mae = ', num2str(error_mae)]);
+        disp(['error_mse = ', num2str(error_mse)]);
     end
 
-    if error_test< threshold
+    if error_mae< threshold
         fprintf('Weights converged, mae = %f \n', mae(error(:,:)))
         break
     end
 end
 fprintf("finished training")
+
+%% test/train error
+[mae_train, mse_train, mae_test, mse_test] = att_test_train_error(x_k, Attitude_W, Attitude_R, Attitude_G, Attitude_F, Attitude_Q, a_col1, a_col2, a_col3, a_col4, a_col5, a_col6, PHI_min, PHI_max, THE_min, THE_max, PSI_min, PSI_max, p_min, p_max, q_min, q_max, r_min, r_max, N_patterns);
+fprintf("\ntraining error: mae = %f\n",mae_train)
+fprintf("training error: mse = %f\n",mse_train)
+fprintf("Test error: mae = %f\n", mae_test)
+fprintf("Test error: mse = %f\n",mse_test)
 
 %% Simualtion
 
@@ -198,7 +209,7 @@ xlabel('Iterations');
 ylabel('Weights');
 xlim([0 i]);
 
-MAE_norm = error_test/norm(Attitude_W);
+MAE_norm = error_mae/norm(Attitude_W);
 
 Training_time = toc;
 x1 = 1.5*[randn(3,1);0;0;0];
