@@ -1,7 +1,10 @@
 clc; clear; close all;
-
+% my pc path
 % addpath("/home/engelhardt/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions/")
-addpath("/home/users10/re606359/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions")
+
+% lab work stations paths
+% addpath("/home/users10/re606359/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions")
+addpath("C:\Users\re606359\Desktop\Advanced-Systems-Labs-\Infinite_SNAC_2023\functions " )
 
 % Define plant dynamics
 Ix = 2;   % moment of inertia (kg*m^2)
