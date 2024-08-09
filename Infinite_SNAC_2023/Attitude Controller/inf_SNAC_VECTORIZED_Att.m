@@ -26,8 +26,8 @@ max_training_loop = 2000;
 threshold = 1e-5;
 dt = 0.004;
 discount = 0.99;
-Attitude_Q = diag([100,100,100,100,100,100])*100000;
-Attitude_R = diag([1,1,1])*1000;
+Attitude_Q = diag([100,100,100,100,100,100])*10000;
+Attitude_R = diag([1,1,1])*100;
 
 
 % Define domains of training
@@ -328,9 +328,9 @@ fprintf('required time for training = %g sec\n', Training_time)
 
 save("test_workspace_att_V.mat",'Attitude_W','Attitude_R','Attitude_F','Attitude_G',"-v7.3")
 % save('test_workspace_att_V_10k_less_R.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G',"-v7.3")
-% x_train_init = x_k_plus_1;
-% target_init = lambda_k_plus_1_target;
-% save("init_train_params.mat","x_train_init","target_init", "Attitude_Q","Attitude_R")
+x_train_init = x_k_plus_1;
+target_init = lambda_k_plus_1_target;
+save("init_train_params.mat","x_train_init","target_init", "Attitude_Q","Attitude_R","N_patterns")
 
 function noisy_vector = add_noise(state_vector, std_devs, noise_percent)
 

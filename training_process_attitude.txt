@@ -1,0 +1,9 @@
+SNAC least squares training
+training error: mae = 348173.280844
+training error: mse = 571023915476.699951
+Test error: mae = 352467.034711
+Test error: mse = 577845757688.963623
+
+very high bias
+
+SNAC NN training 
