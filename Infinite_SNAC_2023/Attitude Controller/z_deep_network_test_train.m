@@ -1,7 +1,6 @@
 function [mae_train, mse_train, mae_test, mse_test] = z_deep_network_test_train(net, x_k_train, Attitude_G, Attitude_R, Attitude_F, Attitude_Q, discount, ...
     a_col1, a_col2, a_col3, a_col4, a_col5, a_col6, PHI_min, PHI_max, THE_min, THE_max, PSI_min, PSI_max, p_min, p_max, q_min, q_max, r_min, r_max, N_patterns)
     
-
 %% training error
 % import training set
     lambda_k_1_train = net(x_k_train);

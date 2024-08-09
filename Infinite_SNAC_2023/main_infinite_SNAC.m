@@ -11,6 +11,7 @@ addpath('functions')
 
 load('test_workspace_pos.mat','Position_W','Position_R','Position_F','Position_G','dt','grav')
 load('test_workspace_att_V.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G')
+load("z_att_deep_network_1.mat","net")
 % load('test_workspace_att.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G')
 
 % Load necessary variables for the position and attitude
@@ -24,7 +25,7 @@ Attitude.Attitude_R = Attitude_R;   % Control penalizing matrix
 
 % Define simulation parameters
 parameters.dt   = 0.004;    % time step
-parameters.t_f  = 100;       % final time
+parameters.t_f  = 50;       % final time
 parameters.grav = 9.81;     % gravity (m/s^2)
 parameters.m    = 3.2;        % mass (kg)
 parameters.Ix   = 2;      % moments of inertia (kg*m^2)
@@ -67,12 +68,13 @@ IC = [0 5 -5  5 -5; % x
 %       0; 
 %       zeros(9,1)];
 
-noise = 0; % 600% noise
+noise = 1; % 600% noise
 
 % Simulating for all IC, simulations saved in structures
 for i = 1:size(IC,2)
 
-    results = simulate(Position, Attitude, parameters, reference, IC(:,i),noise); %max 6 
+    % results = simulate(Position, Attitude, parameters, reference, IC(:,i),noise); %max 6 
+    results = simulate_NN(Position, Attitude, parameters, reference, IC(:,i),noise, net); %max 6
     simulations.(['results_', num2str(i)]) = results;
     x.(['x_',[num2str(i)]]) = results.x;
     u.(['u_',[num2str(i)]]) = results.u;

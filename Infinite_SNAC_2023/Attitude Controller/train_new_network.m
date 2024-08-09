@@ -11,8 +11,8 @@ function [net, tr, e, performance] = train_new_network(net, x , t)
     net.divideParam.testRatio = 10/100;
     
     % Train the Network
+    % [net,tr] = train(net,x,t,'useParallel','yes','useGPU','yes');
     [net,tr] = train(net,x,t,'useParallel','yes');
-    
     % Test the Network
     y = net(x);
     e = gsubtract(t,y);
