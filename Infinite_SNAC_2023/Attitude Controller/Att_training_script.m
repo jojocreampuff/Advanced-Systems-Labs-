@@ -306,3 +306,5 @@ function noisy_vector = add_noise(state_vector, std_devs, noise_percent)
     % Add noise to the state vector
     noisy_vector = state_vector + noise;
 end
+
+save("z_att_deep_network_1.mat")
