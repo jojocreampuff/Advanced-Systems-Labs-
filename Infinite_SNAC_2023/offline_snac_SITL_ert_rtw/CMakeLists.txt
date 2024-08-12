@@ -49,9 +49,9 @@ SRCS
        ${MAVLINK_LIBRARY_DIR}
        ${MAVLINK_LIBRARY_DIR}/${CONFIG_MAVLINK_DIALECT}
        ${MAVLINK_LIBRARY_DIR}/${MAVLINK_DIALECT_UAVIONIX}
-       /home/users10/re606359/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023
+       /home/users10/re606359/Desktop/matlab/Advanced-Systems-Labs-/Infinite_SNAC_2023
        /home/users10/re606359/Documents/MATLAB/SupportPackages/R2024a/toolbox/target/supportpackages/px4/include
-       /home/users10/re606359/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/offline_snac_SITL_ert_rtw
+       /home/users10/re606359/Desktop/matlab/Advanced-Systems-Labs-/Infinite_SNAC_2023/offline_snac_SITL_ert_rtw
        /usr/local/MATLAB/R2024a/extern/include
        /usr/local/MATLAB/R2024a/simulink/include
        /usr/local/MATLAB/R2024a/rtw/c/src

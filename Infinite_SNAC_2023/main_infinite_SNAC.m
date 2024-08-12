@@ -73,6 +73,7 @@ noise = 1; % 600% noise
 % Simulating for all IC, simulations saved in structures
 for i = 1:size(IC,2)
 
+    
     % results = simulate(Position, Attitude, parameters, reference, IC(:,i),noise); %max 6 
     results = simulate_NN(Position, Attitude, parameters, reference, IC(:,i),noise, net); %max 6
     simulations.(['results_', num2str(i)]) = results;
@@ -87,6 +88,7 @@ for i = 1:size(IC,2)
     PWM_channels.(['PWM_channels_',[num2str(i)]]) = results.PWM_channels;
     each_motor_thrust.(['each_motor_thrust_',[num2str(i)]]) = results.each_motor_thrust;
     time = results.time;
+
 
 end
 
