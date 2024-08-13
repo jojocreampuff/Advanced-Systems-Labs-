@@ -3,14 +3,14 @@ clc; clear; close all;
 % addpath("/home/engelhardt/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions/")
 
 % lab work stations paths
-% addpath("/home/users10/re606359/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions")
+addpath("/home/users10/re606359/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions")
 
-addpath("C:\Users\re606359\Desktop\Advanced-Systems-Labs-\Infinite_SNAC_2023\functions " )
+% addpath("C:\Users\re606359\Desktop\Advanced-Systems-Labs-\Infinite_SNAC_2023\functions " )
 
 % Define plant dynamics
-Ix = 2;   % moment of inertia (kg*m^2)
-Iy = 2;   % moment of inertia (kg*m^2)
-Iz = 4;   % moment of inertia (kg*m^2)
+Ix = .1;   % moment of inertia (kg*m^2)
+Iy = .1;   % moment of inertia (kg*m^2)
+Iz = .2;   % moment of inertia (kg*m^2)
 Attitude_f = @(x) [(x(4) + x(5)*(sin(x(1))*tan(x(2))) + x(6)*(cos(x(1))*tan(x(2))));
                    (x(5)*cos(x(1)) - x(6)*sin(x(1)));
                    (x(5)*sin(x(1))/cos(x(2)) + x(6)*cos(x(1))/cos(x(2)));
@@ -21,13 +21,13 @@ Attitude_g = [0 0 0; 0 0 0; 0 0 0; 1/Ix 0 0; 0 1/Iy 0; 0 0 1/Iz];
 
 % Define training Parameters
 N_states = 6;
-N_patterns = 10000;
-max_training_loop = 2000;
+N_patterns = 5000;
+max_training_loop = 5000;
 threshold = 1e-5;
 dt = 0.004;
 discount = 0.99;
-Attitude_Q = diag([100,100,100,100,100,100])*10000;
-Attitude_R = diag([1,1,1])*100;
+Attitude_Q = diag([10,10,1,10,10,1])*100000;
+Attitude_R = diag([1,1,1])*10000;
 
 
 % Define domains of training
@@ -223,10 +223,10 @@ r = [0;0;0;0;0;0];
 for i = 1:N
     time(i) = (i-1)*dt;
     r(:, i) = time(i)*0;
-    x1(:,i) = add_noise(x1(:,i),.05, 2);
-    x2(:,i) = add_noise(x2(:,i),.05, 2);
-    x3(:,i) = add_noise(x3(:,i),.05, 2);
-    x4(:,i) = add_noise(x4(:,i),.05, 2);
+    % x1(:,i) = add_noise(x1(:,i),.05, 2);
+    % x2(:,i) = add_noise(x2(:,i),.05, 2);
+    % x3(:,i) = add_noise(x3(:,i),.05, 2);
+    % x4(:,i) = add_noise(x4(:,i),.05, 2);
     u1(:,i) = -Attitude_R^-1 * Attitude_G(x1(:,i)-r(:, i))' * Attitude_W(:,:)' * Basis_Func_84(x1(:,i)-r(:, i));
     u2(:,i) = -Attitude_R^-1 * Attitude_G(x2(:,i)-r(:, i))' * Attitude_W(:,:)' * Basis_Func_84(x2(:,i)-r(:, i));
     u3(:,i) = -Attitude_R^-1 * Attitude_G(x3(:,i)-r(:, i))' * Attitude_W(:,:)' * Basis_Func_84(x3(:,i)-r(:, i));

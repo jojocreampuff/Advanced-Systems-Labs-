@@ -27,10 +27,10 @@ Attitude.Attitude_R = Attitude_R;   % Control penalizing matrix
 parameters.dt   = 0.004;    % time step
 parameters.t_f  = 50;       % final time
 parameters.grav = 9.81;     % gravity (m/s^2)
-parameters.m    = 3.2;        % mass (kg)
-parameters.Ix   = 2;      % moments of inertia (kg*m^2)
-parameters.Iy   = 2;      %
-parameters.Iz   = 4;      %
+parameters.m    = .77;        % mass (kg)
+parameters.Ix   = .1;      % moments of inertia (kg*m^2)
+parameters.Iy   = .1;      %
+parameters.Iz   = .2;      %
 
 % Define desired reference as function of time
 reference = @(t)...
@@ -68,14 +68,14 @@ IC = [0 5 -5  5 -5; % x
 %       0; 
 %       zeros(9,1)];
 
-noise = 1; % 600% noise
+noise = 0; % 600% noise
 
 % Simulating for all IC, simulations saved in structures
 for i = 1:size(IC,2)
 
     
-    % results = simulate(Position, Attitude, parameters, reference, IC(:,i),noise); %max 6 
-    results = simulate_NN(Position, Attitude, parameters, reference, IC(:,i),noise, net); %max 6
+    results = simulate(Position, Attitude, parameters, reference, IC(:,i),noise); %max 6 
+    % results = simulate_NN(Position, Attitude, parameters, reference, IC(:,i),noise, net); %max 6
     simulations.(['results_', num2str(i)]) = results;
     x.(['x_',[num2str(i)]]) = results.x;
     u.(['u_',[num2str(i)]]) = results.u;
