@@ -52,11 +52,12 @@ smooth_r_position = smooth(r_initial, x(1:3)', x(4:6)', time);
 r_smooth = [smooth_r_position; discrete_deriv(smooth_r_position,dt)];
 
 
-r = .24;
-drag = 0.1; % (drag coef)
-Tmin = 1;
-Tmax = 18;
-Max_torque = 8.64;
+r = .1;
+drag = 0.01; % (drag coef)
+Tmin = 0;
+Tmax = 10;
+max_Ft = Tmax*4;
+Max_torque = Tmax*r*2;
 MAX_PWM = 2000;
 MIN_PWM = 1000;
 
@@ -82,6 +83,7 @@ for i = 1:N-1
     Att_error(:,i) = x(7:12,i) - angles_ref(:,i);
     torques(:,i) = -Attitude_R^-1 * Attitude_G(Att_error(:,i))' * Attitude_W(:,:)' * Basis_Func_84(Att_error(:,i));
     
+    torques(:,i) = torques(:,i)/1000; %% convert from g*m^2 to kg*m^2
 
     for p = 1:3
         if torques(p,i) > Max_torque
@@ -119,8 +121,8 @@ for i = 1:N-1
     % thrust cant be more then the max of all 4 rotors!
     ft(1,i) = sum(each_motor_thrust(:,i));
 
-    if ft(1,i)>72
-        ft(1,i) = 72;
+    if ft(1,i)>max_Ft
+        ft(1,i) = max_Ft;
     elseif ft(1,i)<0
         ft(1,i) = 0;
     end

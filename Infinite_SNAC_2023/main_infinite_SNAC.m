@@ -28,9 +28,9 @@ parameters.dt   = 0.004;    % time step
 parameters.t_f  = 50;       % final time
 parameters.grav = 9.81;     % gravity (m/s^2)
 parameters.m    = .77;        % mass (kg)
-parameters.Ix   = .1;      % moments of inertia (kg*m^2)
-parameters.Iy   = .1;      %
-parameters.Iz   = .2;      %
+parameters.Ix   = .01;      % moments of inertia (kg*m^2)
+parameters.Iy   = .01;      %
+parameters.Iz   = .02;      %
 
 % Define desired reference as function of time
 reference = @(t)...

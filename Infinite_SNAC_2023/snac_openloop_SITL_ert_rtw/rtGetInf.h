@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'snac_openloop_SITL'.
 //
-// Model version                  : 3.44
+// Model version                  : 3.45
 // Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
-// C/C++ source code generated on : Mon Aug 12 16:44:05 2024
+// C/C++ source code generated on : Tue Aug 13 15:00:32 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex

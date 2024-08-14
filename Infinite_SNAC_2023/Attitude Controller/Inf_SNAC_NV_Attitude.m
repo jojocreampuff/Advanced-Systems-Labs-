@@ -4,9 +4,20 @@ addpath("/home/engelhardt/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/func
 % addpath('..\functions')
 
 % Define plant dynamics
-Ix = .1;   % moment of inertia (kg*m^2)
-Iy = .1;  % moment of inertia (kg*m^2)
-Iz = .2;   % moment of inertia (kg*m^2)
+Ix = 10;   % moment of inertia (g*m^2) 
+Iy = 10;  % moment of inertia (g*m^2)
+Iz = 20;   % moment of inertia (g*m^2)
+% non-dimesnionalize these dynamics
+
+% Define domains of training
+PHI_max = pi/6; PHI_min = -pi/6;
+THE_max = pi/6; THE_min = -pi/6;
+PSI_max = pi; PSI_min = -pi;
+
+p_max =  pi/8; p_min =  -pi/8;
+q_max =  pi/8; q_min =  -pi/8;
+r_max =  pi/10; r_min =  -pi/10;
+
 Attitude_f = @(x) [(x(4) + x(5)*(sin(x(1))*tan(x(2))) + x(6)*(cos(x(1))*tan(x(2))));
                    (x(5)*cos(x(1)) - x(6)*sin(x(1)));
                    (x(5)*sin(x(1))/cos(x(2)) + x(6)*cos(x(1))/cos(x(2)));
@@ -15,27 +26,33 @@ Attitude_f = @(x) [(x(4) + x(5)*(sin(x(1))*tan(x(2))) + x(6)*(cos(x(1))*tan(x(2)
                    ((Ix - Iy) / Iz * x(4) * x(5))];
 Attitude_g = [0 0 0; 0 0 0; 0 0 0; 1/Ix 0 0; 0 1/Iy 0; 0 0 1/Iz];
 
+Attitude_f_bar = @(x_bar) [ (1/x1_bar)*(x_bar(4) + x_bar(5)*(sin(x_bar(1))*tan(x_bar(2))) + x_bar(6)*(cos(x_bar(1))*tan(x_bar(2))));
+                            (1/x2_bar)*(x_bar(5)*cos(x_bar(1)) - x_bar(6)*sin(x_bar(1)));
+                            (1/x3_bar)*(x_bar(5)*sin(x_bar(1))/cos(x_bar(2)) + x_bar(6)*cos(x_bar(1))/cos(x_bar(2)));
+                            (1/x4_bar)*((Iy - Iz) / Ix * x_bar(5) * x_bar(6));
+                            (1/x5_bar)*((Iz - Ix) / Iy * x_bar(4) * x_bar(6));
+                            (1/x6_bar)*((Ix - Iy) / Iz * x_bar(4) * x_bar(5))      ];
+
+Attitude_g_bar = [0 0 0; 0 0 0; 0 0 0; u1_max/Ix 0 0; 0 u2_max/Iy 0; 0 0 u3_max/Iz];
+
+% Euler integration
+Attitude_F = @(x) x + dt * Attitude_f(x);
+Attitude_G = @(x) Attitude_g * dt;
+
+
+
 % Define training Parameters
-N_states = 6;
-N_patterns = 1000;
+N_states =          6;
+N_patterns =        1000;
 max_training_loop = 5000;
-threshold = 1e-5;
-dt = 0.004;
+threshold =         1e-5;
+dt =                0.004;
 % Attitude_Q = dt*diag([1e6,1e6,1e4,1e5,1e5,1e4]);
-Attitude_Q = diag([10,10,1,10,10,1])*10000;
-Attitude_R = diag([1,1,1])*1000;
+Attitude_Q = diag([1,1,1,1,1,1])*1000000;
+Attitude_R = diag([1,1,1])*1;
 % Attitude_R = dt*diag([0.5e4,0.5e4,0.5e4]);
 
-% Define domains of training
-PHI_max = pi/7; PHI_min = -pi/7;
-THE_max = pi/7; THE_min = -pi/7;
-PSI_max = pi; PSI_min = -pi;
 
-
-
-p_max =  pi/6; p_min =  -pi/6;
-q_max =  pi/6; q_min =  -pi/6;
-r_max =  pi/8; r_min =  -pi/8;
 
 % Partial x_k+1 / partial x_k
 A = @(x)...
@@ -50,10 +67,7 @@ A = @(x)...
 
 % Define simulation parameters
 t_f = 25;
-discount = 1;
-% Euler integration
-Attitude_F = @(x) x + dt * Attitude_f(x);
-Attitude_G = @(x) Attitude_g * dt;
+discount = .99;
 
 % Additonal variables
 N_neurons = length(Basis_Func_84(ones(N_states,1)));
