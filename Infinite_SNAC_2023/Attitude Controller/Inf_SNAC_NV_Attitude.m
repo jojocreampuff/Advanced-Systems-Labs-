@@ -26,12 +26,13 @@ Attitude_f = @(x) [(x(4) + x(5)*(sin(x(1))*tan(x(2))) + x(6)*(cos(x(1))*tan(x(2)
                    ((Ix - Iy) / Iz * x(4) * x(5))];
 Attitude_g = [0 0 0; 0 0 0; 0 0 0; 1/Ix 0 0; 0 1/Iy 0; 0 0 1/Iz];
 
-Attitude_f_bar = @(x_bar) [ (1/x1_bar)*(x_bar(4) + x_bar(5)*(sin(x_bar(1))*tan(x_bar(2))) + x_bar(6)*(cos(x_bar(1))*tan(x_bar(2))));
-                            (1/x2_bar)*(x_bar(5)*cos(x_bar(1)) - x_bar(6)*sin(x_bar(1)));
-                            (1/x3_bar)*(x_bar(5)*sin(x_bar(1))/cos(x_bar(2)) + x_bar(6)*cos(x_bar(1))/cos(x_bar(2)));
-                            (1/x4_bar)*((Iy - Iz) / Ix * x_bar(5) * x_bar(6));
-                            (1/x5_bar)*((Iz - Ix) / Iy * x_bar(4) * x_bar(6));
-                            (1/x6_bar)*((Ix - Iy) / Iz * x_bar(4) * x_bar(5))      ];
+Attitude_f_bar = @(x_bar) [ (1/x1_max)*(x_bar(4)*x4_max + x_bar(5)*x4_max*(sin(x_bar(1)*x1_max)*tan(x_bar(2)*x2_max)) + x_bar(6)*x6_max*(cos(x_bar(1))*tan(x_bar(2))));
+
+                            (1/x2_max)*(x_bar(5)*x5_bar*cos(x_bar(1)) - x_bar(6)*sin(x_bar(1)));
+                            (1/x3_max)*(x_bar(5)*sin(x_bar(1))/cos(x_bar(2)) + x_bar(6)*cos(x_bar(1))/cos(x_bar(2)));
+                            (1/x4_max)*((Iy - Iz) / Ix * x_bar(5) * x_bar(6));
+                            (1/x5_max)*((Iz - Ix) / Iy * x_bar(4) * x_bar(6));
+                            (1/x6_max)*((Ix - Iy) / Iz * x_bar(4) * x_bar(5))      ];
 
 Attitude_g_bar = [0 0 0; 0 0 0; 0 0 0; u1_max/Ix 0 0; 0 u2_max/Iy 0; 0 0 u3_max/Iz];
 
