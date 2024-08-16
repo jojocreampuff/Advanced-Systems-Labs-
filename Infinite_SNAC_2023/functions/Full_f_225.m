@@ -17,3 +17,4 @@ f = [(u);
      ((Iy - Iz) / Ix * (q) * (r));
      ((Iz - Ix) / Iy * (p) * (r));
      ((Ix - Iy) / Iz * (p) * (q))];
+end

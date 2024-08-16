@@ -63,6 +63,9 @@ MIN_PWM = 1000;
 
 stdv = [1; 1; 1; 1; 1; 1; .01; .01; .01; .01; .01; .01]/10;
 
+u1_max = 2; u2_max = 2; u3_max = 1;
+Umax = [u1_max; u2_max; u3_max];
+
 for i = 1:N-1
     x(:,i) = add_noise(x(:,i),stdv, noise);
     % SNAC controller used to track trajectory - optimal control equation
@@ -83,7 +86,7 @@ for i = 1:N-1
     Att_error(:,i) = x(7:12,i) - angles_ref(:,i);
     torques(:,i) = -Attitude_R^-1 * Attitude_G(Att_error(:,i))' * Attitude_W(:,:)' * Basis_Func_84(Att_error(:,i));
     
-    torques(:,i) = torques(:,i)/1000; %% convert from g*m^2 to kg*m^2
+    torques(:,i) = torques(:,i).*Umax; %% 
 
     for p = 1:3
         if torques(p,i) > Max_torque

@@ -1,22 +1,47 @@
 clc; clear; close all;
 
-addpath("/home/engelhardt/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions/")
+% addpath("/home/engelhardt/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions/")
+addpath("/home/users10/re606359/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions")
 % addpath('..\functions')
 
 % Define plant dynamics
-Ix = 10;   % moment of inertia (g*m^2) 
-Iy = 10;  % moment of inertia (g*m^2)
-Iz = 20;   % moment of inertia (g*m^2)
+Ix = 0.01;   % moment of inertia (g*m^2) 
+Iy = 0.01;  % moment of inertia (g*m^2)
+Iz = 0.02;   % moment of inertia (g*m^2)
 % non-dimesnionalize these dynamics
 
 % Define domains of training
-PHI_max = pi/6; PHI_min = -pi/6;
-THE_max = pi/6; THE_min = -pi/6;
-PSI_max = pi; PSI_min = -pi;
+PHI_max = pi/6; PHI_min = -pi/6;    % x1
+THE_max = pi/6; THE_min = -pi/6;    % x2
+PSI_max = pi; PSI_min = -pi;        % x3
 
-p_max =  pi/8; p_min =  -pi/8;
-q_max =  pi/8; q_min =  -pi/8;
-r_max =  pi/10; r_min =  -pi/10;
+p_max =  pi/8; p_min =  -pi/8;      % x4
+q_max =  pi/8; q_min =  -pi/8;      % x5
+r_max =  pi/10; r_min =  -pi/10;    % x6
+u1_max = 2; u2_max = 2; u3_max = 1;
+Umax = [u1_max; u2_max; u3_max]*4;
+
+x1_max = PHI_max*1.2; x2_max = THE_max*1.2; x3_max = PSI_max*1.2; x4_max = p_max*1.2; x5_max = q_max*1.2; x6_max = r_max*1.2;
+
+% Define training Parameters
+N_states =          6;
+N_patterns =        1000;
+max_training_loop = 5000;
+threshold =         1e-5;
+dt =                0.004;
+discount = 1;
+% Attitude_Q = dt*diag([1e6,1e6,1e4,1e5,1e5,1e4]);
+Attitude_Q = diag([1,1,1,1,1,1])*10;
+Attitude_R = diag([1,1,1])*10;
+% Attitude_R = dt*diag([0.5e4,0.5e4,0.5e4])
+
+% Define simulation parameters
+t_f = 25;
+N_neurons = length(Basis_Func_84(ones(N_states,1)));
+N = t_f/dt;   
+Attitude_W = rand(N_neurons, N_states)*.01;
+weight_plot = zeros((N_neurons* N_states),max_training_loop);
+
 
 Attitude_f = @(x) [(x(4) + x(5)*(sin(x(1))*tan(x(2))) + x(6)*(cos(x(1))*tan(x(2))));
                    (x(5)*cos(x(1)) - x(6)*sin(x(1)));
@@ -27,54 +52,31 @@ Attitude_f = @(x) [(x(4) + x(5)*(sin(x(1))*tan(x(2))) + x(6)*(cos(x(1))*tan(x(2)
 Attitude_g = [0 0 0; 0 0 0; 0 0 0; 1/Ix 0 0; 0 1/Iy 0; 0 0 1/Iz];
 
 Attitude_f_bar = @(x_bar) [ (1/x1_max)*(x_bar(4)*x4_max + x_bar(5)*x4_max*(sin(x_bar(1)*x1_max)*tan(x_bar(2)*x2_max)) + x_bar(6)*x6_max*(cos(x_bar(1))*tan(x_bar(2))));
-
                             (1/x2_max)*(x_bar(5)*x5_max*cos(x_bar(1)*x1_max) - x_bar(6)*x6_max*sin(x_bar(1)*x1_max));
                             (1/x3_max)*(x_bar(5)*x5_max*sin(x_bar(1)*x1_max)/cos(x_bar(2)*x2_max) + x_bar(6)*x6_max*cos(x_bar(1)*x1_max)/cos(x_bar(2)*x2_max));
-                            (1/x4_max)*((Iy - Iz) / Ix * x_bar(5) * x_bar(6)*x5_max*x6_max);
-                            (1/x5_max)*((Iz - Ix) / Iy * x_bar(4) * x_bar(6)*);
-                            (1/x6_max)*((Ix - Iy) / Iz * x_bar(4) * x_bar(5))      ];
+                            (1/x4_max)*((Iy - Iz) / Ix * x_bar(5) * x_bar(6)* x5_max* x6_max);
+                            (1/x5_max)*((Iz - Ix) / Iy * x_bar(4) * x_bar(6)* x4_max* x6_max);
+                            (1/x6_max)*((Ix - Iy) / Iz * x_bar(4) * x_bar(5)* x4_max* x5_max)      ];
 
-Attitude_g_bar = [0 0 0; 0 0 0; 0 0 0; u1_max/Ix 0 0; 0 u2_max/Iy 0; 0 0 u3_max/Iz];
+Attitude_g_bar = [0 0 0; 0 0 0; 0 0 0; u1_max/(Ix*x4_max) 0 0; 0 u2_max/(Iy*x5_max) 0; 0 0 u3_max/(Iz*x6_max)];
 
 % Euler integration
+Attitude_F_bar = @(x_bar) x_bar + dt * Attitude_f_bar(x_bar);
+Attitude_G_bar = @(x_bar) Attitude_g_bar * dt;
+
 Attitude_F = @(x) x + dt * Attitude_f(x);
 Attitude_G = @(x) Attitude_g * dt;
 
-
-
-% Define training Parameters
-N_states =          6;
-N_patterns =        1000;
-max_training_loop = 5000;
-threshold =         1e-5;
-dt =                0.004;
-% Attitude_Q = dt*diag([1e6,1e6,1e4,1e5,1e5,1e4]);
-Attitude_Q = diag([1,1,1,1,1,1])*1000000;
-Attitude_R = diag([1,1,1])*1;
-% Attitude_R = dt*diag([0.5e4,0.5e4,0.5e4]);
-
-
-
 % Partial x_k+1 / partial x_k
-A = @(x)...
-    [
-    dt*(x(5)*cos(x(1))*tan(x(2)) - x(6)*sin(x(1))*tan(x(2))) + 1, dt*(x(6)*cos(x(1))*(tan(x(2))^2 + 1) + x(5)*sin(x(1))*(tan(x(2))^2 + 1)), 0, dt,  dt*sin(x(1))*tan(x(2)),  dt*cos(x(1))*tan(x(2)); 
-    -dt*(x(6)*cos(x(1)) + x(5)*sin(x(1))), 1, 0,  0,  dt*cos(x(1)),  -dt*sin(x(1)); 
-    dt*((x(5)*cos(x(1)))/cos(x(2)) - (x(6)*sin(x(1)))/cos(x(2))), dt*((x(6)*cos(x(1))*sin(x(2)))/cos(x(2))^2 + (x(5)*sin(x(1))*sin(x(2)))/cos(x(2))^2), 1,  0,  (dt*sin(x(1)))/cos(x(2)),  (dt*cos(x(1)))/cos(x(2)); 
-    0, 0, 0,  1,  (dt*x(6)*(Iy - Iz))/Ix,  (dt*x(5)*(Iy - Iz))/Ix; 
-     0, 0, 0,  -(dt*x(6)*(Ix - Iz))/Iy,  1,  -(dt*x(4)*(Ix - Iz))/Iy; 
-    0, 0, 0, (dt*x(5)*(Ix - Iy))/Iz,  (dt*x(4)*(Ix - Iy))/Iz,  1; 
-    ]; % row representation
-
-% Define simulation parameters
-t_f = 25;
-discount = .99;
-
-% Additonal variables
-N_neurons = length(Basis_Func_84(ones(N_states,1)));
-N = t_f/dt;   
-Attitude_W = rand(N_neurons, N_states);
-weight_plot = zeros((N_neurons* N_states),max_training_loop);
+% A = @(x)...
+%     [
+%     dt*(x(5)*cos(x(1))*tan(x(2)) - x(6)*sin(x(1))*tan(x(2))) + 1, dt*(x(6)*cos(x(1))*(tan(x(2))^2 + 1) + x(5)*sin(x(1))*(tan(x(2))^2 + 1)), 0, dt,  dt*sin(x(1))*tan(x(2)),  dt*cos(x(1))*tan(x(2)); 
+%     -dt*(x(6)*cos(x(1)) + x(5)*sin(x(1))), 1, 0,  0,  dt*cos(x(1)),  -dt*sin(x(1)); 
+%     dt*((x(5)*cos(x(1)))/cos(x(2)) - (x(6)*sin(x(1)))/cos(x(2))), dt*((x(6)*cos(x(1))*sin(x(2)))/cos(x(2))^2 + (x(5)*sin(x(1))*sin(x(2)))/cos(x(2))^2), 1,  0,  (dt*sin(x(1)))/cos(x(2)),  (dt*cos(x(1)))/cos(x(2)); 
+%     0, 0, 0,  1,  (dt*x(6)*(Iy - Iz))/Ix,  (dt*x(5)*(Iy - Iz))/Ix; 
+%      0, 0, 0,  -(dt*x(6)*(Ix - Iz))/Iy,  1,  -(dt*x(4)*(Ix - Iz))/Iy; 
+%     0, 0, 0, (dt*x(5)*(Ix - Iy))/Iz,  (dt*x(4)*(Ix - Iy))/Iz,  1; 
+%     ]; % row representation
 
 tic
 % Nonvectorzied SNAC training loop
@@ -91,23 +93,24 @@ for i = 1:max_training_loop
         X6 = r_min + (r_max - r_min) * rand;%(1, N_patterns); 
 
         % Random states within defined domain of trainig
-        x_k = [X1; X2; X3; X4; X5; X6];
+        x_k = [X1/x1_max; X2/x2_max; X3/x3_max; X4/x4_max; X5/x5_max; X6/x6_max];
 
         % Running states through nerual network
         basis_func(:,j) = Basis_Func_84(x_k);
         lambda_k_plus_1 = Attitude_W' * Basis_Func_84(x_k);
 
         % Optimal control equation
-        u_k = -Attitude_R^-1 * Attitude_G(x_k).' * lambda_k_plus_1;
+        u_k = (-Attitude_R^-1 * Attitude_G_bar(x_k).' * lambda_k_plus_1) ./Umax;
 
         % Discretized dynamics
-        x_k_plus_1 = Attitude_F(x_k) + Attitude_G(x_k) * u_k;
+        x_k_plus_1 = Attitude_F_bar(x_k) + Attitude_G_bar(x_k) * u_k;
 
         % States through nerual network
         lambda_k_plus_2 = Attitude_W' * Basis_Func_84(x_k_plus_1);
 
         % Target costate equation
-        A_k_plus_1 = A(x_k_plus_1);
+        A_k_plus_1 = A_non_dim(x_k_plus_1, dt, Ix, Iy, Iz, x1_max , x2_max, x3_max, x4_max, x5_max, x6_max);
+
         lambda_k_plus_1_target(:,j) = Attitude_Q * (x_k_plus_1) + discount*(A_k_plus_1.' * lambda_k_plus_2);
     end
 
@@ -172,10 +175,10 @@ for i = 1:N
     u2(:,i) = -Attitude_R^-1 * Attitude_G(x2(:,i)-r(:, i))' * Attitude_W(:,:)' * Basis_Func_84(x2(:,i)-r(:, i));
     u3(:,i) = -Attitude_R^-1 * Attitude_G(x3(:,i)-r(:, i))' * Attitude_W(:,:)' * Basis_Func_84(x3(:,i)-r(:, i));
     u4(:,i) = -Attitude_R^-1 * Attitude_G(x4(:,i)-r(:, i))' * Attitude_W(:,:)' * Basis_Func_84(x4(:,i)-r(:, i));
-    x1(:, i+1) = Attitude_F(x1(:,i)) + Attitude_G(x1(:,i)) * u1(:,i);
-    x2(:, i+1) = Attitude_F(x2(:,i)) + Attitude_G(x2(:,i)) * u2(:,i);
-    x3(:, i+1) = Attitude_F(x3(:,i)) + Attitude_G(x3(:,i)) * u3(:,i);
-    x4(:, i+1) = Attitude_F(x4(:,i)) + Attitude_G(x4(:,i)) * u4(:,i);
+    x1(:, i+1) = Attitude_F(x1(:,i)) + Attitude_G(x1(:,i)) * (u1(:,i).*Umax);
+    x2(:, i+1) = Attitude_F(x2(:,i)) + Attitude_G(x2(:,i)) * (u2(:,i).*Umax);
+    x3(:, i+1) = Attitude_F(x3(:,i)) + Attitude_G(x3(:,i)) * (u3(:,i).*Umax);
+    x4(:, i+1) = Attitude_F(x4(:,i)) + Attitude_G(x4(:,i)) * (u4(:,i).*Umax);
 end
 figure(2)
     
