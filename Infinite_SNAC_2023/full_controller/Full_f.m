@@ -1,5 +1,5 @@
-
 function f_bar = Full_f(x_bar,grav,Ix,Iy,Iz, max_states)
+
 x1_max = max_states(1);
 x2_max = max_states(2);
 x3_max = max_states(3);
@@ -12,6 +12,7 @@ x9_max = max_states(9);
 x10_max = max_states(10);
 x11_max = max_states(11);
 x12_max = max_states(12);
+
 % assume these are all x_bar!!
 x1 = x_bar(1);      x2 = x_bar(2);      x3 = x_bar(3);
 x4 = x_bar(4);      x5 = x_bar(5);      x6 = x_bar(6);

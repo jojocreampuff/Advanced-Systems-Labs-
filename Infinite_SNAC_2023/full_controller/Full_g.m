@@ -30,16 +30,16 @@ g18 = -1/m * (-cos(x9*x9_max)*sin(x7*x7_max) + cos(x7*x7_max)*sin(x9*x9_max)*sin
 g19 = -1/m * (cos(x7*x7_max)*cos(x8*x8_max));
 
 
-%    ft             tx                              ty                      tz
-g = [0              0                               0                       0;
-     0              0                               0                       0;
-     0              0                               0                       0;
-     (g17*Ft_max)/x4_max     0                               0                       0;
-     (g18*Ft_max)/x5_max      0                               0                       0;
-     (g19*Ft_max)/x6_max      0                               0                       0;
-     0              0                               0                       0;
-     0              0                               0                       0;
-     0              0                               0                       0;
-     0              tx_max/(Ix*x10_max)              0                       0;
-     0              0                               ty_max/(Iy*x11_max)      0;
-     0              0                               0                       tz_max/(Iz*x12_max)];
+%    ft_bar                 tx_bar                           ty_bar                 tz_bar
+g = [0                      0                               0                       0;
+     0                      0                               0                       0;
+     0                      0                               0                       0;
+     (g17*Ft_max)/x4_max    0                               0                       0;
+     (g18*Ft_max)/x5_max    0                               0                       0;
+     (g19*Ft_max)/x6_max    0                               0                       0;
+     0                      0                               0                       0;
+     0                      0                               0                       0;
+     0                      0                               0                       0;
+     0                      tx_max/(Ix*x10_max)             0                       0;
+     0                      0                               ty_max/(Iy*x11_max)     0;
+     0                      0                               0                       tz_max/(Iz*x12_max)];

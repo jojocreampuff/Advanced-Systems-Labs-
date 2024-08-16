@@ -73,10 +73,6 @@ for i = 1:N-1
 
     uxyz(:,i) = -Position_R^-1 * Position_G(Pos_error(:,i))' * Position_W(:,:)' * Basis_Func_pos(Pos_error(:,i));
    
-
-%     Numerically solving for ft and angles from ux, uy, and uz
-    % [ft(i), r_phi(i), r_the(i)] = system_solver(uxyz(:,i),0,m);
-
     [ft(i), r_phi(i), r_the(i)] = borna_sys_solve(-uxyz(1,i), -uxyz(2,i), -uxyz(3,i), r_psi(i), m);
     
     angles(:,i) = [r_phi(i); r_the(i); r_psi(i)];
@@ -101,7 +97,6 @@ for i = 1:N-1
     T3 = (ft(i) + torques(1,i)/(2*r) - torques(2,i)/(2*r) - torques(3,i)/(4*drag)) / 4;
     T4 = (ft(i) + torques(1,i)/(2*r) + torques(2,i)/(2*r) - torques(3,i)/(4*drag)) / 4;
 
- 
     each_motor_thrust(:,i) = [T1;T2;T3;T4];
 
     for j = 1:4
@@ -112,10 +107,10 @@ for i = 1:N-1
         end
     end
 
-    ch1 = 1000 + (((each_motor_thrust(1,i) - Tmin ) / (Tmax-Tmin)) * 1000  );
-    ch2 = 1000 + (((each_motor_thrust(2,i) - Tmin) / (Tmax-Tmin)) * 1000  );
-    ch3 = 1000 + (((each_motor_thrust(3,i) - Tmin) / (Tmax-Tmin)) * 1000  );
-    ch4 = 1000 + (((each_motor_thrust(4,i) - Tmin) / (Tmax-Tmin)) * 1000 );
+    ch1 = 1000 + (((each_motor_thrust(1,i) - Tmin ) / (Tmax-Tmin)) * 1000 );
+    ch2 = 1000 + (((each_motor_thrust(2,i) - Tmin) /  (Tmax-Tmin)) * 1000 );
+    ch3 = 1000 + (((each_motor_thrust(3,i) - Tmin) /  (Tmax-Tmin)) * 1000 );
+    ch4 = 1000 + (((each_motor_thrust(4,i) - Tmin) /  (Tmax-Tmin)) * 1000 );
     
    
     PWM_channels(:,i) = [ch1;ch2;ch3;ch4];
@@ -139,7 +134,6 @@ for i = 1:N-1
 
     % Passing controls though discretized drone dynamics
     x(:, i+1) = Full_F(x(:,i),grav,Ix,Iy,Iz) + Full_G(x(:,i),m,Ix,Iy,Iz) * u_noise(:,i);
-
 
 end
 
@@ -213,28 +207,6 @@ function [ft, pitch, roll] = borna_sys_solve(u1, u2, u3, psi, m) % u1 = ux , u2 
 
 end
 
-%     function [tau_x, tau_y, tau_z] = sat(tau_x, tau_y, tau_z)
-%     Max_torque = 8.64;
-% % based on max actuator output
-%         if tau_x > Max_torque
-%             tau_x = Max_torque;
-%         elseif tau_x < -Max_torque
-%             tau_x = -Max_torque;
-%         end
-% 
-%         if tau_y > Max_torque
-%             tau_y = Max_torque;
-%         elseif tau_y < -Max_torque
-%             tau_y = -Max_torque;
-%         end
-% 
-%         if tau_z > 5
-%             tau_z = 5;
-%         elseif tau_z < -5
-%             tau_z = -5;
-%         end
-% 
-%     end
 
 end
 

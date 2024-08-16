@@ -33,16 +33,16 @@ parameters.Iy   = .01;      %
 parameters.Iz   = .02;      %
 
 % Define desired reference as function of time
-% reference = @(t)...
-%             [(1-exp(-0.01*t))*9.81*cos(0.2*t);  % reference_x
-%              (1-exp(-0.01*t))*9.81*sin(0.2*t);  % reference_y
-%              -.5*t];                             % reference_z
+reference = @(t)...
+            [(1-exp(-0.01*t))*9.81*cos(0.2*t);  % reference_x
+             (1-exp(-0.01*t))*9.81*sin(0.2*t);  % reference_y
+             -.5*t];                             % reference_z
 
 % References can be waypoints (not function of time)
-reference = @(t)...
-            [9.81*cos(0.2*t);       % reference_x
-             9.81*sin(0.2*t);     % reference_y
-             -4*cos(1*t)-9.81];      % reference_z
+% reference = @(t)...
+%             [9.81*cos(0.2*t);       % reference_x
+%              9.81*sin(0.2*t);     % reference_y
+%              -4*cos(1*t)-9.81];      % reference_z
 
 % References can be waypoints (not function of time)
 % reference = @(t)...
@@ -68,7 +68,7 @@ IC = [0 5 -5  5 -5; % x
 %       0; 
 %       zeros(9,1)];
 
-noise = 2; % 600% noise
+noise = 0; % 600% noise
 
 % Simulating for all IC, simulations saved in structures
 for i = 1:size(IC,2)

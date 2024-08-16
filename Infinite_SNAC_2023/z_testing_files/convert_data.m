@@ -31,4 +31,8 @@ u1_u2_u3 = single(uxyz.uxyz_1);
 
 save("open_loop_controls", "u1_u2_u3","F_tx_ty_tz","-v7.3")
 
+%% save reference angles for full dynamics 
+pos_states = r_smooth.r_smooth_1;
+ref_angles = angles_ref.angles_ref_1;
+save("path_full_dynamics", "pos_states","ref_angles")
 

@@ -180,8 +180,8 @@ for i = 1:N
     x3(:, i+1) = Attitude_F(x3(:,i)) + Attitude_G(x3(:,i)) * (u3(:,i).*Umax);
     x4(:, i+1) = Attitude_F(x4(:,i)) + Attitude_G(x4(:,i)) * (u4(:,i).*Umax);
 end
+
 figure(2)
-    
 subplot(3,1,1); plot(...
     time, r(1, 1:length(time)), 'r--',...
     time, x1(1, 1:length(time)),...

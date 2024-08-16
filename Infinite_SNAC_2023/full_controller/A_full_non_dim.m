@@ -1,5 +1,6 @@
-function A_bar = A_full_non_dim(x_bar, dt, Ix, Iy, Iz, max_states, Ft)
+function A_bar = A_full_non_dim(x_bar, dt, m, Ix, Iy, Iz, max_states, Ft_max, Ft)
 
+% Ft is Ft_bar 
 x1_max = max_states(1);
 x2_max = max_states(2);
 x3_max = max_states(3);
@@ -175,7 +176,7 @@ A_1210 = (dt * x11 * x10_max * x11_max * (Ix - Iy)) / (Iz * x12_max);
 A_1211 = (dt * x10 * x10_max * x11_max * (Ix - Iy)) / (Iz * x12_max);
 A_1212 = 1;
 
-
+% Partial x_k+1 / partial x_k grad(f(x) + g(x) *u)
 A_bar = [
     A_11, A_12, A_13, A_14, A_15, A_16, A_17, A_18, A_19, A_110, A_1_11, A_1_12;
     A_21, A_22, A_23, A_24, A_25, A_26, A_27, A_28, A_29, A_210, A_211, A_212;
