@@ -1,13 +1,13 @@
 clc; clear; close all;
 
-% addpath("/home/engelhardt/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions/")
-addpath("/home/users10/re606359/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions")
+addpath("/home/users10/re606359/Desktop/matlab/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions")
+% addpath("/home/users10/re606359/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions")
 % addpath('..\functions')
 
 % Define plant dynamics
-Ix = 0.01;   % moment of inertia (g*m^2) 
-Iy = 0.01;  % moment of inertia (g*m^2)
-Iz = 0.02;   % moment of inertia (g*m^2)
+Ix = 0.005;   % moment of inertia (g*m^2) 
+Iy = 0.005;  % moment of inertia (g*m^2)
+Iz = 0.009;   % moment of inertia (g*m^2)
 % non-dimesnionalize these dynamics
 
 % Define domains of training
@@ -18,7 +18,7 @@ PSI_max = pi; PSI_min = -pi;        % x3
 p_max =  pi/8; p_min =  -pi/8;      % x4
 q_max =  pi/8; q_min =  -pi/8;      % x5
 r_max =  pi/10; r_min =  -pi/10;    % x6
-u1_max = 2; u2_max = 2; u3_max = 1;
+u1_max = 1; u2_max = 1; u3_max = 1;
 Umax = [u1_max; u2_max; u3_max]*4;
 
 x1_max = PHI_max*1.2; x2_max = THE_max*1.2; x3_max = PSI_max*1.2; x4_max = p_max*1.2; x5_max = q_max*1.2; x6_max = r_max*1.2;

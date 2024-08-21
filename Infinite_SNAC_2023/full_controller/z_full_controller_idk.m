@@ -7,10 +7,10 @@ clc; clear; close all;
 % addpath("C:\Users\re606359\Desktop\Advanced-Systems-Labs-\Infinite_SNAC_2023\functions " )
 
 % Define plant dynamics
-Ix = 0.01;   % moment of inertia (kg*m^2)
-Iy = 0.01;   % moment of inertia (kg*m^2)
-Iz = 0.02;   % moment of inertia (kg*m^2)
-m = .77; grav = 9.81;
+Ix = 1;   % moment of inertia (kg*m^2)
+Iy = 1;   % moment of inertia (kg*m^2)
+Iz = 1;   % moment of inertia (kg*m^2)
+m = 1; grav = 9.81;
 
 N_states = 12;
 N_patterns = 1000;
@@ -20,8 +20,8 @@ dt = 0.004; t_f = 50; N = t_f/dt;
 N_neurons = length(Basis_Func_full(ones(N_states,1)));
 W_full = rand(N_neurons, N_states)*.01;
 weight_plot = zeros((N_neurons* N_states),max_training_loop);
- 
-discount = 0.9;
+
+discount = .9;
 Q = diag([1,1,1,1,1,1,1,1,1,1,1,1])*10;
 R = diag([1,1,1,1])*10;
 
@@ -58,7 +58,7 @@ x12_max = r_max;
 max_states = [x1_max; x2_max; x3_max; x4_max; x5_max; x6_max; x7_max; x8_max; x9_max; x10_max; x11_max; x12_max]*1.2;
 
 Ft_max = 40; tx_max = 2; ty_max = 2; tz_max = 1;
-max_controls = [Ft_max; tx_max; ty_max; tz_max];
+max_controls = [Ft_max; tx_max; ty_max; tz_max]*2;
 
 % Euler integration
 F_bar = @(x_bar,grav,Ix,Iy,Iz, max_states) x_bar + dt * Full_f(x_bar,grav,Ix,Iy,Iz, max_states);
@@ -93,9 +93,9 @@ for i = 1:max_training_loop
         % Optimal control equation
         u_k_bar = (-R^-1 * G_bar(xbar_k,m,Ix,Iy,Iz,max_states, max_controls).' * lambda_k_plus_1) ./max_controls;
         
-        if u_k_bar(1) < 0
-            u_k_bar(1) = 0;
-        end
+        % if u_k_bar(1) < 0
+        %     u_k_bar(1) = abs(u_k_bar(1));
+        % end
 
         % Discretized non-dim dynamics
         xbar_k_plus_1 = F_bar(xbar_k, grav,Ix,Iy,Iz, max_states) + G_bar(xbar_k, m,Ix,Iy,Iz,max_states, max_controls) * u_k_bar;
@@ -161,6 +161,8 @@ r = [pos_states; zeros(6,1),ref_angles];
 Full_F = @(x,grav,Ix,Iy,Iz) x + dt * Full_f_225(x,grav,Ix,Iy,Iz); % discretized drift dynamics
 Full_G = @(x,m,Ix,Iy,Iz) dt * Full_g_225(x,m,Ix,Iy,Iz);   
 
+max_controls = [Ft_max; tx_max; ty_max; tz_max];
+
 for i = 1:N
     % x1(:,i) = add_noise(x1(:,i),.05, 0);
     % x2(:,i) = add_noise(x2(:,i),.05, 2);
@@ -170,6 +172,10 @@ for i = 1:N
     u2(:,i) = -R^-1 * Full_G(x2(:,i)-r(:, i),m,Ix,Iy,Iz)' * W_full(:,:)' * Basis_Func_full(x2(:,i)-r(:, i));
     u3(:,i) = -R^-1 * Full_G(x3(:,i)-r(:, i),m,Ix,Iy,Iz)' * W_full(:,:)' * Basis_Func_full(x3(:,i)-r(:, i));
     u4(:,i) = -R^-1 * Full_G(x4(:,i)-r(:, i),m,Ix,Iy,Iz)' * W_full(:,:)' * Basis_Func_full(x4(:,i)-r(:, i));
+    % u1(:,i) = abs(u1(:,i));
+    % u2(:,i) = abs(u2(:,i));
+    % u3(:,i) = abs(u3(:,i));
+    % u4(:,i) = abs(u4(:,i));
     x1(:, i+1) = Full_F(x1(:,i),grav,Ix,Iy,Iz) + Full_G(x1(:,i),m,Ix,Iy,Iz) * (u1(:,i).*max_controls);
     x2(:, i+1) = Full_F(x2(:,i),grav,Ix,Iy,Iz) + Full_G(x2(:,i),m,Ix,Iy,Iz) * (u2(:,i).*max_controls);
     x3(:, i+1) = Full_F(x3(:,i),grav,Ix,Iy,Iz) + Full_G(x3(:,i),m,Ix,Iy,Iz) * (u3(:,i).*max_controls);
@@ -180,10 +186,10 @@ figure(2)
 grid on
 hold on
 plot3(r(1,:), r(2,:), -r(3,:), '--', 'Linewidth', 1.5)
-plot3(x1(1,:), x1(2,:), -x1(3,:), 'Linewidth', 1.5)
-plot3(x2(1,:), x2(2,:), -x2(3,:), 'Linewidth', 1.5)
-plot3(x3(1,:), x3(2,:), -x3(3,:), 'Linewidth', 1.5)
-plot3(x4(1,:), x4(2,:), -x4(3,:), 'Linewidth', 1.5)
+plot3(x1(1,:), x1(2,:), x1(3,:), 'Linewidth', 1.5)
+plot3(x2(1,:), x2(2,:), x2(3,:), 'Linewidth', 1.5)
+plot3(x3(1,:), x3(2,:), x3(3,:), 'Linewidth', 1.5)
+plot3(x4(1,:), x4(2,:), x4(3,:), 'Linewidth', 1.5)
 title('3D Trajectory')
 xlabel('x (m)'), ylabel('y (m)'), zlabel('z (m)')
 legend(["Reference trajectory", "SNAC"]);
