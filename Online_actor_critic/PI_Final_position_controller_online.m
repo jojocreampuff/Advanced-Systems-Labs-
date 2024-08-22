@@ -159,7 +159,7 @@ end
 
 W2_final = W2(:, i);
 
-x_online = rand(N_states,1);
+x_online = randn(N_states,1);
 t_f_online = 10;
 N_online = t_f_online/dt;
 
