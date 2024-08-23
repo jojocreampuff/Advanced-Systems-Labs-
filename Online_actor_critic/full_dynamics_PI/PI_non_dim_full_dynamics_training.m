@@ -53,25 +53,25 @@ x9_max = PSI_max;
 x10_max = p_max;
 x11_max = q_max;
 x12_max = r_max;
-max_states = [x1_max; x2_max; x3_max; x4_max; x5_max; x6_max; x7_max; x8_max; x9_max; x10_max; x11_max; x12_max]*1.2;
+max_states = [x1_max; x2_max; x3_max; x4_max; x5_max; x6_max; x7_max; x8_max; x9_max; x10_max; x11_max; x12_max]*2;
 
 Ft_max = 40; tx_max = 2; ty_max = 2; tz_max = 1;
-max_controls = [Ft_max; tx_max; ty_max; tz_max]*2;
+max_controls = [Ft_max; tx_max; ty_max; tz_max]*4;
 
 Q = diag([1,1,1,1,1,1,1,1,1,1,1,1]);
 R =  diag([1,1,1,1]);
 
 no_neurns_critic = length(phi(ones(12,1)));
 
-alpha_1 = 100;
-alpha_2 = 10;
+alpha_1 = .001;
+alpha_2 = .001;
 F1 = 10 * eye(no_neurns_critic); 
 F2 = 10 * eye(no_neurns_critic);
 
 W1 = zeros(no_neurns_critic, N);
 W2 = zeros(no_neurns_critic, N);
-W1(:,1) = .01*randn(no_neurns_critic, 1);
-W2(:,1) = .01*randn(no_neurns_critic, 1);
+W1(:,1) = .1*rand(no_neurns_critic, 1);
+W2(:,1) = W1(:,1);
 
 cut_off = 0.8 * t_f;
 
@@ -80,22 +80,7 @@ xbar = zeros(N_states,N);
 u2 = zeros(N_controls,N);
 u2_bar = zeros(N_controls,N);
 
-MAX_AMP = 0.5;
-min_width= 0.05;
-max_width = 0.1;
-
-square_wave = zeros(N_controls,N);
-for j=1:N_controls
-
-    amplitudes = MAX_AMP*(-1 + 2*rand(1,  N)); 
-    widths = min_width + (max_width-min_width).*rand(1, N); 
-
-    for i = 1:N
-        start_index= randi( [1,N]);
-        end_index = min(start_index + round(widths(i) * N), N);
-        square_wave(j, start_index:end_index) = amplitudes(i);
-    end
-end
+u_excite = excitation(N_controls, cut_off, dt);
 
 for i = 1:N-1
 
@@ -115,15 +100,10 @@ for i = 1:N-1
         GRAD_PHI = grad_phi(@phi, x_current, x_prev, dt);
     end
 
-    u_prob = square_wave(:,i);
-
-    % x_val = xbar(:,i).';
-    % GRAD_PHI = subs(GRAD_PHI_sym, {x1_s, x2_s, x3_s, x4_s, x5_s, x6_s, x7_s, x8_s, x9_s, x10_s, x11_s, x12_s}, num2cell(x_val));
-    % GRAD_PHI = double(GRAD_PHI);
+    u_prob = u_excite(:,i);
 
     u2(:,i)  = -0.5 * R^-1 * Full_g_bar(xbar(:,i),Mass,Ix,Iy,Iz,max_states, max_controls).' * GRAD_PHI.' * W2(:,i); % (39
     u2_bar(:,i) = u2(:,i)./max_controls; % u2 is now u2_bar
-    % disp(u2_bar(:,1))
 
     xbar_next = Full_f_bar(xbar(:,i),grav,Ix,Iy,Iz, max_states) + Full_g_bar(xbar(:,i),Mass,Ix,Iy,Iz,max_states, max_controls )* u2_bar(:,i); 
     

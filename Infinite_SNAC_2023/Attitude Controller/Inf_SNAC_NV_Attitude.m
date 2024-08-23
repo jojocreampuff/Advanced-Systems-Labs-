@@ -1,13 +1,13 @@
 clc; clear; close all;
 
-addpath("/home/users10/re606359/Desktop/matlab/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions")
-% addpath("/home/users10/re606359/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions")
+% addpath("/home/users10/re606359/Desktop/matlab/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions")
+addpath("/home/users10/re606359/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions")
 % addpath('..\functions')
 
 % Define plant dynamics
-Ix = 0.005;   % moment of inertia (g*m^2) 
-Iy = 0.005;  % moment of inertia (g*m^2)
-Iz = 0.009;   % moment of inertia (g*m^2)
+Ix = 5;   % moment of inertia (g*m^2) 0.005 kg m^2 
+Iy = 5;  % moment of inertia (g*m^2)
+Iz = 9;   % moment of inertia (g*m^2)
 % non-dimesnionalize these dynamics
 
 % Define domains of training
@@ -18,8 +18,8 @@ PSI_max = pi; PSI_min = -pi;        % x3
 p_max =  pi/8; p_min =  -pi/8;      % x4
 q_max =  pi/8; q_min =  -pi/8;      % x5
 r_max =  pi/10; r_min =  -pi/10;    % x6
-u1_max = 1; u2_max = 1; u3_max = 1;
-Umax = [u1_max; u2_max; u3_max]*4;
+u1_max = 1.3; u2_max = 1.3; u3_max = 1;
+Umax = [u1_max; u2_max; u3_max]*2; % unit is Nm
 
 x1_max = PHI_max*1.2; x2_max = THE_max*1.2; x3_max = PSI_max*1.2; x4_max = p_max*1.2; x5_max = q_max*1.2; x6_max = r_max*1.2;
 
@@ -29,17 +29,17 @@ N_patterns =        1000;
 max_training_loop = 10000;
 threshold =         1e-5;
 dt =                0.004;
-discount = .99;
+discount = 1;
 % Attitude_Q = dt*diag([1e6,1e6,1e4,1e5,1e5,1e4]);
-Attitude_Q = diag([1,1,1,1,1,1])*10000;
-Attitude_R = diag([1,1,1])*10000;
+Attitude_Q = diag([1,1,1,1,1,1])*1000;
+Attitude_R = diag([1,1,1])*10;
 % Attitude_R = dt*diag([0.5e4,0.5e4,0.5e4])
 
 % Define simulation parameters
 t_f = 25;
 N_neurons = length(Basis_Func_84(ones(N_states,1)));
 N = t_f/dt;   
-Attitude_W = rand(N_neurons, N_states)*.01;
+Attitude_W = randn(N_neurons, N_states)*.01;
 weight_plot = zeros((N_neurons* N_states),max_training_loop);
 
 
@@ -93,25 +93,25 @@ for i = 1:max_training_loop
         X6 = r_min + (r_max - r_min) * rand;%(1, N_patterns);
 
         % Random states within defined domain of trainig
-        x_k = [X1/x1_max; X2/x2_max; X3/x3_max; X4/x4_max; X5/x5_max; X6/x6_max];
+        xbar_k = [X1/x1_max; X2/x2_max; X3/x3_max; X4/x4_max; X5/x5_max; X6/x6_max];
 
         % Running states through nerual network
-        basis_func(:,j) = Basis_Func_84(x_k);
-        lambda_k_plus_1 = Attitude_W' * Basis_Func_84(x_k);
+        basis_func(:,j) = Basis_Func_84(xbar_k);
+        lambda_k_plus_1 = Attitude_W' * Basis_Func_84(xbar_k);
 
         % Optimal control equation
-        u_k_bar = (-Attitude_R^-1 * Attitude_G_bar(x_k).' * lambda_k_plus_1) ./Umax;
+        u_k_bar = (-Attitude_R^-1 * Attitude_G_bar(xbar_k).' * lambda_k_plus_1) *1000./Umax;
 
         % Discretized dynamics
-        x_k_plus_1 = Attitude_F_bar(x_k) + Attitude_G_bar(x_k) * u_k_bar;
+        xbar_k_plus_1 = Attitude_F_bar(xbar_k) + Attitude_G_bar(xbar_k) * u_k_bar;
 
         % States through nerual network
-        lambda_k_plus_2 = Attitude_W' * Basis_Func_84(x_k_plus_1);
+        lambda_k_plus_2 = Attitude_W' * Basis_Func_84(xbar_k_plus_1);
 
         % Target costate equation
-        A_k_plus_1 = A_non_dim(x_k_plus_1, dt, Ix, Iy, Iz, x1_max , x2_max, x3_max, x4_max, x5_max, x6_max);
+        A_k_plus_1 = A_non_dim(xbar_k_plus_1, dt, Ix, Iy, Iz, x1_max , x2_max, x3_max, x4_max, x5_max, x6_max);
 
-        lambda_k_plus_1_target(:,j) = Attitude_Q * (x_k_plus_1) + discount*(A_k_plus_1.' * lambda_k_plus_2);
+        lambda_k_plus_1_target(:,j) = Attitude_Q * (xbar_k_plus_1) + discount*(A_k_plus_1.' * lambda_k_plus_2);
     end
 
     % Least squares to update network weights
@@ -156,10 +156,10 @@ xlim([0 i]);
 MAE_norm = error_mae/norm(Attitude_W);
 
 Training_time = toc;
-x1 = 1.5*[randn(3,1);0;0;0];
+x1 = [randn(3,1);0;0;0];
 x2 = [randn(3,1);0;0;0];
 x3 = [randn(3,1);0;0;0];
-x4 = [randn(3,1);0;0;0]; 
+x4 = 1.2*[randn(3,1);0;0;0]; 
 
 r = [0;0;0;0;0;0];
 
@@ -167,7 +167,7 @@ r = [0;0;0;0;0;0];
 for i = 1:N
     time(i) = (i-1)*dt;
     r(:, i) = time(i)*0;
-    x1(:,i) = add_noise(x1(:,i),.05, 0);
+    % x1(:,i) = add_noise(x1(:,i),.05, 0);
     % x2(:,i) = add_noise(x2(:,i),.05, 2);
     % x3(:,i) = add_noise(x3(:,i),.05, 2);
     % x4(:,i) = add_noise(x4(:,i),.05, 2);
@@ -175,10 +175,10 @@ for i = 1:N
     u2(:,i) = -Attitude_R^-1 * Attitude_G(x2(:,i)-r(:, i))' * Attitude_W(:,:)' * Basis_Func_84(x2(:,i)-r(:, i));
     u3(:,i) = -Attitude_R^-1 * Attitude_G(x3(:,i)-r(:, i))' * Attitude_W(:,:)' * Basis_Func_84(x3(:,i)-r(:, i));
     u4(:,i) = -Attitude_R^-1 * Attitude_G(x4(:,i)-r(:, i))' * Attitude_W(:,:)' * Basis_Func_84(x4(:,i)-r(:, i));
-    x1(:, i+1) = Attitude_F(x1(:,i)) + Attitude_G(x1(:,i)) * (u1(:,i).*Umax);
-    x2(:, i+1) = Attitude_F(x2(:,i)) + Attitude_G(x2(:,i)) * (u2(:,i).*Umax);
-    x3(:, i+1) = Attitude_F(x3(:,i)) + Attitude_G(x3(:,i)) * (u3(:,i).*Umax);
-    x4(:, i+1) = Attitude_F(x4(:,i)) + Attitude_G(x4(:,i)) * (u4(:,i).*Umax);
+    x1(:, i+1) = Attitude_F(x1(:,i)) + Attitude_G(x1(:,i)) * (u1(:,i).*Umax*1000);
+    x2(:, i+1) = Attitude_F(x2(:,i)) + Attitude_G(x2(:,i)) * (u2(:,i).*Umax*1000);
+    x3(:, i+1) = Attitude_F(x3(:,i)) + Attitude_G(x3(:,i)) * (u3(:,i).*Umax*1000);
+    x4(:, i+1) = Attitude_F(x4(:,i)) + Attitude_G(x4(:,i)) * (u4(:,i).*Umax*1000);
 end
 
 figure(2)
@@ -272,9 +272,9 @@ fprintf('required time for training = %g sec\n', Training_time)
 
 save("test_workspace_att_V.mat",'Attitude_W','Attitude_R','Attitude_F','Attitude_G',"-v7.3")
 % save('test_workspace_att_V_10k_less_R.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G',"-v7.3")
-x_train_init = x_k_plus_1;
-target_init = lambda_k_plus_1_target;
-save("init_train_params.mat","x_train_init","target_init", "Attitude_Q","Attitude_R","N_patterns")
+% x_train_init = x_k_plus_1;
+% target_init = lambda_k_plus_1_target;
+% save("init_train_params.mat","x_train_init","target_init", "Attitude_Q","Attitude_R","N_patterns")
 
 function noisy_vector = add_noise(state_vector, std_devs, noise_percent)
 

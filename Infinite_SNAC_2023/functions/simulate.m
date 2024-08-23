@@ -55,7 +55,7 @@ r_smooth = [smooth_r_position; discrete_deriv(smooth_r_position,dt)];
 r = .1;
 drag = 0.01; % (drag coef)
 Tmin = 0;
-Tmax = 10;
+Tmax = 4;
 max_Ft = Tmax*4;
 Max_torque = Tmax*r*2;
 MAX_PWM = 2000;
@@ -63,7 +63,7 @@ MIN_PWM = 1000;
 
 stdv = [1; 1; 1; 1; 1; 1; .01; .01; .01; .01; .01; .01]/10;
 
-u1_max = 2; u2_max = 2; u3_max = 1;
+u1_max = 1.3; u2_max = 1.3; u3_max = 1;
 Umax = [u1_max; u2_max; u3_max];
 
 for i = 1:N-1
@@ -82,8 +82,9 @@ for i = 1:N-1
     Att_error(:,i) = x(7:12,i) - angles_ref(:,i);
     torques(:,i) = -Attitude_R^-1 * Attitude_G(Att_error(:,i))' * Attitude_W(:,:)' * Basis_Func_84(Att_error(:,i));
     
-    torques(:,i) = torques(:,i).*Umax; %% 
-
+    torques(:,i) = torques(:,i).*Umax; %% turn u_bar into u, unit is now Nm
+    % torques(:,i) = torques(:,i) * 1000; % turn kg to g
+    
     for p = 1:3
         if torques(p,i) > Max_torque
             torques(p,i) = Max_torque;

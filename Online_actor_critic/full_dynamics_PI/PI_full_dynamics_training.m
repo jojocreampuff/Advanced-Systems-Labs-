@@ -1,7 +1,7 @@
 clc; clear; close all;
 
 % Define plant dynamics
-Ix = 1;   % moment of inertia (kg*m^2)
+Ix = 1;  % moment of inertia (kg*m^2)
 Iy = 1;   % moment of inertia (kg*m^2)
 Iz = 1;   % moment of inertia (kg*m^2)
 Mass = 1; grav = 9.81;
@@ -12,44 +12,27 @@ N_controls = 4;
 t_f = 100;
 N = t_f/dt;
 
-Q = diag([1,1,1,1,1,1,1,1,1,1,1,1]);
-R =  diag([1,1,1,1]);
+Q = diag([1,1,1,1,1,1,1,1,1,1,1,1])*10;
+R =  diag([1,1,1,1])*10;
 
 no_neurns_critic = length(phi(ones(12,1)));
 
-alpha_1 = 10;
-alpha_2 = 10;
-F1 = 100 * eye(no_neurns_critic); 
-F2 = 100 * eye(no_neurns_critic);
+alpha_1 = 0;
+alpha_2 = 0;
+F1 = 1 * eye(no_neurns_critic); 
+F2 = 1 * eye(no_neurns_critic);
 
 W1 = zeros(no_neurns_critic, N);
 W2 = zeros(no_neurns_critic, N);
 W1(:,1) = .1*randn(no_neurns_critic, 1);
-W2(:,1) = .1*randn(no_neurns_critic, 1);
+W2(:,1) = W1(:,1);
 cut_off = 0.8 * t_f;
 
 
 x = zeros(N_states,N);
 u2 = zeros(N_controls,N);
 
-MAX_AMP = 0.5;
-min_width= 0.05;
-max_width = 0.1;
-
-square_wave = zeros(N_controls,N);
-for j = 1:N_controls
-
-    amplitudes = MAX_AMP*(-1 + 2*rand(1,  N)); 
-    widths = min_width + (max_width-min_width).*rand(1, N); 
-
-    for i = 1:N
-        start_index= randi( [1,N]);
-        end_index = min(start_index + round(widths(i) * N), N);
-        square_wave(j, start_index:end_index) = amplitudes(i);
-    end
-   
-end
-square_wave(1,:) = square_wave(1,:) + .5;
+u_excite = excitation(N_controls, cut_off, dt);
 
 for i = 1:N-1
 
@@ -59,7 +42,7 @@ for i = 1:N-1
 
     t= i*dt;
 
-    u_prob = square_wave(:,i);
+    u_prob = u_excite(:,i);
     if i == 1
         x_current = x(:,i);
         x_prev = zeros(12,1);

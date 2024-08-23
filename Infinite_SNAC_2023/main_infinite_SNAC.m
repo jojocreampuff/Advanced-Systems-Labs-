@@ -27,10 +27,10 @@ Attitude.Attitude_R = Attitude_R;   % Control penalizing matrix
 parameters.dt   = 0.004;    % time step
 parameters.t_f  = 50;       % final time
 parameters.grav = 9.81;     % gravity (m/s^2)
-parameters.m    = .77;        % mass (kg)
-parameters.Ix   = .01;      % moments of inertia (kg*m^2)
-parameters.Iy   = .01;      %
-parameters.Iz   = .02;      %
+parameters.m    = .8;        % mass (kg)
+parameters.Ix   = .005;      % moments of inertia (kg*m^2)
+parameters.Iy   = .005;      %
+parameters.Iz   = .009;      %
 
 % Define desired reference as function of time
 reference = @(t)...
