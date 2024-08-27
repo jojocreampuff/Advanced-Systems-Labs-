@@ -82,7 +82,7 @@ for i = 1:N-1
     Att_error(:,i) = x(7:12,i) - angles_ref(:,i);
     torques(:,i) = -Attitude_R^-1 * Attitude_G(Att_error(:,i))' * Attitude_W(:,:)' * Basis_Func_84(Att_error(:,i));
     
-    torques(:,i) = torques(:,i).*Umax; %% turn u_bar into u, unit is now Nm
+    % torques(:,i) = torques(:,i).*Umax; %% turn u_bar into u, unit is now Nm
     % torques(:,i) = torques(:,i) * 1000; % turn kg to g
     
     for p = 1:3
