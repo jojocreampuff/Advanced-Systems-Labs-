@@ -13,6 +13,9 @@ grav = 9.81;
 Position_f = @(x) [x(4); x(5); x(6); 0; 0; grav];
 Position_g = @(x) [0 0 0; 0 0 0; 0 0 0; -1 0 0; 0 -1 0; 0 0 -1];
 
+Position_f_bar = @(x) [x_bar(4)*x4_max/x1_max; x_bar(5)*x5_max/x2_max; x(6)*x6_max/x3_max; 0; 0; grav/x6_max];
+Position_g_bar = @(x) [0 0 0; 0 0 0; 0 0 0; -u1_max/x4_max 0 0; 0 -u2_max/x5_max 0; 0 0 -u3_max/x6_max];
+
 
 % Define training Parameters
 N_states = 6;
@@ -23,7 +26,6 @@ dt = 0.004;
 Position_Q = diag([100000,100000,100000,100000,100000,100000]);
 Position_R = diag([1,1,1])*10000; % SITL has too much control input
 
-
 % Define domains of training
 X_max = 1000; X_min = -1000;
 Y_max = 1000; Y_min = -1000;
@@ -32,6 +34,19 @@ Z_max = 100; Z_min = -100;
 u_max = 20; u_min = -20;
 v_max = 20; v_min = -20;
 w_max = 20; w_min = -20;
+
+% define max state values and controls to non-dim
+x1_max = X_max;
+x2_max = Y_max;
+x3_max = Z_max;
+x4_max = u_max;
+x5_max = v_max;
+x6_max = w_max;
+
+max_states = [x1_max; x2_max; x3_max; x4_max; x5_max; x6_max]*1.2;
+
+ux_max = 5; uy_max = 5; uz_max = 10;
+max_controls = [ux_max; uy_max; uz_max]*1.5;
 
 % Partial x_k+1 / partial x_k grad(f(x) + g(x) *u)
 A = @(x)...
@@ -124,16 +139,6 @@ for i = 1:max_training_loop
         disp(['error_mse = ', num2str(error_mse)]);
     end
 end
-
-figure(1);
-for k = 1:size(weight_plot,1) 
-    hold on;
-    plot(1:size(weight_plot,2) ,weight_plot(k,:)); 
-end
-xlabel('Iterations');
-ylabel('Weights');
-xlim([0 i]); 
-
 Training_time = toc;
 fprintf('required time for training = %g sec\n', Training_time)
 
@@ -143,6 +148,16 @@ fprintf("\ntraining error: mae = %f\n",mae_train)
 fprintf("training error: mse = %f\n",mse_train)
 fprintf("Test error: mae = %f\n", mae_test)
 fprintf("Test error: mse = %f\n",mse_test)
+
+figure(1);
+title("Position NN weights", 'Interpreter', 'latex')
+for k = 1:size(weight_plot,1) 
+    hold on;
+    plot(1:size(weight_plot,2) ,weight_plot(k,:)); 
+end
+xlabel('Iterations', 'Interpreter', 'latex');
+ylabel('Weights', 'Interpreter', 'latex');
+xlim([0 i]); 
 
 %% Simualtion
 

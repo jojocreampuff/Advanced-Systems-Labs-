@@ -5,9 +5,9 @@ addpath("/home/users10/re606359/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_202
 % addpath('..\functions')
 
 % Define plant dynamics
-Ix = 5;   % moment of inertia (g*m^2) 0.005 kg m^2 
-Iy = 5;  % moment of inertia (g*m^2)
-Iz = 9;   % moment of inertia (g*m^2)
+Ix = 0.005*1000;   % moment of inertia (g*m^2) 
+Iy = 0.005*1000;  % moment of inertia (g*m^2)
+Iz = 0.009*1000;   % moment of inertia (g*m^2)
 % non-dimesnionalize these dynamics
 
 % Define domains of training
@@ -18,15 +18,23 @@ PSI_max = pi; PSI_min = -pi;        % x3
 p_max =  pi/8; p_min =  -pi/8;      % x4
 q_max =  pi/8; q_min =  -pi/8;      % x5
 r_max =  pi/10; r_min =  -pi/10;    % x6
-u1_max = 1.3; u2_max = 1.3; u3_max = 1;
-Umax = [u1_max; u2_max; u3_max]*2; % unit is Nm
 
-x1_max = PHI_max*1.2; x2_max = THE_max*1.2; x3_max = PSI_max*1.2; x4_max = p_max*1.2; x5_max = q_max*1.2; x6_max = r_max*1.2;
+x1_max = PHI_max;
+x2_max = THE_max;
+x3_max = PSI_max;
+x4_max = p_max;
+x5_max = q_max;
+x6_max = r_max;
+max_states = [x1_max; x2_max; x3_max; x4_max; x5_max; x6_max]*1.1;
+
+u1_max = 1.3; u2_max = 1.3; u3_max = 1;
+Umax = [u1_max; u2_max; u3_max]*1.9; % unit is Nm
+
 
 % Define training Parameters
 N_states =          6;
 N_patterns =        1000;
-max_training_loop = 10000;
+max_training_loop = 15000;
 threshold =         1e-5;
 dt =                0.004;
 discount = 1;
@@ -36,7 +44,7 @@ Attitude_R = diag([1,1,1])*10;
 % Attitude_R = dt*diag([0.5e4,0.5e4,0.5e4])
 
 % Define simulation parameters
-t_f = 25;
+t_f = 6;
 N_neurons = length(Basis_Func_84(ones(N_states,1)));
 N = t_f/dt;   
 Attitude_W = randn(N_neurons, N_states)*.01;
@@ -145,21 +153,22 @@ fprintf("finished training")
 %% Simualtion
 
 figure(1);
+title('Attitude NN Weights', 'Interpreter', 'latex')
 for k = 1:size(weight_plot,1) 
     hold on;
     plot(1:size(weight_plot,2) ,weight_plot(k,:)); 
 end
-xlabel('Iterations');
-ylabel('Weights');
+xlabel('Iterations', 'Interpreter', 'latex');
+ylabel('Weights', 'Interpreter', 'latex');
 xlim([0 i]);
 
 MAE_norm = error_mae/norm(Attitude_W);
 
 Training_time = toc;
-x1 = [randn(3,1);0;0;0];
-x2 = [randn(3,1);0;0;0];
-x3 = [randn(3,1);0;0;0];
-x4 = 1.2*[randn(3,1);0;0;0]; 
+x1 = 1*[randn(3,1);0;0;0];
+x2 = 1*[randn(3,1);0;0;0];
+x3 = 1*[randn(3,1);0;0;0];
+
 
 r = [0;0;0;0;0;0];
 
@@ -174,11 +183,9 @@ for i = 1:N
     u1(:,i) = -Attitude_R^-1 * Attitude_G(x1(:,i)-r(:, i))' * Attitude_W(:,:)' * Basis_Func_84(x1(:,i)-r(:, i));
     u2(:,i) = -Attitude_R^-1 * Attitude_G(x2(:,i)-r(:, i))' * Attitude_W(:,:)' * Basis_Func_84(x2(:,i)-r(:, i));
     u3(:,i) = -Attitude_R^-1 * Attitude_G(x3(:,i)-r(:, i))' * Attitude_W(:,:)' * Basis_Func_84(x3(:,i)-r(:, i));
-    u4(:,i) = -Attitude_R^-1 * Attitude_G(x4(:,i)-r(:, i))' * Attitude_W(:,:)' * Basis_Func_84(x4(:,i)-r(:, i));
     x1(:, i+1) = Attitude_F(x1(:,i)) + Attitude_G(x1(:,i)) * (u1(:,i).*Umax*1000);
     x2(:, i+1) = Attitude_F(x2(:,i)) + Attitude_G(x2(:,i)) * (u2(:,i).*Umax*1000);
     x3(:, i+1) = Attitude_F(x3(:,i)) + Attitude_G(x3(:,i)) * (u3(:,i).*Umax*1000);
-    x4(:, i+1) = Attitude_F(x4(:,i)) + Attitude_G(x4(:,i)) * (u4(:,i).*Umax*1000);
 end
 
 figure(2)
@@ -186,102 +193,89 @@ subplot(3,1,1); plot(...
     time, r(1, 1:length(time)), 'r--',...
     time, x1(1, 1:length(time)),...
     time, x2(1, 1:length(time)),...
-    time, x3(1, 1:length(time)),...
-    time, x4(1, 1:length(time)))%,...
-xlabel('Time (sec)' )
-ylabel('error in pitch')
+    time, x3(1, 1:length(time)))
+title('Attitude Error', 'Interpreter', 'latex')
+xlabel('Time (sec)', 'Interpreter', 'latex' )
+ylabel('error in pitch', 'Interpreter', 'latex')
 subplot(3,1,2); plot( ...
     time, r(2, 1:length(time)), 'r--',...
     time, x1(2, 1:length(time)), ...
     time, x2(2, 1:length(time)), ...
-    time, x3(2, 1:length(time)), ...
-    time, x4(2, 1:length(time)))%, ...
-xlabel('Time (sec)' )
-ylabel('error in roll')
+    time, x3(2, 1:length(time)))%, ...
+xlabel('Time (sec)', 'Interpreter', 'latex' )
+ylabel('error in roll', 'Interpreter', 'latex')
 subplot(3,1,3); plot( ...
     time, r(3, 1:length(time)), 'r--',...
     time, x1(3, 1:length(time)), ...
     time, x2(3, 1:length(time)), ...
-    time, x3(3, 1:length(time)), ...
-    time, x4(3, 1:length(time)))%, ...
-xlabel('Time (sec)' )
-ylabel('error in yaw')
+    time, x3(3, 1:length(time)))%, ...
+xlabel('Time (sec)', 'Interpreter', 'latex' )
+ylabel('error in yaw', 'Interpreter', 'latex')
 
 figure(3)
 subplot(3,1,1); plot(...
     time, r(4, 1:length(time)), 'r--',...
     time, x1(4, 1:length(time)),...
     time, x2(4, 1:length(time)),...
-    time, x3(4, 1:length(time)),...
-    time, x4(4, 1:length(time)))%,...
-xlabel('Time (sec)' )
-ylabel('error in pitch rate (rad/sec)')
+    time, x3(4, 1:length(time)))%,...
+title('Error in Angular Velocities', 'Interpreter', 'latex')
+xlabel('Time (sec)', 'Interpreter', 'latex' )
+ylabel('$\dot{\phi}_b$', 'Interpreter', 'latex')
 subplot(3,1,2); plot( ...
     time, r(5, 1:length(time)), 'r--',...
     time, x1(5, 1:length(time)), ...
     time, x2(5, 1:length(time)), ...
-    time, x3(5, 1:length(time)), ...
-    time, x4(5, 1:length(time)))%, ...
-xlabel('Time (sec)' )
-ylabel('error in roll rate (rad/sec)')
+    time, x3(5, 1:length(time)))%, ...
+xlabel('Time (sec)' , 'Interpreter', 'latex')
+ylabel('$\dot{\theta}_b$', 'Interpreter', 'latex')
 subplot(3,1,3); plot( ...
     time, r(6, 1:length(time)), 'r--',...
     time, x1(6, 1:length(time)), ...
     time, x2(6, 1:length(time)), ...
-    time, x3(6, 1:length(time)), ...
-    time, x4(6, 1:length(time)))%, ...
-xlabel('Time (sec)' )
-ylabel('error in yaw rate (rad/sec)')
+    time, x3(6, 1:length(time)))%, ...
+xlabel('Time (sec)', 'Interpreter', 'latex' )
+ylabel('$\dot{\psi}_b$', 'Interpreter', 'latex')
+
 
 figure(4)
 subplot(3,1,1); plot(...
     time, u1(1,1:length(time)),...
     time, u2(1,1:length(time)),...
-    time, u3(1,1:length(time)),...
-    time, u4(1,1:length(time)))%,...
-xlabel('Time (sec)' )
-ylabel('tau_x')
+    time, u3(1,1:length(time)))%,...
+title('Controls', 'Interpreter', 'latex')
+xlabel('Time (sec)' , 'Interpreter', 'latex')
+ylabel('\tau_{x}')
 subplot(3,1,2); plot(...
     time, u1(2,1:length(time)),...
     time, u2(2,1:length(time)),...
-    time, u3(2,1:length(time)),...
-    time, u4(2,1:length(time)))%,...
-xlabel('Time (sec)' )
-ylabel('tau_y')
+    time, u3(2,1:length(time)))%,...
+xlabel('Time (sec)', 'Interpreter', 'latex' )
+ylabel('\tau_{y}')
 subplot(3,1,3); plot(...
     time, u1(3,1:length(time)),...
     time, u2(3,1:length(time)),...
-    time, u3(3,1:length(time)),...
-    time, u4(3,1:length(time)))%,...
-xlabel('Time (sec)' )
-ylabel('tau_z')
-
+    time, u3(3,1:length(time)))%,...
+xlabel('Time (sec)' , 'Interpreter', 'latex')
+ylabel('\tau_{z}')
 
 figure(5)
 grid on
 hold on
-plot3(r(1,:), r(2,:), -r(3,:), '--', 'Linewidth', 1.5)
-plot3(x1(1,:), x1(2,:), -x1(3,:), 'Linewidth', 1.5)
-plot3(x2(1,:), x2(2,:), -x2(3,:), 'Linewidth', 1.5)
-plot3(x3(1,:), x3(2,:), -x3(3,:), 'Linewidth', 1.5)
-plot3(x4(1,:), x4(2,:), -x4(3,:), 'Linewidth', 1.5)
-title('3D Trajectory')
-xlabel('x (m)'), ylabel('y (m)'), zlabel('z (m)')
-legend(["Reference trajectory", "SNAC"]);
+title("Attitude States", 'Interpreter', 'latex')
+plot3(x1(2,:), x1(2,:), x1(3,:), 'Linewidth', 1.5)
+plot3(x2(1,:), x2(2,:), x2(3,:), 'Linewidth', 1.5)
+plot3(x3(1,:), x3(2,:), x3(3,:), 'Linewidth', 1.5)
+xlabel('\phi'), ylabel('\theta'), zlabel('\psi')
+legend(["I.C 1", "I.C 2", "I.C 3"]);
+
 fprintf('required time for training = %g sec\n', Training_time)
 
 save("test_workspace_att_V.mat",'Attitude_W','Attitude_R','Attitude_F','Attitude_G',"-v7.3")
-% save('test_workspace_att_V_10k_less_R.mat','Attitude_W','Attitude_R','Attitude_F','Attitude_G',"-v7.3")
 % x_train_init = x_k_plus_1;
 % target_init = lambda_k_plus_1_target;
 % save("init_train_params.mat","x_train_init","target_init", "Attitude_Q","Attitude_R","N_patterns")
 
 function noisy_vector = add_noise(state_vector, std_devs, noise_percent)
-
-    
-    % Calculate the noise to be added
     noise = (noise_percent / 100) * std_devs .* randn(size(state_vector));
-    
-    % Add noise to the state vector
     noisy_vector = state_vector + noise;
 end

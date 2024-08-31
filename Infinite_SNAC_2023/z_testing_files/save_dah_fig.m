@@ -1,5 +1,5 @@
 
-file_name = "attitude_training_case";
+file_name = "MECC_att_weights";
 
 
 saveFigures(file_name);

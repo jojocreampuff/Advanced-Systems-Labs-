@@ -72,8 +72,6 @@ noise = 0; % 600% noise
 
 % Simulating for all IC, simulations saved in structures
 for i = 1:size(IC,2)
-
-    
     results = simulate(Position, Attitude, parameters, reference, IC(:,i),noise); %max 6 
     % results = simulate_NN(Position, Attitude, parameters, reference, IC(:,i),noise, net); %max 6
     simulations.(['results_', num2str(i)]) = results;
@@ -101,34 +99,35 @@ for i = 1:size(IC,2)
 plot3(x.(['x_',[num2str(i)]])(1,:), x.(['x_',[num2str(i)]])(2,:), -x.(['x_',[num2str(i)]])(3,:), 'Linewidth', 1.5)
 end
 plot3(r_initial.r_initial_1(1,:), r_initial.r_initial_1(2,:), -r_initial.r_initial_1(3,:), 'b--', 'Linewidth', 1.5)
-title('3D Trajectory')
-xlabel('x (m)'), ylabel('y (m)'), zlabel('z (m)')
-legend('Reference Trajectory', 'Path 1','Path 2','Path 3','path 4','path 5', 'Location', 'northeast');
+title('3D Trajectory', 'Interpreter', 'latex')
+xlabel('x (m)'), ylabel('y (m)'), zlabel('z (m)', 'Interpreter', 'latex')
+legend('Reference Trajectory', 'Path 1','Path 2','Path 3','path 4','path 5', 'Location', 'northeast', 'Interpreter', 'latex');
 
 c_size = length(u.u_1(1,:))-1;
 figure(2)
+subplot(4,1,1)
 hold on
 grid on
 plot(time(1:c_size), u.u_1(1,1:c_size), 'Linewidth', 1.5)
-title('Quadcopter Controls')
-ylabel('$f_t$ (N)','Interpreter','latex'), xlabel('time (s)')
+title('Quadcopter Controls', 'Interpreter', 'latex')
+ylabel('$F_t$ (N)','Interpreter','latex'), xlabel('time (s)')
 % ylim([9.7 10.1])
 % 
-figure(3)
+subplot(4,1,2)
 hold on
 grid on
 plot(time(1:c_size), u.u_1(2,1:c_size), 'Linewidth', 1.5)
 ylabel('$\tau_x$ (Nm)','Interpreter','latex'), xlabel('time (s)')
 % ylim([-4E-4 4E-4])
 % 
-figure(4)
+subplot(4,1,3)
 hold on
 grid on
 plot(time(1:c_size), u.u_1(3,1:c_size), 'Linewidth', 1.5)
 ylabel('$\tau_y$ (Nm)','Interpreter','latex'), xlabel('time (s)')
 % ylim([-4E-4 8E-4])
 % 
-figure(5)
+subplot(4,1,4)
 hold on
 grid on
 plot(time(1:c_size), u.u_1(4,1:c_size), 'Linewidth', 1.5)
@@ -162,19 +161,19 @@ title("Position error",'Interpreter','latex')
 hold on
 grid on
 plot(time(1:c_size), Pos_error.Pos_error_1(1,1:c_size), 'Linewidth', 1.5)
-ylabel('$error_x$ (m)','Interpreter','latex'), xlabel('time (s)')
+ylabel('$e_x$ (m)','Interpreter','latex'), xlabel('time (s)')
 
 subplot(3,1,2)
 hold on
 grid on
 plot(time(1:c_size), Pos_error.Pos_error_1(2,1:c_size), 'Linewidth', 1.5)
-ylabel('$error_y$ (m)','Interpreter','latex'), xlabel('time (s)')
+ylabel('$e_y$ (m)','Interpreter','latex'), xlabel('time (s)')
 
 subplot(3,1,3)
 hold on
 grid on
 plot(time(1:c_size), Pos_error.Pos_error_1(3,1:c_size), 'Linewidth', 1.5)
-ylabel('$error_z$ (m)','Interpreter','latex'), xlabel('time (s)')
+ylabel('$e_z$ (m)','Interpreter','latex'), xlabel('time (s)')
 
 
 %% Att Error
@@ -184,24 +183,24 @@ title("Attitude error",'Interpreter','latex')
 hold on
 grid on
 plot(time(1:c_size), Att_error.Att_error_1(1,1:c_size), 'Linewidth', 1.5)
-ylabel('$error_/phi$ (rad)','Interpreter','latex'), xlabel('time (s)')
+ylabel('$e_/phi$ (rad)','Interpreter','latex'), xlabel('time (s)')
 
 subplot(3,1,2)
 hold on
 grid on
 plot(time(1:c_size), Att_error.Att_error_1(2,1:c_size), 'Linewidth', 1.5)
-ylabel('$error_/theta$ (rad)','Interpreter','latex'), xlabel('time (s)')
+ylabel('$e_/theta$ (rad)','Interpreter','latex'), xlabel('time (s)')
 
 subplot(3,1,3)
 hold on
 grid on
 plot(time(1:c_size), Att_error.Att_error_1(3,1:c_size), 'Linewidth', 1.5)
-ylabel('$error_/psi$ (rad)','Interpreter','latex'), xlabel('time (s)')
+ylabel('$e_/psi$ (rad)','Interpreter','latex'), xlabel('time (s)')
 
 %% Refernce angles given to att controller
 figure(9)
 subplot(6,1,1)
-title("Ref Angles",'Interpreter','latex')
+title("Reference Angles",'Interpreter','latex')
 hold on
 grid on
 plot(time(1:c_size), angles_ref.angles_ref_1(1,1:c_size), 'Linewidth', 1.5)
@@ -223,51 +222,51 @@ subplot(6,1,4)
 hold on
 grid on
 plot(time(1:c_size), angles_ref.angles_ref_1(4,1:c_size), 'Linewidth', 1.5)
-ylabel('$/phi_s$ (rad/s)','Interpreter','latex'), xlabel('time (s)')
+ylabel('$\dot{\phi}_b$','Interpreter','latex'), xlabel('time (s)')
 
 subplot(6,1,5)
 hold on
 grid on
 plot(time(1:c_size), angles_ref.angles_ref_1(5,1:c_size), 'Linewidth', 1.5)
-ylabel('$/theta_s$ (rad/s)','Interpreter','latex'), xlabel('time (s)')
+ylabel('$\dot{\theta}_b$','Interpreter','latex'), xlabel('time (s)')
 
 subplot(6,1,6)
 hold on
 grid on
 plot(time(1:c_size), angles_ref.angles_ref_1(6,1:c_size), 'Linewidth', 1.5)
-ylabel('$/psi_s$ (rad/s)','Interpreter','latex'), xlabel('time (s)')
+ylabel('$\dot{\psi}_b$','Interpreter','latex'), xlabel('time (s)')
 
 %% PWM figure
-figure(10)
-subplot(4,1,1)
-title("PWM Channels",'Interpreter','latex')
-hold on
-grid on
-plot(time(1:c_size), PWM_channels.PWM_channels_1(1,1:c_size), 'Linewidth', 1.5)
-ylabel('Ch1','Interpreter','latex'), xlabel('time (s)')
-
-subplot(4,1,2)
-hold on
-grid on
-plot(time(1:c_size), PWM_channels.PWM_channels_1(2,1:c_size), 'Linewidth', 1.5)
-ylabel('ch2','Interpreter','latex'), xlabel('time (s)')
-
-subplot(4,1,3)
-hold on
-grid on
-plot(time(1:c_size), PWM_channels.PWM_channels_1(3,1:c_size), 'Linewidth', 1.5)
-ylabel('ch3','Interpreter','latex'), xlabel('time (s)')
-
-subplot(4,1,4)
-hold on
-grid on
-plot(time(1:c_size), PWM_channels.PWM_channels_1(4,1:c_size), 'Linewidth', 1.5)
-ylabel('ch4','Interpreter','latex'), xlabel('time (s)')
+% figure(10)
+% subplot(4,1,1)
+% title("PWM Channels",'Interpreter','latex')
+% hold on
+% grid on
+% plot(time(1:c_size), PWM_channels.PWM_channels_1(1,1:c_size), 'Linewidth', 1.5)
+% ylabel('Ch1','Interpreter','latex'), xlabel('time (s)')
+% 
+% subplot(4,1,2)
+% hold on
+% grid on
+% plot(time(1:c_size), PWM_channels.PWM_channels_1(2,1:c_size), 'Linewidth', 1.5)
+% ylabel('Ch2','Interpreter','latex'), xlabel('time (s)')
+% 
+% subplot(4,1,3)
+% hold on
+% grid on
+% plot(time(1:c_size), PWM_channels.PWM_channels_1(3,1:c_size), 'Linewidth', 1.5)
+% ylabel('ch3','Interpreter','latex'), xlabel('time (s)')
+% 
+% subplot(4,1,4)
+% hold on
+% grid on
+% plot(time(1:c_size), PWM_channels.PWM_channels_1(4,1:c_size), 'Linewidth', 1.5)
+% ylabel('ch4','Interpreter','latex'), xlabel('time (s)')
 
 %% Each Motor Thrust
 figure(11)
 subplot(4,1,1)
-title("Each Motor Thrust",'Interpreter','latex')
+title("Actuator Thrust",'Interpreter','latex')
 hold on
 grid on
 plot(time(1:c_size), each_motor_thrust.each_motor_thrust_1(1,1:c_size), 'Linewidth', 1.5)
