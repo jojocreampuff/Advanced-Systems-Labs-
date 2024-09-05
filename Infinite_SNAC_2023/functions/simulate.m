@@ -32,10 +32,10 @@ Pos_error = zeros(6,N);
 r_initial       = zeros(3,N-1); % original trajectory
 r_phi           = zeros(1,N);   % phi trajectory
 r_the           = zeros(1,N);   % theta trajectory
-% r_psi           = 1+zeros(1,N);   % psi trajectory
+r_psi           = 1+zeros(1,N);   % psi trajectory
 
-r_psi           = [ linspace(-pi, pi/2, N/4), linspace(pi, -pi/2, N/4), linspace(-pi, pi/2, N/4), linspace(pi, -pi/2, N/4) ];    % saftey limit threshold on desired pitch and roll
-% r_psi           = [pi/2*ones(1,N/5), pi/5*ones(1,N/5), pi*ones(1,N/5), pi/5*ones(1,N/5), pi/2*ones(1,N/5)];
+% r_psi           = [ linspace(-pi, pi/2, N/4), linspace(pi, -pi/2, N/4), linspace(-pi, pi/2, N/4), linspace(pi, -pi/2, N/4) ];    % saftey limit threshold on desired pitch and roll
+% r_psi           = [pi/8*ones(1,N/10), pi/4*ones(1,N/10), pi/2*ones(1,N/10), pi*ones(1,N/10), pi/2*ones(1,N/10), pi/4*ones(1,N/10), pi/8*ones(1,N/10), pi/4*ones(1,N/10), pi/4*ones(1,N/10), pi/4*ones(1,N/10)];
 
 Full_F = @(x,grav,Ix,Iy,Iz) x + dt * Full_f_225(x,grav,Ix,Iy,Iz); % discretized drift dynamics
 Full_G = @(x,m,Ix,Iy,Iz) dt * Full_g_225(x,m,Ix,Iy,Iz);           % discretized control dynamics

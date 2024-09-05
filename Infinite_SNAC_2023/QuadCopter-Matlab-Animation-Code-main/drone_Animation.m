@@ -24,16 +24,17 @@ xp = r_p*cos(to);
 yp = r_p*sin(to);
 zp = zeros(1,length(to));
 %% Define Figure plot
- fig1 = figure('pos', [0 50 800 600]);
+ fig1 = figure('pos', [0 50 1080 720]);
+ set(fig1, 'Renderer', 'zbuffer');
  hg   = gca;
- view(68,53);
  grid on;
  axis equal;
- xlim([-5 5]); ylim([-5 5]); zlim([0 6]);
- title('Tracking Simulation')
- xlabel('X[m]');
- ylabel('Y[m]');
- zlabel('Z[m]');
+ xlim([-5.5 5.5]); ylim([-5.5 5.5]); zlim([0 13]);
+ % xlim([-10 10]); ylim([-10 10]); zlim([0 15]);
+ title('Tracking Simulation','FontSize', 14)
+ xlabel('X [m]' ,'FontSize', 14);
+ ylabel('Y [m]','FontSize', 14);
+ zlabel('Z [m]','FontSize', 14);
  view(45, 20); % Sets azimuth to 45 degrees and elevation to 30 degrees
 
  hold(gca, 'on');
@@ -71,7 +72,7 @@ ref = plot3(r_x,r_y,-r_z, 'r--','LineWidth',1.5); %
 
  for i = 1:length(x)
      
-     ba = plot3(x(1:i),y(1:i),z(1:i), 'b:','LineWidth',3);
+     ba = plot3(x(1:i),y(1:i),z(1:i), 'b:','LineWidth',1.5);
    
      translation = makehgtform('translate',...
                                [x(i) y(i) z(i)]);
@@ -82,7 +83,7 @@ ref = plot3(r_x,r_y,-r_z, 'r--','LineWidth',1.5); %
      %scaling = makehgtform('scale',1-i/20);
      set(combinedobject,'matrix',...
           translation*rotation3*rotation2*rotation1);
-      ref = plot3(r_x,r_y,-r_z, 'r--','LineWidth',2.5);
+      ref = plot3(r_x,r_y,-r_z, 'r--','LineWidth',1);
       movieVector(i) =  getframe(fig1);
         %delete(b);
      drawnow

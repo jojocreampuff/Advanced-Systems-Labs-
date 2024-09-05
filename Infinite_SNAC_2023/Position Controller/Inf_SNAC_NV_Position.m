@@ -7,16 +7,6 @@ clc; clear; close all;
 % addpath("/home/users10/re606359/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions")
 
 addpath("C:\Users\re606359\Desktop\Advanced-Systems-Labs-\Infinite_SNAC_2023\functions " )
-
-% Define plant dynamics
-grav = 9.81;
-Position_f = @(x) [x(4); x(5); x(6); 0; 0; grav];
-Position_g = @(x) [0 0 0; 0 0 0; 0 0 0; -1 0 0; 0 -1 0; 0 0 -1];
-
-Position_f_bar = @(x) [x_bar(4)*x4_max/x1_max; x_bar(5)*x5_max/x2_max; x(6)*x6_max/x3_max; 0; 0; grav/x6_max];
-Position_g_bar = @(x) [0 0 0; 0 0 0; 0 0 0; -u1_max/x4_max 0 0; 0 -u2_max/x5_max 0; 0 0 -u3_max/x6_max];
-
-
 % Define training Parameters
 N_states = 6;
 N_patterns = 1000;
@@ -35,18 +25,15 @@ u_max = 20; u_min = -20;
 v_max = 20; v_min = -20;
 w_max = 20; w_min = -20;
 
-% define max state values and controls to non-dim
-x1_max = X_max;
-x2_max = Y_max;
-x3_max = Z_max;
-x4_max = u_max;
-x5_max = v_max;
-x6_max = w_max;
+% Define plant dynamics
+grav = 9.81;
+Position_f = @(x) [x(4); x(5); x(6); 0; 0; grav];
+Position_g = @(x) [0 0 0; 0 0 0; 0 0 0; -1 0 0; 0 -1 0; 0 0 -1];
 
-max_states = [x1_max; x2_max; x3_max; x4_max; x5_max; x6_max]*1.2;
+% Euler integration
+Position_F = @(x) x + dt * Position_f(x);
+Position_G = @(x) Position_g(x) * dt;
 
-ux_max = 5; uy_max = 5; uz_max = 10;
-max_controls = [ux_max; uy_max; uz_max]*1.5;
 
 % Partial x_k+1 / partial x_k grad(f(x) + g(x) *u)
 A = @(x)...
@@ -60,17 +47,13 @@ A = @(x)...
     ]; % row representation
 
 % Define simulation parameters
-t_f = 100;
+t_f = 50;
 Position_F_r = @(t) [(1-exp(-0.01*t))*9.81*cos(0.2*t);
             (1-exp(-0.01*t))*9.81*sin(0.2*t);
-            -1*t
+            -.1*t
             (sin(t/5)*((981*exp(-t/100))/100 - 981/100))/5 + (981*cos(t/5)*exp(-t/100))/10000
             (981*sin(t/5)*exp(-t/100))/10000 - (cos(t/5)*((981*exp(-t/100))/100 - 981/100))/5
-            -1];
-
-% Euler integration
-Position_F = @(x) x + dt * Position_f(x);
-Position_G = @(x) Position_g(x) * dt;
+            -.1];
 
 % Additonal variables
 N = t_f/dt;   
@@ -99,7 +82,7 @@ for i = 1:max_training_loop
         lambda_k_plus_1 = Position_W' * Basis_Func_pos(x_k); %step 1
 
         % Optimal control equation
-        u_k = -Position_R^-1 * Position_G(x_k).' * lambda_k_plus_1; %step 2
+        u_k = (-Position_R^-1 * Position_G(x_k).' * lambda_k_plus_1); %step 2
 
         % Discretized dynamics
         x_k_plus_1 = Position_F(x_k) + Position_G(x_k) * u_k; % step 3
@@ -186,19 +169,19 @@ stdv(3) = (stdv(1)+stdv(2))/2;
 x1(:,1) = [0;0;0;0;0;0]; 
 
 for i = 1:N
-    x1(:,i) = add_noise(x1(:,i),stdv, 1);
-    x2(:,i) = add_noise(x2(:,i),stdv, 1);
-    x3(:,i) = add_noise(x3(:,i),stdv, 1);
-    x4(:,i) = add_noise(x4(:,i),stdv, 1);
+    % x1(:,i) = add_noise(x1(:,i),stdv, 1);
+    % x2(:,i) = add_noise(x2(:,i),stdv, 1);
+    % x3(:,i) = add_noise(x3(:,i),stdv, 1);
+    % x4(:,i) = add_noise(x4(:,i),stdv, 1);
     u1(:,i) = -Position_R^-1 * Position_G(x1(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x1(:,i)-r(:, i));
     u2(:,i) = -Position_R^-1 * Position_G(x2(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x2(:,i)-r(:, i));
     u3(:,i) = -Position_R^-1 * Position_G(x3(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x3(:,i)-r(:, i));
     u4(:,i) = -Position_R^-1 * Position_G(x4(:,i)-r(:, i))' * Position_W(:,:)' * Basis_Func_pos(x4(:,i)-r(:, i));
     
-    x1(:, i+1) = Position_F(x1(:,i)) + Position_G(x1(:,i)) * u1(:,i);
-    x2(:, i+1) = Position_F(x2(:,i)) + Position_G(x2(:,i)) * u2(:,i);
-    x3(:, i+1) = Position_F(x3(:,i)) + Position_G(x3(:,i)) * u3(:,i);
-    x4(:, i+1) = Position_F(x4(:,i)) + Position_G(x4(:,i)) * u4(:,i);
+    x1(:, i+1) = Position_F(x1(:,i)) + Position_G(x1(:,i)) * (u1(:,i));
+    x2(:, i+1) = Position_F(x2(:,i)) + Position_G(x2(:,i)) * (u2(:,i));
+    x3(:, i+1) = Position_F(x3(:,i)) + Position_G(x3(:,i)) * (u3(:,i));
+    x4(:, i+1) = Position_F(x4(:,i)) + Position_G(x4(:,i)) * (u4(:,i));
 end
 
 figure(2)
