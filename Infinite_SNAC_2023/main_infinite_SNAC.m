@@ -34,9 +34,9 @@ parameters.Iz   = .009;      %
 
 % Define desired reference as function of time
 reference = @(t)...
-            [(1-exp(-0.01*t))*9.81*cos(0.2*t);  % reference_x
-             (1-exp(-0.01*t))*9.81*sin(0.2*t);  % reference_y
-             -.5*t];                             % reference_z
+            [(1-exp(-0.01*t))*9.81*cos(0.3*t);  % reference_x
+             (1-exp(-0.01*t))*9.81*sin(0.3*t);  % reference_y
+             -.1*t];                             % reference_z
 
 % References can be waypoints (not function of time)
 % reference = @(t)...

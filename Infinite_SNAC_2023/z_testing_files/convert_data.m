@@ -36,3 +36,12 @@ pos_states = r_smooth.r_smooth_1;
 ref_angles = angles_ref.angles_ref_1;
 save("path_full_dynamics", "pos_states","ref_angles")
 
+
+%% for simulation plot
+states = x.x_1;
+states2 = x.x_2;
+states3 = x.x_3;
+ref = r_smooth.r_smooth_1;
+save("Test_simulation", "states","states2","states3", "ref")
+
+
