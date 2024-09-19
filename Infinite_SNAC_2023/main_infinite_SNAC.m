@@ -33,10 +33,10 @@ parameters.Iy   = .005;      %
 parameters.Iz   = .009;      %
 
 % Define desired reference as function of time
-% reference = @(t)...
-%             [(1-exp(-0.01*t))*9.81*cos(0.3*t);  % reference_x
-%              (1-exp(-0.01*t))*9.81*sin(0.3*t);  % reference_y
-%              -.1*t];                             % reference_z
+reference = @(t)...
+            [(1-exp(-0.01*t))*9.81*cos(0.3*t);  % reference_x
+             (1-exp(-0.01*t))*9.81*sin(0.3*t);  % reference_y
+             -.1*t];                             % reference_z
 
 % References can be waypoints (not function of time)
 % reference = @(t)...
@@ -44,10 +44,10 @@ parameters.Iz   = .009;      %
 %              9.81*sin(0.2*t);     % reference_y
 %              ];      % reference_z
 
-reference = @(t)...
-            [5*cos(0.2*t);       % reference_x
-             5*sin(0.2*t);     % reference_y
-             -2*cos(1*t)-9.81];      % reference_z
+% reference = @(t)...
+%             [5*cos(0.2*t);       % reference_x
+%              5*sin(0.2*t);     % reference_y
+%              -2*cos(1*t)-9.81];      % reference_z
 % 
 % reference = @(t)...
 %             [0;       % reference_x
@@ -78,7 +78,7 @@ IC = [0 5 -5  5 -5; % x
 %       0; 
 %       zeros(9,1)];
 
-noise = 0; % 600% noise
+noise = 5; % 600% noise
 
 % Simulating for all IC, simulations saved in structures
 for i = 1:size(IC,2)
@@ -102,7 +102,7 @@ end
 
 %% Plotting 
 figure(1)
-plot3(r_initial.r_initial_1(1,:), r_initial.r_initial_1(2,:), -r_initial.r_initial_1(3,:), 'b--', 'Linewidth', 1.5)
+plot3(r_initial.r_initial_1(1,:), r_initial.r_initial_1(2,:), -r_initial.r_initial_1(3,:), 'b--', 'Linewidth', 2.5)
 grid on
 hold on
 for i = 1:size(IC,2)
@@ -111,8 +111,8 @@ end
 plot3(r_initial.r_initial_1(1,:), r_initial.r_initial_1(2,:), -r_initial.r_initial_1(3,:), 'b--', 'Linewidth', 1.5)
 title('3D Trajectory', 'Interpreter', 'latex')
 xlabel('x (m)'), ylabel('y (m)'), zlabel('z (m)', 'Interpreter', 'latex')
-legend('Reference Trajectory', 'Path 1','Path 2','Path 3','path 4','path 5', 'Location', 'northeast', 'Interpreter', 'latex');
-
+legend('Reference Trajectory')%, 'Path 1','Path 2','Path 3','path 4','path 5', 'Location', 'northeast', 'Interpreter', 'latex');
+zlim([0 5])
 c_size = length(u.u_1(1,:))-1;
 figure(2)
 subplot(4,1,1)
@@ -143,108 +143,108 @@ grid on
 plot(time(1:c_size), u.u_1(4,1:c_size), 'Linewidth', 1.5)
 ylabel('$\tau_z$ (Nm)','Interpreter','latex'), xlabel('time (s)')
 
-%% Position Controller Output 
-figure(6)
-subplot(3,1,1)
-title("Position Controller Output",'Interpreter','latex')
-hold on
-grid on
-plot(time(1:c_size), uxyz.uxyz_1(1,1:c_size), 'Linewidth', 1.5)
-ylabel('$u_x$ (m/s)','Interpreter','latex'), xlabel('time (s)')
-
-subplot(3,1,2)
-hold on
-grid on
-plot(time(1:c_size), uxyz.uxyz_1(2,1:c_size), 'Linewidth', 1.5)
-ylabel('$u_y$ (m/s)','Interpreter','latex'), xlabel('time (s)')
-
-subplot(3,1,3)
-hold on
-grid on
-plot(time(1:c_size), uxyz.uxyz_1(3,1:c_size), 'Linewidth', 1.5)
-ylabel('$u_z$ (m/s)','Interpreter','latex'), xlabel('time (s)')
-
-%% Pos Error
-figure(7)
-subplot(3,1,1)
-title("Position error",'Interpreter','latex')
-hold on
-grid on
-plot(time(1:c_size), Pos_error.Pos_error_1(1,1:c_size), 'Linewidth', 1.5)
-ylabel('$e_x$ (m)','Interpreter','latex'), xlabel('time (s)')
-
-subplot(3,1,2)
-hold on
-grid on
-plot(time(1:c_size), Pos_error.Pos_error_1(2,1:c_size), 'Linewidth', 1.5)
-ylabel('$e_y$ (m)','Interpreter','latex'), xlabel('time (s)')
-
-subplot(3,1,3)
-hold on
-grid on
-plot(time(1:c_size), Pos_error.Pos_error_1(3,1:c_size), 'Linewidth', 1.5)
-ylabel('$e_z$ (m)','Interpreter','latex'), xlabel('time (s)')
-
-
-%% Att Error
-figure(8)
-subplot(3,1,1)
-title("Attitude error",'Interpreter','latex')
-hold on
-grid on
-plot(time(1:c_size), Att_error.Att_error_1(1,1:c_size), 'Linewidth', 1.5)
-ylabel('$e_/phi$ (rad)','Interpreter','latex'), xlabel('time (s)')
-
-subplot(3,1,2)
-hold on
-grid on
-plot(time(1:c_size), Att_error.Att_error_1(2,1:c_size), 'Linewidth', 1.5)
-ylabel('$e_/theta$ (rad)','Interpreter','latex'), xlabel('time (s)')
-
-subplot(3,1,3)
-hold on
-grid on
-plot(time(1:c_size), Att_error.Att_error_1(3,1:c_size), 'Linewidth', 1.5)
-ylabel('$e_/psi$ (rad)','Interpreter','latex'), xlabel('time (s)')
-
-%% Refernce angles given to att controller
-figure(9)
-subplot(6,1,1)
-title("Reference Angles",'Interpreter','latex')
-hold on
-grid on
-plot(time(1:c_size), angles_ref.angles_ref_1(1,1:c_size), 'Linewidth', 1.5)
-ylabel('$/phi$ (rad)','Interpreter','latex'), xlabel('time (s)')
-
-subplot(6,1,2)
-hold on
-grid on
-plot(time(1:c_size), angles_ref.angles_ref_1(2,1:c_size), 'Linewidth', 1.5)
-ylabel('$/theta$ (rad)','Interpreter','latex'), xlabel('time (s)')
-
-subplot(6,1,3)
-hold on
-grid on
-plot(time(1:c_size), angles_ref.angles_ref_1(3,1:c_size), 'Linewidth', 1.5)
-ylabel('$/psi$ (rad)','Interpreter','latex'), xlabel('time (s)')
-
-subplot(6,1,4)
-hold on
-grid on
-plot(time(1:c_size), angles_ref.angles_ref_1(4,1:c_size), 'Linewidth', 1.5)
-ylabel('$\dot{\phi}_b$','Interpreter','latex'), xlabel('time (s)')
-
-subplot(6,1,5)
-hold on
-grid on
-plot(time(1:c_size), angles_ref.angles_ref_1(5,1:c_size), 'Linewidth', 1.5)
-ylabel('$\dot{\theta}_b$','Interpreter','latex'), xlabel('time (s)')
-
-subplot(6,1,6)
-hold on
-grid on
-plot(time(1:c_size), angles_ref.angles_ref_1(6,1:c_size), 'Linewidth', 1.5)
-ylabel('$\dot{\psi}_b$','Interpreter','latex'), xlabel('time (s)')
+% %% Position Controller Output 
+% figure(6)
+% subplot(3,1,1)
+% title("Position Controller Output",'Interpreter','latex')
+% hold on
+% grid on
+% plot(time(1:c_size), uxyz.uxyz_1(1,1:c_size), 'Linewidth', 1.5)
+% ylabel('$u_x$ (m/s)','Interpreter','latex'), xlabel('time (s)')
+% 
+% subplot(3,1,2)
+% hold on
+% grid on
+% plot(time(1:c_size), uxyz.uxyz_1(2,1:c_size), 'Linewidth', 1.5)
+% ylabel('$u_y$ (m/s)','Interpreter','latex'), xlabel('time (s)')
+% 
+% subplot(3,1,3)
+% hold on
+% grid on
+% plot(time(1:c_size), uxyz.uxyz_1(3,1:c_size), 'Linewidth', 1.5)
+% ylabel('$u_z$ (m/s)','Interpreter','latex'), xlabel('time (s)')
+% 
+% %% Pos Error
+% figure(7)
+% subplot(3,1,1)
+% title("Position error",'Interpreter','latex')
+% hold on
+% grid on
+% plot(time(1:c_size), Pos_error.Pos_error_1(1,1:c_size), 'Linewidth', 1.5)
+% ylabel('$e_x$ (m)','Interpreter','latex'), xlabel('time (s)')
+% 
+% subplot(3,1,2)
+% hold on
+% grid on
+% plot(time(1:c_size), Pos_error.Pos_error_1(2,1:c_size), 'Linewidth', 1.5)
+% ylabel('$e_y$ (m)','Interpreter','latex'), xlabel('time (s)')
+% 
+% subplot(3,1,3)
+% hold on
+% grid on
+% plot(time(1:c_size), Pos_error.Pos_error_1(3,1:c_size), 'Linewidth', 1.5)
+% ylabel('$e_z$ (m)','Interpreter','latex'), xlabel('time (s)')
+% 
+% 
+% %% Att Error
+% figure(8)
+% subplot(3,1,1)
+% title("Attitude error",'Interpreter','latex')
+% hold on
+% grid on
+% plot(time(1:c_size), Att_error.Att_error_1(1,1:c_size), 'Linewidth', 1.5)
+% ylabel('$e_/phi$ (rad)','Interpreter','latex'), xlabel('time (s)')
+% 
+% subplot(3,1,2)
+% hold on
+% grid on
+% plot(time(1:c_size), Att_error.Att_error_1(2,1:c_size), 'Linewidth', 1.5)
+% ylabel('$e_/theta$ (rad)','Interpreter','latex'), xlabel('time (s)')
+% 
+% subplot(3,1,3)
+% hold on
+% grid on
+% plot(time(1:c_size), Att_error.Att_error_1(3,1:c_size), 'Linewidth', 1.5)
+% ylabel('$e_/psi$ (rad)','Interpreter','latex'), xlabel('time (s)')
+% 
+% %% Refernce angles given to att controller
+% figure(9)
+% subplot(6,1,1)
+% title("Reference Angles",'Interpreter','latex')
+% hold on
+% grid on
+% plot(time(1:c_size), angles_ref.angles_ref_1(1,1:c_size), 'Linewidth', 1.5)
+% ylabel('$/phi$ (rad)','Interpreter','latex'), xlabel('time (s)')
+% 
+% subplot(6,1,2)
+% hold on
+% grid on
+% plot(time(1:c_size), angles_ref.angles_ref_1(2,1:c_size), 'Linewidth', 1.5)
+% ylabel('$/theta$ (rad)','Interpreter','latex'), xlabel('time (s)')
+% 
+% subplot(6,1,3)
+% hold on
+% grid on
+% plot(time(1:c_size), angles_ref.angles_ref_1(3,1:c_size), 'Linewidth', 1.5)
+% ylabel('$/psi$ (rad)','Interpreter','latex'), xlabel('time (s)')
+% 
+% subplot(6,1,4)
+% hold on
+% grid on
+% plot(time(1:c_size), angles_ref.angles_ref_1(4,1:c_size), 'Linewidth', 1.5)
+% ylabel('$\dot{\phi}_b$','Interpreter','latex'), xlabel('time (s)')
+% 
+% subplot(6,1,5)
+% hold on
+% grid on
+% plot(time(1:c_size), angles_ref.angles_ref_1(5,1:c_size), 'Linewidth', 1.5)
+% ylabel('$\dot{\theta}_b$','Interpreter','latex'), xlabel('time (s)')
+% 
+% subplot(6,1,6)
+% hold on
+% grid on
+% plot(time(1:c_size), angles_ref.angles_ref_1(6,1:c_size), 'Linewidth', 1.5)
+% ylabel('$\dot{\psi}_b$','Interpreter','latex'), xlabel('time (s)')
 
 %% PWM figure
 % figure(10)
@@ -274,164 +274,164 @@ ylabel('$\dot{\psi}_b$','Interpreter','latex'), xlabel('time (s)')
 % ylabel('ch4','Interpreter','latex'), xlabel('time (s)')
 
 %% Each Motor Thrust
-figure(11)
-subplot(4,1,1)
-title("Actuator Thrust",'Interpreter','latex')
+% figure(11)
+% subplot(4,1,1)
+% title("Actuator Thrust",'Interpreter','latex')
+% hold on
+% grid on
+% plot(time(1:c_size), each_motor_thrust.each_motor_thrust_1(1,1:c_size), 'Linewidth', 1.5)
+% ylabel('Motor 1 (N)','Interpreter','latex'), xlabel('time (s)')
+% 
+% subplot(4,1,2)
+% hold on
+% grid on
+% plot(time(1:c_size), each_motor_thrust.each_motor_thrust_1(2,1:c_size), 'Linewidth', 1.5)
+% ylabel('Motor 2 (N)','Interpreter','latex'), xlabel('time (s)')
+% 
+% subplot(4,1,3)
+% hold on
+% grid on
+% plot(time(1:c_size), each_motor_thrust.each_motor_thrust_1(3,1:c_size), 'Linewidth', 1.5)
+% ylabel('Motor 3 (N)','Interpreter','latex'), xlabel('time (s)')
+% 
+% subplot(4,1,4)
+% hold on
+% grid on
+% plot(time(1:c_size), each_motor_thrust.each_motor_thrust_1(4,1:c_size), 'Linewidth', 1.5)
+% ylabel('Motor 4 (N)','Interpreter','latex'), xlabel('time (s)')
+
+% Position Plotting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+figure
+subplot(3,1,1)
 hold on
 grid on
-plot(time(1:c_size), each_motor_thrust.each_motor_thrust_1(1,1:c_size), 'Linewidth', 1.5)
-ylabel('Motor 1 (N)','Interpreter','latex'), xlabel('time (s)')
+plot(time, r_initial.r_initial_1(1,1:length(time)),'b--', 'Linewidth', 1.5)
+for i = 1:3%size(IC,2)
+plot(time, x.(['x_',[num2str(i)]])(1,1:length(time)), 'Linewidth', 1.5)
+end
+plot(time, r_initial.r_initial_1(1,1:length(time)),'b--', 'Linewidth', 1.5)
+title('Position Tracking','Interpreter','latex')
+ylabel('x (m)','Interpreter','latex'), xlabel('time (s)','Interpreter','latex')
+legend('Reference trajectory','Interpreter','latex')%,'Path 1','Path 2','Path 3','Location', 'northeast');
 
-subplot(4,1,2)
+subplot(3,1,2)
 hold on
 grid on
-plot(time(1:c_size), each_motor_thrust.each_motor_thrust_1(2,1:c_size), 'Linewidth', 1.5)
-ylabel('Motor 2 (N)','Interpreter','latex'), xlabel('time (s)')
+plot(time, r_initial.r_initial_1(2,1:length(time)),'b--', 'Linewidth', 1.5)
+for i = 1:3%size(IC,2)
+plot(time, x.(['x_',[num2str(i)]])(2,1:length(time)), 'Linewidth', 1.5)
+end
+plot(time, r_initial.r_initial_1(2,1:length(time)),'b--', 'Linewidth', 1.5)
+ylabel('y (m)','Interpreter','latex'), xlabel('time (s)','Interpreter','latex')
 
-subplot(4,1,3)
+subplot(3,1,3)
 hold on
 grid on
-plot(time(1:c_size), each_motor_thrust.each_motor_thrust_1(3,1:c_size), 'Linewidth', 1.5)
-ylabel('Motor 3 (N)','Interpreter','latex'), xlabel('time (s)')
+plot(time, -r_initial.r_initial_1(3,1:length(time)),'b--', 'Linewidth', 1.5)
+for i = 1:3%size(IC,2)
+plot(time, -x.(['x_',[num2str(i)]])(3,1:length(time)), 'Linewidth', 1.5)
+end
+plot(time, -r_initial.r_initial_1(3,1:length(time)),'b--', 'Linewidth', 1.5)
+ylabel('z (m)','Interpreter','latex'), xlabel('time (s)','Interpreter','latex')
 
-subplot(4,1,4)
+% Control Plotting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Velocity Plotting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+figure
+subplot(3,1,1)
 hold on
 grid on
-plot(time(1:c_size), each_motor_thrust.each_motor_thrust_1(4,1:c_size), 'Linewidth', 1.5)
-ylabel('Motor 4 (N)','Interpreter','latex'), xlabel('time (s)')
+plot(time, r_smooth.r_smooth_1(4,1:length(time)),'b--', 'Linewidth', 1.5)
+plot(time, x.x_1(4,1:length(time)), 'Linewidth', 1.5)
+plot(time, r_smooth.r_smooth_1(4,1:length(time)),'b--', 'Linewidth', 1.5)
+title('Velocity Tracking')
+ylabel('u (m/s)'), xlabel('time (s)')
+legend('Reference trajectory', 'Simulated','Location', 'northeast');
 
-% % Position Plotting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% figure
-% subplot(3,1,1)
-% hold on
-% grid on
-% plot(time, r_initial.r_initial_1(1,1:length(time)),'b--', 'Linewidth', 1.5)
-% for i = 1:3%size(IC,2)
-% plot(time, x.(['x_',[num2str(i)]])(1,1:length(time)), 'Linewidth', 1.5)
-% end
-% plot(time, r_initial.r_initial_1(1,1:length(time)),'b--', 'Linewidth', 1.5)
-% title('Position Tracking')
-% ylabel('x (m)'), xlabel('time (s)')
-% legend('Reference trajectory','Path 1','Path 2','Path 3','Location', 'northeast');
-% 
-% subplot(3,1,2)
-% hold on
-% grid on
-% plot(time, r_initial.r_initial_1(2,1:length(time)),'b--', 'Linewidth', 1.5)
-% for i = 1:3%size(IC,2)
-% plot(time, x.(['x_',[num2str(i)]])(2,1:length(time)), 'Linewidth', 1.5)
-% end
-% plot(time, r_initial.r_initial_1(2,1:length(time)),'b--', 'Linewidth', 1.5)
-% ylabel('y (m)'), xlabel('time (s)')
-% 
-% subplot(3,1,3)
-% hold on
-% grid on
-% plot(time, -r_initial.r_initial_1(3,1:length(time)),'b--', 'Linewidth', 1.5)
-% for i = 1:3%size(IC,2)
-% plot(time, -x.(['x_',[num2str(i)]])(3,1:length(time)), 'Linewidth', 1.5)
-% end
-% plot(time, -r_initial.r_initial_1(3,1:length(time)),'b--', 'Linewidth', 1.5)
-% ylabel('z (m)'), xlabel('time (s)')
-% 
-% % Control Plotting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+subplot(3,1,2)
+hold on
+grid on
+plot(time, r_smooth.r_smooth_1(5,1:length(time)),'b--', 'Linewidth', 1.5)
+plot(time, x.x_1(5,1:length(time)), 'Linewidth', 1.5)
+plot(time, r_smooth.r_smooth_1(5,1:length(time)),'b--', 'Linewidth', 1.5)
+ylabel('v (m/s)'), xlabel('time (s)')
 
-% 
-% % Velocity Plotting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% figure
-% subplot(3,1,1)
-% hold on
-% grid on
-% plot(time, r_smooth.r_smooth_1(4,1:length(time)),'b--', 'Linewidth', 1.5)
-% plot(time, x.x_1(4,1:length(time)), 'Linewidth', 1.5)
-% plot(time, r_smooth.r_smooth_1(4,1:length(time)),'b--', 'Linewidth', 1.5)
-% title('Velocity Tracking')
-% ylabel('u (m/s)'), xlabel('time (s)')
-% legend('Reference trajectory', 'Simulated','Location', 'northeast');
-% 
-% subplot(3,1,2)
-% hold on
-% grid on
-% plot(time, r_smooth.r_smooth_1(5,1:length(time)),'b--', 'Linewidth', 1.5)
-% plot(time, x.x_1(5,1:length(time)), 'Linewidth', 1.5)
-% plot(time, r_smooth.r_smooth_1(5,1:length(time)),'b--', 'Linewidth', 1.5)
-% ylabel('v (m/s)'), xlabel('time (s)')
-% 
-% subplot(3,1,3)
-% hold on
-% grid on
-% plot(time, -r_smooth.r_smooth_1(6,1:length(time)),'b--', 'Linewidth', 1.5)
-% plot(time, -x.x_1(6,1:length(time)), 'Linewidth', 1.5)
-% plot(time, -r_smooth.r_smooth_1(6,1:length(time)),'b--', 'Linewidth', 1.5)
-% ylabel('w (m/s)'), xlabel('time (s)')
-% 
-% % Angle Plotting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% a_size = length(angles_ref.angles_ref_1(1,:))-1;
-% figure
-% subplot(3,1,1)
-% hold on
-% grid on
-% plot(time(1:a_size), angles_ref.angles_ref_1(1,1:a_size),'b--', 'Linewidth', 1.5)
-% plot(time, x.x_1(7,1:length(time)), 'Linewidth', 1.5)
-% plot(time(1:a_size), angles_ref.angles_ref_1(1,1:a_size),'b--', 'Linewidth', 1.5)
-% title('Angle Tracking')
-% ylabel('$\phi$ (rad)','Interpreter','latex'), xlabel('time (s)')
-% legend('Reference trajectory', 'Simulated','Location', 'northeast');
-% 
-% subplot(3,1,2)
-% hold on
-% grid on
-% plot(time(1:a_size), angles_ref.angles_ref_1(2,1:a_size),'b--', 'Linewidth', 1.5)
-% plot(time, x.x_1(8,1:length(time)), 'Linewidth', 1.5)
-% plot(time(1:a_size), angles_ref.angles_ref_1(2,1:a_size),'b--', 'Linewidth', 1.5)
-% ylabel('$\theta$ (rad)','Interpreter','latex'), xlabel('time (s)')
-% 
-% subplot(3,1,3)
-% hold on
-% grid on
-% plot(time(1:a_size), angles_ref.angles_ref_1(3,1:a_size),'b--', 'Linewidth', 1.5)
-% plot(time, x.x_1(9,1:length(time)), 'Linewidth', 1.5)
-% plot(time(1:a_size), angles_ref.angles_ref_1(3,1:a_size),'b--', 'Linewidth', 1.5)
-% ylabel('$\psi$ (rad)','Interpreter','latex'), xlabel('time (s)')
+subplot(3,1,3)
+hold on
+grid on
+plot(time, -r_smooth.r_smooth_1(6,1:length(time)),'b--', 'Linewidth', 1.5)
+plot(time, -x.x_1(6,1:length(time)), 'Linewidth', 1.5)
+plot(time, -r_smooth.r_smooth_1(6,1:length(time)),'b--', 'Linewidth', 1.5)
+ylabel('w (m/s)'), xlabel('time (s)')
+
+% Angle Plotting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+a_size = length(angles_ref.angles_ref_1(1,:))-1;
+figure
+subplot(3,1,1)
+hold on
+grid on
+plot(time(1:a_size), angles_ref.angles_ref_1(1,1:a_size),'b--', 'Linewidth', 1.5)
+plot(time, x.x_1(7,1:length(time)), 'Linewidth', 1.5)
+plot(time(1:a_size), angles_ref.angles_ref_1(1,1:a_size),'b--', 'Linewidth', 1.5)
+title('Angle Tracking')
+ylabel('$\phi$ (rad)','Interpreter','latex'), xlabel('time (s)')
+legend('Reference trajectory', 'Simulated','Location', 'northeast');
+
+subplot(3,1,2)
+hold on
+grid on
+plot(time(1:a_size), angles_ref.angles_ref_1(2,1:a_size),'b--', 'Linewidth', 1.5)
+plot(time, x.x_1(8,1:length(time)), 'Linewidth', 1.5)
+plot(time(1:a_size), angles_ref.angles_ref_1(2,1:a_size),'b--', 'Linewidth', 1.5)
+ylabel('$\theta$ (rad)','Interpreter','latex'), xlabel('time (s)')
+
+subplot(3,1,3)
+hold on
+grid on
+plot(time(1:a_size), angles_ref.angles_ref_1(3,1:a_size),'b--', 'Linewidth', 1.5)
+plot(time, x.x_1(9,1:length(time)), 'Linewidth', 1.5)
+plot(time(1:a_size), angles_ref.angles_ref_1(3,1:a_size),'b--', 'Linewidth', 1.5)
+ylabel('$\psi$ (rad)','Interpreter','latex'), xlabel('time (s)')
 % ylim([-0.04 0.04])
-% 
-% % Angular Velocity Plotting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% figure
-% subplot(3,1,1)
-% hold on
-% grid on
-% plot(time(1:a_size), angles_ref.angles_ref_1(4,1:a_size),'b--', 'Linewidth', 1.5)
-% plot(time, x.x_1(10,1:length(time)), 'Linewidth', 1.5)
-% plot(time(1:a_size), angles_ref.angles_ref_1(4,1:a_size),'b--', 'Linewidth', 1.5)
-% title('Anglular Velocity Tracking')
-% ylabel('p (rad/s)','Interpreter','latex'), xlabel('time (s)')
-% legend('Reference trajectory', 'Simulated','Location', 'northeast');
+
+% Angular Velocity Plotting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+figure
+subplot(3,1,1)
+hold on
+grid on
+plot(time(1:a_size), angles_ref.angles_ref_1(4,1:a_size),'b--', 'Linewidth', 1.5)
+plot(time, x.x_1(10,1:length(time)), 'Linewidth', 1.5)
+plot(time(1:a_size), angles_ref.angles_ref_1(4,1:a_size),'b--', 'Linewidth', 1.5)
+title('Anglular Velocity Tracking')
+ylabel('p (rad/s)','Interpreter','latex'), xlabel('time (s)')
+legend('Reference trajectory', 'Simulated','Location', 'northeast');
 % ylim([-5E-3 5E-3])
-% 
-% subplot(3,1,2)
-% hold on
-% grid on
-% plot(time(1:a_size), angles_ref.angles_ref_1(5,1:a_size),'b--', 'Linewidth', 1.5)
-% plot(time, x.x_1(11,1:length(time)), 'Linewidth', 1.5)
-% plot(time(1:a_size), angles_ref.angles_ref_1(5,1:a_size),'b--', 'Linewidth', 1.5)
-% ylabel('q (rad/s)','Interpreter','latex'), xlabel('time (s)')
+
+subplot(3,1,2)
+hold on
+grid on
+plot(time(1:a_size), angles_ref.angles_ref_1(5,1:a_size),'b--', 'Linewidth', 1.5)
+plot(time, x.x_1(11,1:length(time)), 'Linewidth', 1.5)
+plot(time(1:a_size), angles_ref.angles_ref_1(5,1:a_size),'b--', 'Linewidth', 1.5)
+ylabel('q (rad/s)','Interpreter','latex'), xlabel('time (s)')
 % ylim([-5E-3 5E-3])
-% 
-% subplot(3,1,3)
-% hold on
-% grid on
-% plot(time(1:a_size), angles_ref.angles_ref_1(6,1:a_size),'b--', 'Linewidth', 1.5)
-% plot(time, x.x_1(12,1:length(time)), 'Linewidth', 1.5)
-% plot(time(1:a_size), angles_ref.angles_ref_1(6,1:a_size),'b--', 'Linewidth', 1.5)
-% ylabel('r (rad/s)','Interpreter','latex'), xlabel('time (s)')
+
+subplot(3,1,3)
+hold on
+grid on
+plot(time(1:a_size), angles_ref.angles_ref_1(6,1:a_size),'b--', 'Linewidth', 1.5)
+plot(time, x.x_1(12,1:length(time)), 'Linewidth', 1.5)
+plot(time(1:a_size), angles_ref.angles_ref_1(6,1:a_size),'b--', 'Linewidth', 1.5)
+ylabel('r (rad/s)','Interpreter','latex'), xlabel('time (s)')
 % ylim([-5E-3 5E-3])
-% 
-% % Angular Velocity and Controls %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
+
+% Angular Velocity and Controls %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % figure
 % sgtitle('Angular Velocity Stabilization')
 % subplot(3,2,1)

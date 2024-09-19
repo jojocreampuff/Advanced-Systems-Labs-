@@ -1,5 +1,5 @@
 
-file_name = "MECC_att_weights";
+file_name = "noisy_controls";
 
 
 saveFigures(file_name);

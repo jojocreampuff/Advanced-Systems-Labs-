@@ -32,7 +32,7 @@ Pos_error = zeros(6,N);
 r_initial       = zeros(3,N-1); % original trajectory
 r_phi           = zeros(1,N);   % phi trajectory
 r_the           = zeros(1,N);   % theta trajectory
-r_psi           = 1+zeros(1,N);   % psi trajectory
+r_psi           = zeros(1,N);   % psi trajectory
 
 % r_psi           = [ linspace(-pi, pi/2, N/4), linspace(pi, -pi/2, N/4), linspace(-pi, pi/2, N/4), linspace(pi, -pi/2, N/4) ];    % saftey limit threshold on desired pitch and roll
 % r_psi           = [pi/8*ones(1,N/10), pi/4*ones(1,N/10), pi/2*ones(1,N/10), pi*ones(1,N/10), pi/2*ones(1,N/10), pi/4*ones(1,N/10), pi/8*ones(1,N/10), pi/4*ones(1,N/10), pi/4*ones(1,N/10), pi/4*ones(1,N/10)];
@@ -61,13 +61,14 @@ Max_torque = Tmax*r*2;
 MAX_PWM = 2000;
 MIN_PWM = 1000;
 
-stdv = [1; 1; 1; 1; 1; 1; .01; .01; .01; .01; .01; .01]/10;
+stdv_states =    [ 1.5847    1.7331    1.5635    0.5231    0.4789    0.0323    0.0155    0.0159    0    0.0051    0.0052    0.0971]'./10;
+stdv_controls = [0.0055    0.0001    0.0008    0.0074]';
 
 u1_max = 1.3; u2_max = 1.3; u3_max = 1;
 Umax = [u1_max; u2_max; u3_max];
 
 for i = 1:N-1
-    x(:,i) = add_noise(x(:,i),stdv, noise);
+    x(:,i) = add_noise(x(:,i),stdv_states, noise);
     % SNAC controller used to track trajectory - optimal control equation
     Pos_error(:,i) = x(1:6,i) - r_smooth(:, i);
 
@@ -128,7 +129,8 @@ for i = 1:N-1
 
     u(:,i) = [ft(i); torques(:, i)];
 
-    u_noise(:,i) = u(:,i); %+ (1 + noise.*(2*rand(size(u(:,i))) - 1)); % add randomness
+    u_noise(:,i) = add_noise(u(:,i),stdv_controls, noise); % add randomness
+
     if u_noise(1,i) < 0 
         u_noise(1,i) = 0;
     end

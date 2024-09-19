@@ -3,31 +3,31 @@ clc; clear all; close all;
 load('DIDO_workspace_SNAC_Analog.mat','t','u_1','u_2','u_3','u_4')
 addpath('..\functions')
 
-% % Constants
-% grav = 9.81;
-% m    = 1;
-% Ix   = 0.3;
-% Iy   = 0.4;
-% Iz   = 0.5;
-% 
-% % Full Dynamics 2.25 of Sabation Quadrotor Thesis
-% Full_F = @(x,grav,Ix,Iy,Iz,dt) x + dt * Full_f_225(x,grav,Ix,Iy,Iz); % drift dynamics
-% Full_G = @(x,m,Ix,Iy,Iz,dt) dt * Full_g_225(x,m,Ix,Iy,Iz); % control dynamics
-% 
-% N = length(t);
-% 
-% u_noise = zeros(4,N-1);
-% x = [zeros(12,1)];
-% 
-% noise = 0;
-% u = [u_1; u_2; u_3; u_4];
-% for i = 1:N-1
-%     u_noise(:,i) = u(:,i) .* (1 + noise.*(2*rand(size(u(:,i))) - 1)); % add randomness
-%     
-%     dt = t(i+1)-t(i);
-%     % Passing controls though drone dynamics
-%     x(:, i+1) = Full_F(x(:,i),grav,Ix,Iy,Iz,dt) + Full_G(x(:,i),m,Ix,Iy,Iz,dt) * u_noise(:,i);
-% end
+% Constants
+grav = 9.81;
+m    = 1;
+Ix   = 0.3;
+Iy   = 0.4;
+Iz   = 0.5;
+
+% Full Dynamics 2.25 of Sabation Quadrotor Thesis
+Full_F = @(x,grav,Ix,Iy,Iz,dt) x + dt * Full_f_225(x,grav,Ix,Iy,Iz); % drift dynamics
+Full_G = @(x,m,Ix,Iy,Iz,dt) dt * Full_g_225(x,m,Ix,Iy,Iz); % control dynamics
+
+N = length(t);
+
+u_noise = zeros(4,N-1);
+x = [zeros(12,1)];
+
+noise = 0;
+u = [u_1; u_2; u_3; u_4];
+for i = 1:N-1
+    u_noise(:,i) = u(:,i) .* (1 + noise.*(2*rand(size(u(:,i))) - 1)); % add randomness
+
+    dt = t(i+1)-t(i);
+    % Passing controls though drone dynamics
+    x(:, i+1) = Full_F(x(:,i),grav,Ix,Iy,Iz,dt) + Full_G(x(:,i),m,Ix,Iy,Iz,dt) * u_noise(:,i);
+end
 
 %% Plotting
 figure

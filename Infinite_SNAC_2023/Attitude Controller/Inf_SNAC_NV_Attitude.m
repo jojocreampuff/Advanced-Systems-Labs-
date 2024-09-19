@@ -1,8 +1,8 @@
 clc; clear; close all;
 
 % addpath("/home/users10/re606359/Desktop/matlab/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions")
-addpath("/home/users10/re606359/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions")
-% addpath('..\functions')
+% addpath("/home/users10/re606359/Desktop/Advanced-Systems-Labs-/Infinite_SNAC_2023/functions")
+addpath('..\functions')
 
 % Define plant dynamics
 Ix = 0.005*1000;   % moment of inertia (g*m^2) 
@@ -28,20 +28,20 @@ x6_max = r_max;
 max_states = [x1_max; x2_max; x3_max; x4_max; x5_max; x6_max]*1.1;
 
 u1_max = 1.3; u2_max = 1.3; u3_max = 1;
-Umax = [u1_max; u2_max; u3_max]*1.9; % unit is Nm
-
+Umax = [u1_max; u2_max; u3_max]*1.5; % unit is Nm
 
 % Define training Parameters
 N_states =          6;
 N_patterns =        1000;
 max_training_loop = 15000;
-threshold =         1e-5;
-dt =                0.004;
+threshold =         1e-3;
+dt =                0.001;
 discount = 1;
 % Attitude_Q = dt*diag([1e6,1e6,1e4,1e5,1e5,1e4]);
 Attitude_Q = diag([1,1,1,1,1,1])*1000;
 Attitude_R = diag([1,1,1])*10;
 % Attitude_R = dt*diag([0.5e4,0.5e4,0.5e4])
+
 
 % Define simulation parameters
 t_f = 6;
@@ -49,7 +49,6 @@ N_neurons = length(Basis_Func_84(ones(N_states,1)));
 N = t_f/dt;   
 Attitude_W = randn(N_neurons, N_states)*.01;
 weight_plot = zeros((N_neurons* N_states),max_training_loop);
-
 
 Attitude_f = @(x) [(x(4) + x(5)*(sin(x(1))*tan(x(2))) + x(6)*(cos(x(1))*tan(x(2))));
                    (x(5)*cos(x(1)) - x(6)*sin(x(1)));
@@ -133,11 +132,17 @@ for i = 1:max_training_loop
     error(:, :) = lambda_k_plus_1 - lambda_k_plus_1_target;
     error_mae = mae(error(:,:));
     error_mse = mean(mean((error(:,:).^2) ));
+    MAE_norm = error_mae/norm(Attitude_W);
 
     if mod(i, 100) == 0
         disp(['i = ', num2str(i)]);
         disp(['error_mae = ', num2str(error_mae)]);
         disp(['error_mse = ', num2str(error_mse)]);
+        disp(['error_mae_NORM = ', num2str(MAE_norm)]);
+    end
+    if MAE_norm < threshold
+        fprintf('converged\n')
+        break
     end
 
 end
@@ -160,12 +165,12 @@ for k = 1:size(weight_plot,1)
 end
 xlabel('Iterations', 'Interpreter', 'latex');
 ylabel('Weights', 'Interpreter', 'latex');
-xlim([0 i]);
+xlim([0 max_training_loop]);
 
-MAE_norm = error_mae/norm(Attitude_W);
+% MAE_norm = error_mae/norm(Attitude_W);
 
 Training_time = toc;
-x1 = 1*[randn(3,1);0;0;0];
+x1 = 1.3*[randn(3,1);0;0;0];
 x2 = 1*[randn(3,1);0;0;0];
 x3 = 1*[randn(3,1);0;0;0];
 
@@ -270,7 +275,7 @@ legend(["I.C 1", "I.C 2", "I.C 3"]);
 
 fprintf('required time for training = %g sec\n', Training_time)
 
-save("test_workspace_att_V.mat",'Attitude_W','Attitude_R','Attitude_F','Attitude_G',"-v7.3")
+% save("test_workspace_att_V.mat",'Attitude_W','Attitude_R','Attitude_F','Attitude_G',"-v7.3")
 % x_train_init = x_k_plus_1;
 % target_init = lambda_k_plus_1_target;
 % save("init_train_params.mat","x_train_init","target_init", "Attitude_Q","Attitude_R","N_patterns")
