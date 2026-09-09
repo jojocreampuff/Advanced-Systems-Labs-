@@ -1,0 +1,93 @@
+function y = lambda(x)
+  y = lambdamat(x(1, :),x(2, :),x(3, :),x(4, :),x(5, :),x(6, :));
+end
+
+function out = lambdamat(a,b,c,d,e,f)
+  out = [
+          a
+          b
+          c
+          d
+          e
+          f
+          a.*a
+          a.*b
+          a.*c
+          a.*d
+          a.*e
+          a.*f
+          b.*b
+          b.*c
+          b.*d
+          b.*e
+          b.*f
+          c.*c
+          c.*d
+          c.*e
+          c.*f
+          d.*d
+          d.*e
+          d.*f
+          e.*e
+          e.*f
+          f.*f
+          a.*a.*a
+          a.*a.*b
+          a.*a.*c
+          a.*a.*d
+          a.*a.*e
+          a.*a.*f
+          a.*b.*b
+          a.*b.*c
+          a.*b.*d
+          a.*b.*e
+          a.*b.*f
+          a.*c.*c
+          a.*c.*d
+          a.*c.*e
+          a.*c.*f
+          a.*d.*d
+          a.*d.*e
+          a.*d.*f
+          a.*e.*e
+          a.*e.*f
+          a.*f.*f
+          b.*b.*b
+          b.*b.*c
+          b.*b.*d
+          b.*b.*e
+          b.*b.*f
+          b.*c.*c
+          b.*c.*d
+          b.*c.*e
+          b.*c.*f
+          b.*d.*d
+          b.*d.*e
+          b.*d.*f
+          b.*e.*e
+          b.*e.*f
+          b.*f.*f
+          c.*c.*c
+          c.*c.*d
+          c.*c.*e
+          c.*c.*f
+          c.*d.*d
+          c.*d.*e
+          c.*d.*f
+          c.*e.*e
+          c.*e.*f
+          c.*f.*f
+          d.*d.*d
+          d.*d.*e
+          d.*d.*f
+          d.*e.*e
+          d.*e.*f
+          d.*f.*f
+          e.*e.*e
+          e.*e.*f
+          e.*f.*f
+          f.*f.*f
+          ones(1, size(a, 2))
+
+  ];
+end
